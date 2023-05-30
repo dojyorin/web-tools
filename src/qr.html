@@ -1,0 +1,51 @@
+<!doctype html>
+<meta charset="utf-8">
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@latest/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@latest/dist/jsQR.min.js"></script>
+
+<script async type="module">
+    async function qrParse(video){
+        const canvas = new OffscreenCanvas(240, 320);
+        const render = canvas.getContext("2d");
+
+        return new Promise((resolve)=>{
+            const loop = setInterval(()=>{
+                render.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                const image = render.getImageData(0, 0, canvas.width, canvas.height);
+                const result = jsQR(image.data, image.width, image.height);
+
+                if(result){
+                    clearInterval(loop);
+                    return resolve(result.data);
+                }
+            }, 100);
+        });
+    }
+
+    async function qrGenerate(data){
+        return new Promise((resolve, reject) => QRCode.toCanvas(new OffscreenCanvas(1, 1), data, {}, (err, canvas) => !err ? resolve(canvas) : reject(err)));
+    }
+
+    document.getElementById("data").addEventListener("change", async({target: {value}})=>{
+        document.getElementById("canvas").getContext("bitmaprenderer").transferFromImageBitmap((await qrGenerate(value)).transferToImageBitmap());
+    });
+
+    const video = document.getElementById("video");
+    video.srcObject = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+            facingMode: "environment"
+        }
+    });
+
+    document.getElementById("result").value = await qrParse(video);
+</script>
+
+<main>
+    <video autoplay muted width="320" height="480" id="video"></video>
+    <textarea readonly id="result"></textarea>
+    <canvas width="240" height="240" id="canvas"></canvas>
+    <textarea id="data"></textarea>
+</main>

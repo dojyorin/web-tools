@@ -1,0 +1,36 @@
+<!doctype html>
+<meta charset="utf-8">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@latest/dist/chartjs-plugin-datalabels.min.js"></script>
+
+<script async type="module">
+    const chart = new Chart(document.getElementById("chart").getContext("2d"), {
+        type: "bar",
+
+        options: {
+            title: {
+                display: true,
+                text: "My Chart"
+            }
+        },
+
+        data: {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+
+            datasets: [{
+                label: "First Dataset",
+                backgroundColor: "rgb(255, 127, 127)",
+                data: [0, 10, 5, 2, 20, 30, 40]
+            }, {
+                label: "Second Dataset",
+                backgroundColor: "rgb(127, 127, 255)",
+                data: [0, 5, 10, 4, 10, 30, 50]
+            }]
+        }
+    });
+</script>
+
+<main>
+    <canvas id="chart"></canvas>
+</main>

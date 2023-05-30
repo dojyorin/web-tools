@@ -1,0 +1,217 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
+
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FFFFFF">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>📡</text></svg>">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3/dist/vuetify.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7/css/materialdesignicons.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=M+PLUS+1+Code:wght@100;200;300;400;500;600;700">
+
+<title>Application</title>
+
+<script type="importmap">
+    {
+        "imports": {
+            "vue": "https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.prod.min.js",
+            "vue-router": "https://cdn.jsdelivr.net/npm/vue-router@4/dist/vue-router.esm-browser.min.js",
+            "vuex": "https://cdn.jsdelivr.net/npm/vuex@4/dist/vuex.esm-browser.prod.min.js",
+            "vuetify": "https://cdn.jsdelivr.net/npm/vuetify@3/dist/vuetify.esm.min.js",
+            "@vue/devtools-api": "https://cdn.jsdelivr.net/npm/@vue/devtools-api@6/lib/esm/index.min.js"
+        }
+    }
+</script>
+
+<script async type="module">
+    import {createApp, ref, computed, onMounted} from "vue";
+    import {createRouter, createWebHashHistory} from "vue-router";
+    import {createStore, useStore} from "vuex";
+    import {createVuetify, useTheme} from "vuetify";
+
+    const root = document.getElementById("vue");
+
+    const vue = createApp({
+        setup(){
+            const store = useStore();
+            const theme = useTheme();
+
+            const loading = computed({
+                get(){
+                    return store.getters.loading;
+                },
+                set(v){
+                    store.commit("overlay", v);
+                }
+            });
+
+            function switchDark(){
+                theme.name.value = theme.current.value.dark ? "light" : "dark";
+            }
+
+            onMounted(()=>{
+                root.removeAttribute("hidden");
+                store.commit("overlay", false);
+            });
+
+            return {loading, switchDark};
+        }
+    });
+
+    const router = createRouter({
+        history: createWebHashHistory(),
+        routes: [{
+            path: "/",
+            component: {
+                template: document.getElementById("/"),
+                setup(){
+                    const store = useStore();
+                    const count = ref(0);
+                    const countx = computed(() => store.getters.count);
+
+                    function increment(){
+                        count.value++;
+                    }
+
+                    function incrementx(){
+                        store.commit("increment");
+                    }
+
+                    return {count, countx, increment, incrementx};
+                }
+            }
+        }, {
+            path: "/foo",
+            component: {
+                template: document.getElementById("/foo"),
+                setup(){
+                    const store = useStore();
+                    const countx = computed(() => store.getters.count);
+
+                    function resetx(){
+                        store.commit("reset");
+                    }
+
+                    return {countx, resetx};
+                }
+            }
+        }]
+    });
+
+    const store = createStore({
+        state(){
+            return {
+                count: 0,
+                loading: true
+            };
+        },
+
+        getters: {
+            count(s){
+                return s.count;
+            },
+            loading(s){
+                return s.loading;
+            }
+        },
+
+        mutations: {
+            increment(s){
+                s.count++;
+            },
+            reset(s){
+                s.count = 0;
+            },
+            overlay(s, v){
+                s.loading = v;
+            }
+        }
+    });
+
+    const vuetify = createVuetify();
+
+    vue.use(router);
+    vue.use(store);
+    vue.use(vuetify);
+    vue.mount(root);
+</script>
+
+<style>
+    ::-webkit-scrollbar{
+        display: none !important;
+    }
+    :focus{
+        outline: none !important;
+    }
+    *{
+        font-family: "M PLUS 1 Code" !important;
+    }
+    .v-btn{
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        text-indent: 0 !important;
+    }
+</style>
+
+<div hidden id="vue">
+    <v-app>
+        <v-overlay persistent no-click-animation class="justify-center align-center" v-model="loading">
+            <v-progress-circular indeterminate size="60" width="4" color="blue-darken-1"></v-progress-circular>
+        </v-overlay>
+
+        <v-app-bar density="compact" color="blue-darken-1">
+            <v-app-bar-title>Application</v-app-bar-title>
+            <v-btn icon="mdi-theme-light-dark" @click="switchDark"></v-btn>
+        </v-app-bar>
+
+        <v-main>
+            <router-view></router-view>
+        </v-main>
+
+        <v-footer app>
+            <v-row no-gutters justify="center">footer</v-row>
+        </v-footer>
+    </v-app>
+</div>
+
+<template id="/">
+    <v-container fluid>
+        <v-row justify="center">
+            <v-btn to="/foo">to /foo</v-btn>
+        </v-row>
+
+        <v-row justify="center">
+            <v-col cols sm="6">
+                <v-card>
+                    <v-card-title class="text-center">{{count}} : {{countx}}</v-card-title>
+                    <v-card-actions class="justify-center">
+                        <v-btn @click="increment">Increment</v-btn>
+                        <v-btn @click="incrementx">IncrementX</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
+</template>
+
+<template id="/foo">
+    <v-container fluid>
+        <v-row justify="center">
+            <v-btn to="/">to /</v-btn>
+        </v-row>
+
+        <v-row justify="center">
+            <v-col cols sm="6">
+                <v-card>
+                    <v-card-title class="text-center">{{countx}}</v-card-title>
+                    <v-card-actions class="justify-center">
+                        <v-btn @click="resetx">ResetX</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
+</template>

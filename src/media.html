@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+
+<script async type="module">
+    const video = document.getElementById("video");
+    const audio = document.getElementById("audio");
+
+    document.getElementById("camera").addEventListener("click", async()=>{
+        video.srcObject = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+                facingMode: "environment"
+            }
+        });
+    });
+
+    document.getElementById("screen").addEventListener("click", async()=>{
+        video.srcObject = await navigator.mediaDevices.getDisplayMedia();
+    });
+
+    document.getElementById("mic").addEventListener("click", async()=>{
+        audio.srcObject = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: false
+        });
+    });
+</script>
+
+<main>
+    <button type="button" id="camera">Camera</button>
+    <button type="button" id="screen">Screen</button>
+    <button type="button" id="mic">Mic</button>
+    <video autoplay muted controls width="480" height="320" id="video"></video>
+    <audio autoplay muted controls id="audio"></video>
+</main>

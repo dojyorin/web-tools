@@ -1,0 +1,109 @@
+<!doctype html>
+<meta charset="utf-8">
+
+<script async type="module">
+    /**
+    * @typedef {[string, Uint8Array]} FileInit
+    */
+
+    /**
+    * @param {File[]|FileList|HTMLInputElement} input
+    * @return {Promise<FileInit[]>}
+    */
+    async function fileInit(input){
+        return await Promise.all([...input instanceof HTMLInputElement ? input.files ?? [] : input].map(async f => [f.name, new Uint8Array(await f.arrayBuffer())]));
+    }
+
+    /**
+    * @param {boolean} [multiple]
+    * @param {string} [accept]
+    * @return {Promise<File[]>}
+    */
+    async function fsRead(multiple, accept){
+        const input = document.createElement("input");
+        input.type = "file";
+        input.multiple = multiple ?? false;
+        input.accept = accept ?? "";
+
+        return await new Promise((resolve)=>{
+            input.oninput = () => resolve([...input.files]);
+            input.click();
+        });
+    }
+
+    /**
+    * @param {string} name
+    * @param {BlobPart} data
+    */
+    function fsWrite(name, data){
+        const anchor = document.createElement("a");
+        anchor.download = name;
+        anchor.href = URL.createObjectURL(new Blob([data]));
+
+        anchor.click();
+
+        URL.revokeObjectURL(anchor.href);
+    }
+
+    async function fsNativeRead(fs, type){
+        const handle = fs instanceof FileSystemFileHandle ? fs : (await showOpenFilePicker(fs)).shift();
+        const file = await handle.getFile();
+
+        return {
+            fs: handle,
+            data: {
+                blob: new Blob([file]),
+                buffer: await file.arrayBuffer(),
+                text: await file.text(),
+                code: await new Promise((res)=>{
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => res(reader.result));
+                    reader.readAsDataURL(file);
+                })
+            }[type ?? "buffer"]
+        };
+    }
+
+    async function fsNativeWrite(fs, data){
+        const handle = fs instanceof FileSystemFileHandle ? fs : await showSaveFilePicker(fs);
+        const writer = await handle.createWritable();
+
+        await writer.write(data);
+        await writer.close();
+
+        return {
+            fs: handle
+        };
+    }
+
+    async function fsNativeDirectory(){
+        const handle = await showDirectoryPicker();
+
+        return {
+            fs: handle
+        };
+    }
+
+    document.getElementById("read").onclick = async()=>{
+        console.log(await fsRead());
+        console.log(await fsNativeRead());
+        dialogNotify("Loaded!");
+    };
+
+    document.getElementById("write").onclick = async()=>{
+        console.log(await fsWrite("test.txt", "test"));
+        console.log(await fsNativeWrite(null, "test"));
+        dialogNotify("Saved!");
+    };
+
+    document.getElementById("directory").onclick = async()=>{
+        console.log(await fsNativeDirectory());
+        dialogNotify("Loaded!");
+    };
+</script>
+
+<main>
+    <button type="button" id="read">Read</button>
+    <button type="button" id="write">Write</button>
+    <button type="button" id="directory">Directory</button>
+</main>

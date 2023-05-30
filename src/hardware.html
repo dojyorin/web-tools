@@ -1,0 +1,127 @@
+<!doctype html>
+<meta charset="utf-8">
+
+<script async type="module">
+    /**
+    * @typedef {object} Serial
+    * @property {() => void} onconnect
+    * @property {() => void} ondisconnect
+    * @property {() => Promise<SerialPort[]>} getPorts
+    * @property {(option:SerialPortRequestOptions) => Promise<SerialPort>} requestPort
+    */
+
+    /**
+    * @typedef {object} SerialPort
+    * @property {readonly ReadableStream<Uint8Array>} readable
+    * @property {readonly WritableStream<Uint8Array>} writable
+    * @property {() => void} onconnect
+    * @property {() => void} ondisconnect
+    * @property {(option:SerialOptions) => Promise<void>} open
+    * @property {() => Promise<void>} close
+    * @property {() => Promise<void>} forget
+    * @property {() => SerialPortInfo} getInfo
+    * @property {(signals:SerialOutputSignals) => Promise<void>} setSignals
+    * @property {() => Promise<SerialInputSignals>} getSignals
+    */
+
+    /**
+    * @typedef {object} SerialOptions
+    * @property {number} baudRate
+    * @property {7 | 8} dataBits
+    * @property {1 | 2} stopBits
+    * @property {"none" | "even" | "odd"} parity
+    * @property {number} bufferSize
+    * @property {"none" | "hardware"} flowControl
+    */
+
+    /**
+    * @typedef {object} SerialPortRequestOptions
+    * @property {SerialPortInfo[]} filters
+    */
+
+    /**
+    * @typedef {object} SerialPortInfo
+    * @property {number} usbVendorId
+    * @property {number} usbProductId
+    */
+
+    /**
+    * @typedef {object} SerialOutputSignals
+    * @property {boolean} dataTerminalReady
+    * @property {boolean} requestToSend
+    * @property {boolean} break
+    */
+
+    /**
+    * @typedef {object} SerialInputSignals
+    * @property {boolean} clearToSend
+    * @property {boolean} dataCarrierDetect
+    * @property {boolean} dataSetReady
+    * @property {boolean} ringIndicator
+    */
+
+    /**
+    * @typedef {object} USB
+    * @property {() => void} onconnect
+    * @property {() => void} ondisconnect
+    * @property {() => Promise<USBDevice[]>} getDevices
+    * @property {(option:USBDeviceRequestOptions) => Promise<USBDevice>} requestDevice
+    */
+
+    /**
+    * @typedef {object} Bluetooth
+    * @property {() => void} onconnect
+    * @property {() => void} ondisconnect
+    * @property {() => void} onadvertisementreceived
+    * @property {() => Promise<BluetoothDevice[]>} getDevices
+    * @property {(option:RequestDeviceOptions) => Promise<BluetoothDevice>} requestDevice
+    * @property {() => Promise<boolean>} getAvailability
+    * @property {(option:BluetoothLEScanOptions) => Promise<BluetoothLEScan>} requestLEScan
+    */
+
+    /** @type {?Serial} */
+    const NavSerial = navigator?.serial;
+
+    /** @type {?USB} */
+    const NavUsb = navigator?.usb;
+
+    /** @type {?Bluetooth} */
+    const NavBluetooth = navigator?.bluetooth;
+
+    document.getElementById("usb").onclick = async()=>{
+        const usb = await NavUsb.requestDevice({
+            filters: []
+        });
+
+        console.log(usb);
+    };
+
+    document.getElementById("serial").onclick = async()=>{
+        const serial = await NavSerial.requestPort();
+
+        await serial.open({
+            baudRate: 115200,
+            dataBits: 8,
+            stopBits: 1,
+            parity: "none",
+            bufferSize: 65536,
+            flowControl: "none"
+        });
+
+        console.log(serial);
+    };
+
+    document.getElementById("bluetooth").onclick = async()=>{
+        const bluetooth = await NavBluetooth.requestDevice({
+            acceptAllDevices: true
+        });
+
+        console.log(bluetooth);
+    };
+</script>
+
+<main>
+    <button type="button" id="serial">Serial</button>
+    <button type="button" id="usb">USB</button>
+    <button type="button" id="bluetooth">Bluetooth</button>
+</main>
