@@ -3,14 +3,26 @@
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
 
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#8311FF">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
+
 <title>秋月カート</title>
 
 <script async type="module">
+    /**
+    * @param {string} data
+    */
     function trimExtend(data){
         return data.trim().replace(/\r/g, "").replace(/\t/g, " ").replace(/ +/g, " ").replace(/ +$/mg, "");
     }
 
-    function dialogNotify(message){
+    /**
+    * @param {string} message
+    * @param {number} [color]
+    */
+    function dialogNotify(message, color){
         const dialog = document.createElement("dialog");
         dialog.style.position = "fixed";
         dialog.style.top = "10px";
@@ -19,7 +31,7 @@
         dialog.style.borderRadius = "8px";
         dialog.style.padding = "10px 15px";
         dialog.style.color = "#FFFFFF";
-        dialog.style.backgroundColor = "#FF4455";
+        dialog.style.backgroundColor = `#${(color ?? 0x00CACACA).toString(16).padStart(6, "0")}`;
         dialog.style.boxShadow = "2px 3px 4px 0 #0000004D";
         dialog.textContent = `\u{1F514} ${message}`;
 
