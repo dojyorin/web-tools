@@ -40,8 +40,8 @@
             "ﾗ": "ラ", "ﾘ": "リ", "ﾙ": "ル", "ﾚ": "レ", "ﾛ": "ロ",
             "ﾜ": "ワ", "ｦ": "ヲ", "ﾝ": "ン",
             "ｧ": "ァ", "ｨ": "ィ", "ｩ": "ゥ", "ｪ": "ェ", "ｫ": "ォ",
-            "ｬ": "ャ", "ｭ": "ュ", "ｮ": "ョ",
             "ｯ": "ッ",
+            "ｬ": "ャ", "ｭ": "ュ", "ｮ": "ョ",
             "､": "、", "｡": "。", "･": "・", "ｰ": "ー", "｢": "「", "｣": "」",
             "Ａ": "A", "Ｂ": "B", "Ｃ": "C", "Ｄ": "D", "Ｅ": "E", "Ｆ": "F", "Ｇ": "G", "Ｈ": "H", "Ｉ": "I", "Ｊ": "J", "Ｋ": "K", "Ｌ": "L", "Ｍ": "M",
             "Ｎ": "N", "Ｏ": "O", "Ｐ": "P", "Ｑ": "Q", "Ｒ": "R", "Ｓ": "S", "Ｔ": "T", "Ｕ": "U", "Ｖ": "V", "Ｗ": "W", "Ｘ": "X", "Ｙ": "Y", "Ｚ": "Z",
@@ -76,7 +76,7 @@
         document.body.appendChild(dialog);
     }
 
-    document.getElementById("convert").addEventListener("click", async()=>{
+    document.getElementById("convert")?.addEventListener("click", async()=>{
         const text = await navigator.clipboard.readText();
         const contents = [];
 
