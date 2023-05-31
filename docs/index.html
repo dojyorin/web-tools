@@ -15,7 +15,7 @@
     * @param {string} data
     */
     function trimExtend(data){
-        return data.trim().replace(/\r/g, "").replace(/ +/g, " ").replace(/ +$/mg, "");
+        return data.trim().replace(/\r/g, "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/ +$/mg, "");
     }
 
     /**
@@ -79,12 +79,13 @@
         const text = await navigator.clipboard.readText();
         const products = [];
 
-        for(const record of trimExtend(text).match(/^[A-Z]-\d{5}\t.+\n数量:\n\d+$/mg) ?? []){
-            const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+)\t.+￥([0-9,]+).+(\d+)$/s) ?? [];
+        for(const record of trimExtend(text).replace(/\n/g, "").match(/[A-Z]-\d{5}\t.+?数量:\d+/g) ?? []){
+            const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+)\t.+￥([1-9][0-9,]+).+(\d+)$/) ?? [];
+            const [e, f] = b.split(/ /);
 
             products.push({
                 code: a,
-                name: fixWidth(b),
+                name: fixWidth(e === f ? f : b),
                 price: Number(c),
                 quantity: Number(d)
             });
