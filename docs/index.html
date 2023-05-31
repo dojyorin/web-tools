@@ -78,12 +78,12 @@
 
     document.getElementById("convert")?.addEventListener("click", async()=>{
         const text = await navigator.clipboard.readText();
-        const contents = [];
+        const products = [];
 
-        for(const item of trimExtend(text).match(/^[A-Z]-\d{5}\t.+\n数量:\n\d+$/mg) ?? []){
-            const [, a, b, c, d] = item.match(/^([A-Z]-\d{5})\t(.+)\t.+￥([0-9,]+).+(\d+)$/s) ?? [];
+        for(const record of trimExtend(text).match(/^[A-Z]-\d{5}\t.+\n数量:\n\d+$/mg) ?? []){
+            const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+)\t.+￥([0-9,]+).+(\d+)$/s) ?? [];
 
-            contents.push({
+            products.push({
                 code: a,
                 name: fixWidth(b),
                 price: Number(c),
@@ -91,12 +91,12 @@
             });
         }
 
-        if(!contents.length){
+        if(!products.length){
             dialogNotify("商品コードが存在しません");
             return;
         }
 
-        const output = contents.map(({code, count}) => `${code} ${count}`).join("\n");
+        const output = products.map(({code, count}) => `${code} ${count}`).join("\n");
 
         document.getElementById("products").value = output;
 
