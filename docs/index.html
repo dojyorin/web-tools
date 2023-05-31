@@ -86,7 +86,7 @@
                 code: a,
                 name: fixWidth(b),
                 price: Number(c),
-                count: Number(d)
+                quantity: Number(d)
             });
         }
 
@@ -95,9 +95,10 @@
             return;
         }
 
-        const output = products.map(({code, count}) => `${code} ${count}`).join("\n");
+        const output = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
 
         document.getElementById("products").value = output;
+        document.getElementById("json").value = JSON.stringify(products, undefined, 4);
 
         await navigator.clipboard.writeText(output);
     });
@@ -139,7 +140,8 @@
     }
     h1{
         margin: 0;
-        font-size: 28px;
+        font-size: 24px;
+        font-weight: unset;
     }
     section{
         text-align: center;
@@ -195,6 +197,7 @@
 
     <section>
         <textarea readonly id="products"></textarea>
+        <textarea readonly id="json"></textarea>
     </section>
 
     <section>
