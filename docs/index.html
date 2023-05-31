@@ -4,7 +4,7 @@
 <meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
 
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#7711FF">
+<meta name="theme-color" content="#6611CC">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
@@ -14,7 +14,7 @@
     /**
     * @param {string} data
     */
-    function trimExtend(data){
+    function trimText(data){
         return data.trim().replace(/\r/g, "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/ +$/mg, "");
     }
 
@@ -79,7 +79,7 @@
         const text = await navigator.clipboard.readText();
         const products = [];
 
-        for(const record of trimExtend(text).replace(/\n/g, "").match(/[A-Z]-\d{5}\t.+?数量:\d+/g) ?? []){
+        for(const record of trimText(text).replace(/\n/g, "").match(/[A-Z]-\d{5}\t.+?数量:\d+/g) ?? []){
             const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+)\t.+￥([1-9][0-9,]+).+(\d+)$/) ?? [];
             const [e, f] = b.split(/ /);
 
@@ -92,13 +92,13 @@
         }
 
         if(!products.length){
-            dialogNotify("商品コードが存在しません", 0x00FF3322);
+            dialogNotify("商品テーブルが存在しません", 0x00FF3322);
             return;
         }
 
         const output = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
 
-        document.getElementById("products").value = output;
+        document.getElementById("product").value = output;
         document.getElementById("json").value = JSON.stringify(products, undefined, 4);
 
         await navigator.clipboard.writeText(output);
@@ -128,7 +128,7 @@
     header{
         top: 0px;
         height: 48px;
-        background-color: #7711FF;
+        background-color: #6611CC;
         padding: 0 12px;
         overflow: hidden;
         display: flex;
@@ -156,7 +156,7 @@
     dt{
         font-size: 18px;
         font-weight: bold;
-        margin: 0 0 4px 0;
+        margin: 0 0 8px 0;
     }
     textarea{
         resize: none;
@@ -189,9 +189,9 @@
             <dt>使い方</dt>
             <dd>秋月通販の <a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/cart/cart.aspx">カート</a> ページを <b>全選択コピー</b> します。</dd>
             <dd><b>抽出する</b> ボタンを押します。</dd>
-            <dd>クリップボードに抽出されたデータが書き込まれます。</dd>
-            <dd>(クリップボードへのアクセス要求を許可してください)</dd>
-            <dd>秋月通販の <a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/quickorder/blanketorder.aspx">商品入力</a> ページで読み込める形式とJSON形式で出力されます。</dd>
+            <dd>処理結果がクリップボードにコピーされます。</dd>
+            <dd>(クリップボードへのアクセスを許可してください)</dd>
+            <dd>秋月通販の <a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/quickorder/blanketorder.aspx">商品入力</a> ページにペーストできます。</dd>
         </dl>
     </section>
 
@@ -200,7 +200,7 @@
     </section>
 
     <section>
-        <textarea readonly id="products"></textarea>
+        <textarea readonly id="product"></textarea>
         <textarea readonly id="json"></textarea>
     </section>
 
