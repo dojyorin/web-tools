@@ -98,7 +98,7 @@
 
         const output = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
 
-        document.getElementById("products").value = output;
+        document.getElementById("product").value = output;
         document.getElementById("json").value = JSON.stringify(products, undefined, 4);
 
         await navigator.clipboard.writeText(output);
@@ -156,7 +156,7 @@
     dt{
         font-size: 18px;
         font-weight: bold;
-        margin: 0 0 4px 0;
+        margin: 0 0 8px 0;
     }
     textarea{
         resize: none;
@@ -189,9 +189,9 @@
             <dt>使い方</dt>
             <dd>秋月通販の <a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/cart/cart.aspx">カート</a> ページを <b>全選択コピー</b> します。</dd>
             <dd><b>抽出する</b> ボタンを押します。</dd>
-            <dd>クリップボードに抽出されたデータが書き込まれます。</dd>
-            <dd>(クリップボードへのアクセス要求を許可してください)</dd>
-            <dd>秋月通販の <a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/quickorder/blanketorder.aspx">商品入力</a> ページで読み込める形式とJSON形式で出力されます。</dd>
+            <dd>処理結果がクリップボードにコピーされます。</dd>
+            <dd>(クリップボードへのアクセスを許可してください)</dd>
+            <dd>秋月通販の <a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/quickorder/blanketorder.aspx">商品入力</a> ページにペーストできます。</dd>
         </dl>
     </section>
 
@@ -200,7 +200,7 @@
     </section>
 
     <section>
-        <textarea readonly id="products"></textarea>
+        <textarea readonly id="product"></textarea>
         <textarea readonly id="json"></textarea>
     </section>
 
