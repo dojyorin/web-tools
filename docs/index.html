@@ -8,14 +8,49 @@
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
-<title>秋月カート</title>
+<title>秋月カート抽出</title>
 
 <script async type="module">
     /**
     * @param {string} data
     */
     function trimExtend(data){
-        return data.trim().replace(/\r/g, "").replace(/\t/g, " ").replace(/ +/g, " ").replace(/ +$/mg, "");
+        return data.trim().replace(/\r/g, "").replace(/ +/g, " ").replace(/ +$/mg, "");
+    }
+
+    /**
+    * @param {string} data
+    */
+    function fixWidth(data){
+        return Object.entries({
+            "ｳﾞ": "ヴ",
+            "ｶﾞ": "ガ", "ｷﾞ": "ギ", "ｸﾞ": "グ", "ｹﾞ": "ゲ", "ｺﾞ": "ゴ",
+            "ｻﾞ": "ザ", "ｼﾞ": "ジ", "ｽﾞ": "ズ", "ｾﾞ": "ゼ", "ｿﾞ": "ゾ",
+            "ﾀﾞ": "ダ", "ﾁﾞ": "ヂ", "ﾂﾞ": "ヅ", "ﾃﾞ": "デ", "ﾄﾞ": "ド",
+            "ﾊﾞ": "バ", "ﾋﾞ": "ビ", "ﾌﾞ": "ブ", "ﾍﾞ": "ベ", "ﾎﾞ": "ボ",
+            "ﾊﾟ": "パ", "ﾋﾟ": "ピ", "ﾌﾟ": "プ", "ﾍﾟ": "ペ", "ﾎﾟ": "ポ",
+            "ｱ": "ア", "ｲ": "イ", "ｳ": "ウ", "ｴ": "エ", "ｵ": "オ",
+            "ｶ": "カ", "ｷ": "キ", "ｸ": "ク", "ｹ": "ケ", "ｺ": "コ",
+            "ｻ": "サ", "ｼ": "シ", "ｽ": "ス", "ｾ": "セ", "ｿ": "ソ",
+            "ﾀ": "タ", "ﾁ": "チ", "ﾂ": "ツ", "ﾃ": "テ", "ﾄ": "ト",
+            "ﾅ": "ナ", "ﾆ": "ニ", "ﾇ": "ヌ", "ﾈ": "ネ", "ﾉ": "ノ",
+            "ﾊ": "ハ", "ﾋ": "ヒ", "ﾌ": "フ", "ﾍ": "ヘ", "ﾎ": "ホ",
+            "ﾏ": "マ", "ﾐ": "ミ", "ﾑ": "ム", "ﾒ": "メ", "ﾓ": "モ",
+            "ﾔ": "ヤ", "ﾕ": "ユ", "ﾖ": "ヨ",
+            "ﾗ": "ラ", "ﾘ": "リ", "ﾙ": "ル", "ﾚ": "レ", "ﾛ": "ロ",
+            "ﾜ": "ワ", "ｦ": "ヲ", "ﾝ": "ン",
+            "ｧ": "ァ", "ｨ": "ィ", "ｩ": "ゥ", "ｪ": "ェ", "ｫ": "ォ",
+            "ｯ": "ッ",
+            "ｬ": "ャ", "ｭ": "ュ", "ｮ": "ョ",
+            "､": "、", "｡": "。", "･": "・", "ｰ": "ー", "｢": "「", "｣": "」",
+            "Ａ": "A", "Ｂ": "B", "Ｃ": "C", "Ｄ": "D", "Ｅ": "E", "Ｆ": "F", "Ｇ": "G", "Ｈ": "H", "Ｉ": "I", "Ｊ": "J", "Ｋ": "K", "Ｌ": "L", "Ｍ": "M",
+            "Ｎ": "N", "Ｏ": "O", "Ｐ": "P", "Ｑ": "Q", "Ｒ": "R", "Ｓ": "S", "Ｔ": "T", "Ｕ": "U", "Ｖ": "V", "Ｗ": "W", "Ｘ": "X", "Ｙ": "Y", "Ｚ": "Z",
+            "ａ": "a", "ｂ": "b", "ｃ": "c", "ｄ": "d", "ｅ": "e", "ｆ": "f", "ｇ": "g", "ｈ": "h", "ｉ": "i", "ｊ": "j", "ｋ": "k", "ｌ": "l", "ｍ": "m",
+            "ｎ": "n", "ｏ": "o", "ｐ": "p", "ｑ": "q", "ｒ": "r", "ｓ": "s", "ｔ": "t", "ｕ": "u", "ｖ": "v", "ｗ": "w", "ｘ": "x", "ｙ": "y", "ｚ": "z",
+            "０": "0", "１": "1", "２": "2", "３": "3", "４": "4", "５": "5", "６": "6", "７": "7", "８": "8", "９": "9",
+            "！": "!", "＂": "\"", "＃": "#", "＄": "$", "％": "%", "＆": "&", "＇": "'", "（": "(", "）": ")", "＊": "*", "＋": "+", "，": ",", "－": "-", "．": ".", "／": "/", "：": ":",
+            "；": ";", "＜": "<", "＝": "=", "＞": ">", "？": "?", "＠": "@", "［": "[", "＼": "\\", "］": "]", "＾": "^", "＿": "_", "｀": "`", "｛": "{", "｜": "|", "｝": "}", "～": "~", "　": " "
+        }).reduce((text, [k, v]) => text.replace(new RegExp(k, "g"), v), data);
     }
 
     /**
@@ -31,37 +66,39 @@
         dialog.style.borderRadius = "8px";
         dialog.style.padding = "10px 15px";
         dialog.style.color = "#FFFFFF";
-        dialog.style.backgroundColor = `#${(color ?? 0x00CACACA).toString(16).padStart(6, "0")}`;
+        dialog.style.backgroundColor = `#${(color ?? 0x00808080).toString(16).padStart(6, "0")}`;
         dialog.style.boxShadow = "2px 3px 4px 0 #0000004D";
         dialog.textContent = `\u{1F514} ${message}`;
-
         dialog.show();
 
         setTimeout(() => dialog.remove(), 5000);
         document.body.appendChild(dialog);
     }
 
-    document.getElementById("convert").addEventListener("click", async()=>{
+    document.getElementById("convert")?.addEventListener("click", async()=>{
         const text = await navigator.clipboard.readText();
-        const contents = [];
+        const products = [];
 
-        for(const item of trimExtend(text).match(/^[A-Z]-\d{5} .+\n数量:\n\d+$/mg) ?? []){
-            const [, p, c] = item.match(/^([A-Z]-\d{5}).+(\d+)$/s) ?? [];
+        for(const record of trimExtend(text).match(/^[A-Z]-\d{5}\t.+\n数量:\n\d+$/mg) ?? []){
+            const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+)\t.+￥([0-9,]+).+(\d+)$/s) ?? [];
 
-            contents.push({
-                product: p,
-                count: Number(c)
+            products.push({
+                code: a,
+                name: fixWidth(b),
+                price: Number(c),
+                quantity: Number(d)
             });
         }
 
-        if(!contents.length){
+        if(!products.length){
             dialogNotify("商品コードが存在しません");
             return;
         }
 
-        const output = contents.map(({product, count}) => `${product} ${count}`).join("\n");
+        const output = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
 
         document.getElementById("products").value = output;
+        document.getElementById("json").value = JSON.stringify(products, undefined, 4);
 
         await navigator.clipboard.writeText(output);
     });
@@ -103,7 +140,8 @@
     }
     h1{
         margin: 0;
-        font-size: 28px;
+        font-size: 24px;
+        font-weight: unset;
     }
     section{
         text-align: center;
@@ -139,7 +177,7 @@
 </style>
 
 <header>
-    <h1>秋月カート</h1>
+    <h1>秋月カート抽出</h1>
 </header>
 
 <main>
@@ -159,6 +197,7 @@
 
     <section>
         <textarea readonly id="products"></textarea>
+        <textarea readonly id="json"></textarea>
     </section>
 
     <section>
