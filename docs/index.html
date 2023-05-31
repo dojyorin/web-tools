@@ -66,10 +66,9 @@
         dialog.style.borderRadius = "8px";
         dialog.style.padding = "10px 15px";
         dialog.style.color = "#FFFFFF";
-        dialog.style.backgroundColor = `#${(color ?? 0x00CACACA).toString(16).padStart(6, "0")}`;
+        dialog.style.backgroundColor = `#${(color ?? 0x00808080).toString(16).padStart(6, "0")}`;
         dialog.style.boxShadow = "2px 3px 4px 0 #0000004D";
         dialog.textContent = `\u{1F514} ${message}`;
-
         dialog.show();
 
         setTimeout(() => dialog.remove(), 5000);
