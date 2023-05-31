@@ -102,6 +102,8 @@
         document.getElementById("json").value = JSON.stringify(products, undefined, 4);
 
         await navigator.clipboard.writeText(output);
+
+        dialogNotify("抽出しました", 0x0022CC44);
     });
 </script>
 
