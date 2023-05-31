@@ -4,7 +4,7 @@
 <meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
 
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#7711FF">
+<meta name="theme-color" content="#6611CC">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
@@ -14,7 +14,7 @@
     /**
     * @param {string} data
     */
-    function trimExtend(data){
+    function trimText(data){
         return data.trim().replace(/\r/g, "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/ +$/mg, "");
     }
 
@@ -79,7 +79,7 @@
         const text = await navigator.clipboard.readText();
         const products = [];
 
-        for(const record of trimExtend(text).replace(/\n/g, "").match(/[A-Z]-\d{5}\t.+?数量:\d+/g) ?? []){
+        for(const record of trimText(text).replace(/\n/g, "").match(/[A-Z]-\d{5}\t.+?数量:\d+/g) ?? []){
             const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+)\t.+￥([1-9][0-9,]+).+(\d+)$/) ?? [];
             const [e, f] = b.split(/ /);
 
@@ -92,7 +92,7 @@
         }
 
         if(!products.length){
-            dialogNotify("商品コードが存在しません", 0x00FF3322);
+            dialogNotify("商品テーブルが存在しません", 0x00FF3322);
             return;
         }
 
@@ -128,7 +128,7 @@
     header{
         top: 0px;
         height: 48px;
-        background-color: #7711FF;
+        background-color: #6611CC;
         padding: 0 12px;
         overflow: hidden;
         display: flex;
