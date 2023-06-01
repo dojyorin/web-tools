@@ -79,14 +79,14 @@
         const text = await navigator.clipboard.readText();
         const products = [];
 
-        for(const record of trimText(text).replace(/\n/g, "").match(/[A-Z]-\d{5}\t.+?数量:\d+/g) ?? []){
-            const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+)\t.+￥([1-9][0-9,]+).+(\d+)$/) ?? [];
+        for(const record of trimText(text).replace(/\n/g, " ").match(/[A-Z]-\d{5}\t.+?数量: \d+/g) ?? []){
+            const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+?)\t.+?￥([1-9][0-9,]+).+?(\d+)$/) ?? [];
             const [e, f] = b.split(/ /);
 
             products.push({
                 code: a,
                 name: fixWidth(e === f ? f : b),
-                price: Number(c),
+                price: Number(c.replace(/,/g, "")),
                 quantity: Number(d)
             });
         }
