@@ -96,12 +96,10 @@
             return;
         }
 
-        const output = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
-
-        document.getElementById("product").value = output;
+        document.getElementById("product").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
         document.getElementById("json").value = JSON.stringify(products, undefined, 4);
 
-        await navigator.clipboard.writeText(output);
+        await navigator.clipboard.writeText(document.getElementById("product").value);
 
         dialogNotify("抽出しました", 0x0022CC44);
     });
@@ -162,7 +160,7 @@
         resize: none;
         height: 200px;
         width: 100%;
-        max-width: 150px;
+        max-width: 180px;
     }
     button{
         font-size: 24px;
@@ -187,16 +185,16 @@
     <section>
         <dl>
             <dt>使い方</dt>
-            <dd>秋月通販の <a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/cart/cart.aspx">カート</a> ページを <b>全選択コピー</b> します。</dd>
-            <dd><b>抽出する</b> ボタンを押します。</dd>
+            <dd><a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/cart/cart.aspx">買い物かご</a> の商品テーブルを <b>範囲選択コピー</b> します。</dd>
+            <dd><b>抽出</b> を押します。</dd>
             <dd>処理結果がクリップボードにコピーされます。</dd>
             <dd>(クリップボードへのアクセスを許可してください)</dd>
-            <dd>秋月通販の <a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/quickorder/blanketorder.aspx">商品入力</a> ページにペーストできます。</dd>
+            <dd><a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/quickorder/blanketorder.aspx">一括入力</a> にペーストできます。</dd>
         </dl>
     </section>
 
     <section>
-        <button type="button" id="convert">抽出する</button>
+        <button type="button" id="convert">抽出</button>
     </section>
 
     <section>
