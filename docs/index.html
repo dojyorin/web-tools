@@ -100,12 +100,9 @@
             return;
         }
 
-        document.getElementById("product").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
-        document.getElementById("json").value = JSON.stringify(products, undefined, 4);
+        await navigator.clipboard.writeText(products.map(({code, quantity}) => `${code} ${quantity}`).join("\n"));
 
-        await navigator.clipboard.writeText(document.getElementById("product").value);
-
-        dialogNotify("抽出しました", 0x0022CC44);
+        dialogNotify("クリップボードにコピーしました", 0x0022CC44);
     });
 </script>
 
@@ -181,13 +178,6 @@
         }
     }
 
-    textarea {
-        resize: none;
-        height: 200px;
-        width: 100%;
-        max-width: 150px;
-    }
-
     button {
         font-size: 24px;
         height: 48px;
@@ -223,11 +213,6 @@
 
     <section>
         <button type="button" id="convert">抽出</button>
-    </section>
-
-    <section>
-        <textarea readonly id="product"></textarea>
-        <textarea readonly id="json"></textarea>
     </section>
 
     <section>
