@@ -6,73 +6,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#6611CC">
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
-
-<script async type="module">
-    import {trimExtend} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v1.2.1/mod.universal.ts?bundle&target=esnext";
-    import {dialogNotify} from "https://esm.sh/gh/dojyorin/dom_shortcut_pack@v1.0.1/mod.ts?bundle&target=esnext";
-
-    /**
-    * @param {string} data
-    */
-    function fixWidth(data){
-        return Object.entries({
-            "ｳﾞ": "ヴ",
-            "ｶﾞ": "ガ", "ｷﾞ": "ギ", "ｸﾞ": "グ", "ｹﾞ": "ゲ", "ｺﾞ": "ゴ",
-            "ｻﾞ": "ザ", "ｼﾞ": "ジ", "ｽﾞ": "ズ", "ｾﾞ": "ゼ", "ｿﾞ": "ゾ",
-            "ﾀﾞ": "ダ", "ﾁﾞ": "ヂ", "ﾂﾞ": "ヅ", "ﾃﾞ": "デ", "ﾄﾞ": "ド",
-            "ﾊﾞ": "バ", "ﾋﾞ": "ビ", "ﾌﾞ": "ブ", "ﾍﾞ": "ベ", "ﾎﾞ": "ボ",
-            "ﾊﾟ": "パ", "ﾋﾟ": "ピ", "ﾌﾟ": "プ", "ﾍﾟ": "ペ", "ﾎﾟ": "ポ",
-            "ｱ": "ア", "ｲ": "イ", "ｳ": "ウ", "ｴ": "エ", "ｵ": "オ",
-            "ｶ": "カ", "ｷ": "キ", "ｸ": "ク", "ｹ": "ケ", "ｺ": "コ",
-            "ｻ": "サ", "ｼ": "シ", "ｽ": "ス", "ｾ": "セ", "ｿ": "ソ",
-            "ﾀ": "タ", "ﾁ": "チ", "ﾂ": "ツ", "ﾃ": "テ", "ﾄ": "ト",
-            "ﾅ": "ナ", "ﾆ": "ニ", "ﾇ": "ヌ", "ﾈ": "ネ", "ﾉ": "ノ",
-            "ﾊ": "ハ", "ﾋ": "ヒ", "ﾌ": "フ", "ﾍ": "ヘ", "ﾎ": "ホ",
-            "ﾏ": "マ", "ﾐ": "ミ", "ﾑ": "ム", "ﾒ": "メ", "ﾓ": "モ",
-            "ﾔ": "ヤ", "ﾕ": "ユ", "ﾖ": "ヨ",
-            "ﾗ": "ラ", "ﾘ": "リ", "ﾙ": "ル", "ﾚ": "レ", "ﾛ": "ロ",
-            "ﾜ": "ワ", "ｦ": "ヲ", "ﾝ": "ン",
-            "ｧ": "ァ", "ｨ": "ィ", "ｩ": "ゥ", "ｪ": "ェ", "ｫ": "ォ",
-            "ｯ": "ッ",
-            "ｬ": "ャ", "ｭ": "ュ", "ｮ": "ョ",
-            "､": "、", "｡": "。", "･": "・", "ｰ": "ー", "｢": "「", "｣": "」",
-            "Ａ": "A", "Ｂ": "B", "Ｃ": "C", "Ｄ": "D", "Ｅ": "E", "Ｆ": "F", "Ｇ": "G", "Ｈ": "H", "Ｉ": "I", "Ｊ": "J", "Ｋ": "K", "Ｌ": "L", "Ｍ": "M",
-            "Ｎ": "N", "Ｏ": "O", "Ｐ": "P", "Ｑ": "Q", "Ｒ": "R", "Ｓ": "S", "Ｔ": "T", "Ｕ": "U", "Ｖ": "V", "Ｗ": "W", "Ｘ": "X", "Ｙ": "Y", "Ｚ": "Z",
-            "ａ": "a", "ｂ": "b", "ｃ": "c", "ｄ": "d", "ｅ": "e", "ｆ": "f", "ｇ": "g", "ｈ": "h", "ｉ": "i", "ｊ": "j", "ｋ": "k", "ｌ": "l", "ｍ": "m",
-            "ｎ": "n", "ｏ": "o", "ｐ": "p", "ｑ": "q", "ｒ": "r", "ｓ": "s", "ｔ": "t", "ｕ": "u", "ｖ": "v", "ｗ": "w", "ｘ": "x", "ｙ": "y", "ｚ": "z",
-            "０": "0", "１": "1", "２": "2", "３": "3", "４": "4", "５": "5", "６": "6", "７": "7", "８": "8", "９": "9",
-            "！": "!", "＂": "\"", "＃": "#", "＄": "$", "％": "%", "＆": "&", "＇": "'", "（": "(", "）": ")", "＊": "*", "＋": "+", "，": ",", "－": "-", "．": ".", "／": "/", "：": ":",
-            "；": ";", "＜": "<", "＝": "=", "＞": ">", "？": "?", "＠": "@", "［": "[", "＼": "\\", "］": "]", "＾": "^", "＿": "_", "｀": "`", "｛": "{", "｜": "|", "｝": "}", "～": "~", "　": " "
-        }).reduce((text, [k, v]) => text.replace(new RegExp(k, "g"), v), data);
-    }
-
-    document.getElementById("convert")?.addEventListener("click", async()=>{
-        const text = await navigator.clipboard.readText();
-        const products = [];
-
-        for(const record of trimExtend(text.replace(/\n/g, " ")).match(/[A-Z]-\d{5}\t.+?数量: \d+/g) ?? []){
-            const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+?)\t.+?￥([1-9][0-9,]+).+?(\d+)$/) ?? [];
-            const [e, f] = b.split(/ /);
-
-            products.push({
-                code: a,
-                name: fixWidth(e === f ? f : b),
-                price: Number(c.replace(/,/g, "")),
-                quantity: Number(d)
-            });
-        }
-
-        if(!products.length){
-            dialogNotify("商品テーブルが存在しません", "#FF3322");
-            return;
-        }
-
-        await navigator.clipboard.writeText(products.map(({code, quantity}) => `${code} ${quantity}`).join("\n"));
-
-        dialogNotify("クリップボードにコピーしました", "#22CC44");
-    });
-</script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🧰</text></svg>">
 
 <style>
     ::-webkit-scrollbar {
@@ -161,10 +95,10 @@
     }
 </style>
 
-<title>秋月カート抽出</title>
+<title>WebTools</title>
 
 <header>
-    <h1>秋月カート抽出</h1>
+    <h1>WebTools</h1>
 </header>
 
 <main>

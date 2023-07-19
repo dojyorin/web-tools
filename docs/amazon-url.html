@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+        <meta name="referrer" content="no-referrer">
+
+        <title>Amazon URL Parser</title>
+    </head>
+
+    <body>
+        <header>
+            <h1>Amazon URL Parser</h1>
+        </header>
+
+        <main>
+            <section>
+                <dl>
+                    <dt>使い方</dt>
+                    <dd>Amazonの商品ページURLをコピーして「解析する」ボタンを押すだけ。</dd>
+                    <dd>クリップボードデータは自動的に解析後URLへ書き換わるので、そのまま目的の場所へペーストできます。</dd>
+                    <dd>(注意: クリップボードへのアクセス要求を許可してください)</dd>
+                </dl>
+            </section>
+
+            <section>
+                <button type="button" id="convert">解析する</button>
+            </section>
+
+            <section>
+                <dl>
+                    <dt>URL</dt>
+                    <dd>
+                        <input readonly type="text" id="result-url">
+                    </dd>
+
+                    <dt>商品コード(ASIN)</dt>
+                    <dd>
+                        <input readonly type="text" id="result-asin">
+                    </dd>
+
+                    <dt>商品名</dt>
+                    <dd>
+                        <input readonly type="text" id="result-name">
+                    </dd>
+                </dl>
+            </section>
+
+            <section>
+                <dl>
+                    <dt>このアプリについて</dt>
+                    <dd>データ処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
+                    <dd>サードパーティ製のライブラリは使用していません。</dd>
+                    <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
+                    <dd>リポジトリ: <a target="_blank" rel="noopener" href="https://github.com/dojyorin/amazon-urlparser">GitHub</a></dd>
+                    <dd>お問い合わせ: <a target="_blank" rel="noopener" href="https://twitter.com/dojyorin">Twitter</a></dd>
+                </dl>
+            </section>
+        </main>
+    </body>
+
+    <script async type="module">
+        function dialogNotify(message){
+            const dialog = document.createElement("dialog");
+            dialog.style.position = "fixed";
+            dialog.style.top = "10px";
+            dialog.style.transition = "all 0.1s";
+            dialog.style.border = "0";
+            dialog.style.borderRadius = "8px";
+            dialog.style.padding = "10px 15px";
+            dialog.style.color = "#FFFFFF";
+            dialog.style.backgroundColor = "#FF4455";
+            dialog.style.boxShadow = "2px 3px 4px 0 #0000004D";
+            dialog.textContent = `\u{1F514} ${message}`;
+
+            dialog.show();
+
+            setTimeout(() => dialog.remove(), 5000);
+            document.body.appendChild(dialog);
+        }
+
+        document.getElementById("convert").addEventListener("click", async()=>{
+            const text = await navigator.clipboard.readText();
+
+            try{
+                new URL(text);
+            }
+            catch(e){
+                dialogNotify("現在のクリップボードデータはURLではありません");
+                return;
+            }
+
+            const {hostname, pathname} = new URL(text);
+
+            if(!/^www\.amazon\./i.test(hostname)){
+                dialogNotify("AmazonのURLではありません");
+                return;
+            }
+
+            const [, _asin] = pathname.match(/\/dp\/([0-9a-zA-Z]+)/) ?? [];
+            const [, _name] = pathname.match(/\/([^/]+)\/dp\/[0-9a-zA-Z]+/) ?? [];
+
+            if(!_asin){
+                dialogNotify("有効な商品URLではありません");
+                return;
+            }
+
+            const asin = _asin.toUpperCase();
+            const name = _name ? decodeURIComponent(_name) : "";
+            const domain = hostname.toLowerCase();
+
+            const url = `https://${domain}/dp/${asin}`;
+
+            document.getElementById("result-url").value = url;
+            document.getElementById("result-asin").value = asin;
+            document.getElementById("result-name").value = name || "(取得失敗)";
+
+            await navigator.clipboard.writeText(url);
+        });
+    </script>
+
+    <style>
+        ::-webkit-scrollbar{
+            display: none !important;
+        }
+        body{
+            user-select: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        :focus{
+            outline: none;
+        }
+        header, main{
+            position: fixed;
+            width: 100vw;
+            color: #FFFFFF;
+            box-sizing: border-box;
+        }
+        header{
+            top: 0px;
+            height: 52px;
+            background-color: #8311FF;
+            padding: 0 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        main{
+            top: 52px;
+            height: calc(100vh - 52px);
+            background-color: #303030;
+            padding: 12px;
+            overflow-y: scroll;
+        }
+        h1{
+            margin: 0;
+            font-size: 28px;
+        }
+        section{
+            text-align: center;
+            padding: 0 0 20px 0;
+        }
+        input{
+            box-sizing: border-box;
+            font-size: 16px;
+            margin: 4px 0;
+            padding: 4px;
+            border: none;
+            border-radius: 2px;
+        }
+        dl{
+            margin: 0;
+        }
+        dt{
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 0 4px 0;
+        }
+        dd{
+            margin: 0 0 12px 0;
+        }
+        #result-url, #result-asin, #result-name{
+            width: 100%;
+            max-width: 500px;
+        }
+        #convert{
+            font-size: 24px;
+            height: 48px;
+            width: 100%;
+            max-width: 200px;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            background-color: #2299FF;
+        }
+        #convert:active{
+            background-color: #77CCFF;
+        }
+    </style>
+</html>
