@@ -18,37 +18,34 @@
         try{
             new URL(text);
         }
-        catch(e){
-            dialogNotify("現在のクリップボードデータはURLではありません");
+        catch{
+            dialogNotify("現在のクリップボードの内容はURLではありません", "red");
             return;
         }
 
-        const {hostname, pathname} = new URL(text);
+        const {origin, hostname, pathname} = new URL(text);
 
         if(!/^www\.amazon\./i.test(hostname)){
-            dialogNotify("AmazonのURLではありません");
+            dialogNotify("AmazonのURLではありません", "red");
             return;
         }
 
-        const [, _asin] = pathname.match(/\/dp\/([0-9a-zA-Z]+)/) ?? [];
-        const [, _name] = pathname.match(/\/([^/]+)\/dp\/[0-9a-zA-Z]+/) ?? [];
+        const [, asin] = pathname.match(/\/dp\/([0-9a-zA-Z]+)/) ?? [];
+        const [, name] = pathname.match(/\/([^/]+)\/dp\/[0-9a-zA-Z]+/) ?? [];
 
-        if(!_asin){
-            dialogNotify("有効な商品URLではありません");
+        if(!asin){
+            dialogNotify("有効な商品URLではありません", "red");
             return;
         }
 
-        const asin = _asin.toUpperCase();
-        const name = _name ? decodeURIComponent(_name) : "";
-        const domain = hostname.toLowerCase();
+        const path = `${origin}/dp/${asin}`;
 
-        const url = `https://${domain}/dp/${asin}`;
-
-        docI("result-url").value = url;
+        docI("result-path").value = path;
         docI("result-asin").value = asin;
-        docI("result-name").value = name || "(取得失敗)";
+        docI("result-name").value = decodeURIComponent(name) || "(取得失敗)";
 
-        await navigator.clipboard.writeText(url);
+        await navigator.clipboard.writeText(path);
+        dialogNotify("クリップボードにコピーしました", "green");
     };
 </script>
 
@@ -130,7 +127,7 @@
         margin: 0 0 12px 0;
     }
 
-    #result-url, #result-asin, #result-name {
+    #result-path, #result-asin, #result-name {
         width: 100%;
         max-width: 500px;
     }
@@ -175,7 +172,7 @@
         <dl>
             <dt>URL</dt>
             <dd>
-                <input readonly type="text" id="result-url">
+                <input readonly type="text" id="result-path">
             </dd>
 
             <dt>商品コード(ASIN)</dt>
