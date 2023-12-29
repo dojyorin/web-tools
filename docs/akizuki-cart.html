@@ -54,46 +54,44 @@
     }
 
     body {
+        user-select: none !important;
         margin: 0 !important;
         padding: 0 !important;
+    }
 
-        & > header,
-        & > main {
-            position: fixed !important;
-            width: 100dvw !important;
-            box-sizing: border-box !important;
-            user-select: none !important;
+    header, main {
+        position: fixed !important;
+        width: 100dvw !important;
+        box-sizing: border-box !important;
+    }
+
+    header {
+        top: 0 !important;
+        height: 48px !important;
+        padding: 0 12px !important;
+        overflow: hidden !important;
+        background-color: #6611CC !important;
+        box-shadow: 0 2px 4px 0 #000000 !important;
+        display: flex !important;
+        align-items: center !important;
+
+        & > h1 {
+            margin: 0 !important;
+            font-size: 24px !important;
+            font-weight: unset !important;
         }
+    }
 
-        & > header {
-            top: 0 !important;
-            height: 48px !important;
-            padding: 0 12px !important;
-            overflow: hidden !important;
-            background-color: #6611CC !important;
-            z-index: 1 !important;
-            box-shadow: 0 2px 4px 0 #000000 !important;
-            display: flex !important;
-            align-items: center !important;
+    main {
+        top: 48px !important;
+        height: calc(100dvh - 48px) !important;
+        padding: 12px !important;
+        overflow: clip scroll !important;
+        background-color: #202020 !important;
 
-            & > h1 {
-                margin: 0 !important;
-                font-size: 24px !important;
-                font-weight: unset !important;
-            }
-        }
-
-        & > main {
-            top: 48px !important;
-            height: calc(100dvh - 48px) !important;
-            padding: 12px !important;
-            overflow: clip scroll !important;
-            background-color: #202020 !important;
-
-            & > section {
-                text-align: center !important;
-                padding: 0 0 20px 0 !important;
-            }
+        & > section {
+            text-align: center !important;
+            padding: 0 0 20px 0 !important;
         }
     }
 
@@ -105,13 +103,13 @@
         }
 
         & > dt {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            margin: 0 0 8px 0;
+            margin: 0 0 4px 0;
         }
     }
 
-    button {
+    #convert {
         font-size: 24px;
         height: 48px;
         width: 100%;
@@ -151,8 +149,9 @@
     <section>
         <dl>
             <dt>このアプリについて</dt>
-            <dd>処理はクライアント側で完結します。</dd>
+            <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
             <dd>サードパーティ製のライブラリは使用していません。</dd>
+            <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
             <dd>リポジトリ: <a target="_blank" rel="noopener" href="https://github.com/dojyorin/akizuki-cart">GitHub</a></dd>
             <dd>お問い合わせ: <a target="_blank" rel="noopener" href="https://twitter.com/dojyorin">Twitter</a></dd>
         </dl>
