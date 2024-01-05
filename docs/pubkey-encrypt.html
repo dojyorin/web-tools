@@ -9,19 +9,13 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🔐</text></svg>">
 
 <script async type="module">
-    import {pkEncrypt, pkDecrypt, pkSign, pkVerify, pkGenerateECDH, pkGenerateECDSA, mpEncode, mpDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v1.5.2/mod.universal.ts?bundle&target=esnext";
+    import {pkEncrypt, pkDecrypt, pkSign, pkVerify, pkGenerateECDH, pkGenerateECDSA, mpEncode, mpDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v1.5.2/mod.universal.ts?bundle&target=esnext";
     import {dialogNotify, docI, docN, docC, radioActive, fsWrite, fileList} from "https://esm.sh/gh/dojyorin/dom_shortcut_pack@v1.1.4/mod.ts?bundle&target=esnext";
 
-    //==================================================//
-    // Sanitize URL and reload page                     //
-    //==================================================//
     if(location.hash || location.search){
         location.replace(`${location.origin}${location.pathname}`);
     }
 
-    //==================================================//
-    // Remove external communication functions          //
-    //==================================================//
     delete globalThis.fetch;
     delete globalThis.XMLHttpRequest;
     delete globalThis.WebTransport;
@@ -29,24 +23,6 @@
     delete globalThis.RTCPeerConnection;
     delete globalThis.HTMLFormElement.prototype.submit;
 
-    //==================================================//
-    // Detect required features                         //
-    //==================================================//
-    if(!globalThis.SubtleCrypto || !globalThis.CompressionStream){
-        alert("ご使用のウェブブラウザは非対応です");
-        stop();
-    }
-
-    //==================================================//
-    // Application specific functions                   //
-    //==================================================//
-
-    // General utility
-    //--------------------------------------------------
-
-    /**
-    * @description Clear the blob attached to the file input.
-    */
     function clearInputFile(){
         /** @type {HTMLInputElement[]} */
         const inputs = docC("j-input-file");
@@ -56,14 +32,8 @@
         }
     }
 
-    const colorGreen = 0x000CB814;
-    const colorRed = 0x00E40F0F;
-
-    // DOM Event Handler
-    //--------------------------------------------------
-
     /**
-    * @description Handle the tab switch and transition.
+    * Handle the tab switch and transition.
     * @return {()=>Promise<void>}
     */
     function handleSwitchTab(){
@@ -84,47 +54,47 @@
     }
 
     /**
-    * @description Handle the encrypt button.
+    * Handle the encrypt button.
     * @return {()=>Promise<void>}
     */
     function handleExecuteEncrypt(){
         return async()=>{
-            dialogNotify("暗号化を開始しました", colorGreen);
+            dialogNotify("暗号化を開始しました", "green");
 
             try{
-                const files = await parseFileList(docI("encrypt-files"));
-                const [publicKey] = await parseFileList(docI("encrypt-public"));
-                const [privateKeyE] = await parseFileList(docI("encrypt-private"));
-                const [privateKeyS] = await parseFileList(docI("sign-private"));
+                const files = await fileList(docI("encrypt-files"));
+                const [publicKey] = await fileList(docI("encrypt-public"));
+                const [privateKeyE] = await fileList(docI("encrypt-private"));
+                const [privateKeyS] = await fileList(docI("sign-private"));
 
                 if(!files.length || !publicKey || !privateKeyE){
-                    dialogNotify("ファイルを入力してください", colorRed);
+                    dialogNotify("ファイルを入力してください", "red");
                     return;
                 }
 
                 const id = randomHex(6);
 
-                const archive = await minipackEncode(files);
+                const archive = await mpEncode(files);
                 const compress = await deflateEncode(archive);
 
                 if(privateKeyS){
-                    const signature = await cryptoSign(privateKeyS[1], compress);
+                    const signature = await pkSign(privateKeyS[1], compress);
 
                     fsWrite(`${id}.sig`, signature);
                 }
 
-                const cipher = await cryptoEncrypt({
+                const cipher = await pkEncrypt({
                     publicKey: publicKey[1],
                     privateKey: privateKeyE[1]
                 }, compress);
 
                 fsWrite(`${id}.enc`, cipher);
 
-                dialogNotify("暗号化が完了しました", colorGreen);
+                dialogNotify("暗号化が完了しました", "green");
             }
             catch(e){
                 console.error(e);
-                dialogNotify("暗号化中にエラーが発生しました", colorRed);
+                dialogNotify("暗号化中にエラーが発生しました", "red");
             }
             finally{
                 clearInputFile();
@@ -133,53 +103,53 @@
     }
 
     /**
-    * @description Handle the decrypt button.
+    * Handle the decrypt button.
     * @return {()=>Promise<void>}
     */
     function handleExecuteDecrypt(){
         return async()=>{
-            dialogNotify("復号を開始しました", colorGreen);
+            dialogNotify("復号を開始しました", "green");
 
             try{
-                const [cipher] = await parseFileList(docI("decrypt-file"));
-                const [publicKeyE] = await parseFileList(docI("decrypt-public"));
-                const [privateKey] = await parseFileList(docI("decrypt-private"));
-                const [publicKeyV] = await parseFileList(docI("verify-public"));
-                const [signature] = await parseFileList(docI("verify-signature"));
+                const [cipher] = await fileList(docI("decrypt-file"));
+                const [publicKeyE] = await fileList(docI("decrypt-public"));
+                const [privateKey] = await fileList(docI("decrypt-private"));
+                const [publicKeyV] = await fileList(docI("verify-public"));
+                const [signature] = await fileList(docI("verify-signature"));
 
                 if(!cipher || !publicKeyE || !privateKey){
-                    dialogNotify("ファイルを入力してください", colorRed);
+                    dialogNotify("ファイルを入力してください", "red");
                     return;
                 }
 
-                const compress = await cryptoDecrypt({
+                const compress = await pkDecrypt({
                     publicKey: publicKeyE[1],
                     privateKey: privateKey[1]
                 }, cipher[1]);
 
                 if(publicKeyV && signature){
-                    const verify = await cryptoVerify(signature[1], publicKeyV[1], compress);
+                    const verify = await pkVerify(signature[1], publicKeyV[1], compress);
 
                     if(!verify){
                         clearInputFile();
 
-                        dialogNotify("署名が一致しないため復号を中止しました", colorRed);
+                        dialogNotify("署名が一致しないため復号を中止しました", "red");
                         return;
                     }
                 }
 
                 const archive = await deflateDecode(compress);
-                const files = await minipackDecode(archive);
+                const files = await mpDecode(archive);
 
                 for(const [name, body] of files){
                     fsWrite(name, body);
                 }
 
-                dialogNotify("復号が完了しました", colorGreen);
+                dialogNotify("復号が完了しました", "green");
             }
             catch(e){
                 console.error(e);
-                dialogNotify("復号中にエラーが発生しました", colorRed);
+                dialogNotify("復号中にエラーが発生しました", "red");
             }
             finally{
                 clearInputFile();
@@ -188,7 +158,7 @@
     }
 
     /**
-    * @description Handle the key generation button.
+    * Handle the key generation button.
     * @param {boolean} isEncrypt
     * @return {()=>Promise<void>}
     */
@@ -196,21 +166,21 @@
         return async()=>{
             const type = isEncrypt ? "enc" : "sig";
 
-            dialogNotify("鍵生成を開始しました", colorGreen);
+            dialogNotify("鍵生成を開始しました", "green");
 
             try{
-                const {publicKey, privateKey} = await cryptoGenerateKey(isEncrypt);
+                const {publicKey, privateKey} = isEncrypt ? await pkGenerateECDH() : await pkGenerateECDSA();
 
                 const id = randomHex(6);
 
                 fsWrite(`${id}.${type}.pubkey`, publicKey);
                 fsWrite(`${id}.${type}.prikey`, privateKey);
 
-                dialogNotify("鍵生成が完了しました", colorGreen);
+                dialogNotify("鍵生成が完了しました", "green");
             }
             catch(e){
                 console.error(e);
-                dialogNotify("鍵生成中にエラーが発生しました", colorRed);
+                dialogNotify("鍵生成中にエラーが発生しました", "red");
             }
         };
     }
