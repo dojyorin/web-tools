@@ -41,6 +41,10 @@
 </script>
 
 <style>
+    :root{
+        --header-height: 48px;
+    }
+
     ::-webkit-scrollbar {
         display: none !important;
     }
@@ -68,7 +72,7 @@
 
     header {
         top: 0 !important;
-        height: 48px !important;
+        height: var(--header-height) !important;
         padding: 0 12px !important;
         overflow: hidden !important;
         background-color: #6611CC !important;
@@ -84,8 +88,8 @@
     }
 
     main {
-        top: 48px !important;
-        height: calc(100dvh - 48px) !important;
+        top: var(--header-height) !important;
+        height: calc(100dvh - var(--header-height)) !important;
         padding: 12px !important;
         overflow: clip scroll !important;
         background-color: #202020 !important;
