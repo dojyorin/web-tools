@@ -13,17 +13,17 @@
     import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_shortcut_pack@v1.1.4/mod.ts?bundle&target=esnext";
 
     docI("convert").onclick = async()=>{
-        const text = await navigator.clipboard.readText();
+        const cbInput = await navigator.clipboard.readText();
 
         try{
-            new URL(text);
+            new URL(cbInput);
         }
         catch{
             dialogNotify("クリップボードの内容がURLではありません", "red");
             return;
         }
 
-        const {origin, hostname, pathname} = new URL(text);
+        const {origin, hostname, pathname} = new URL(cbInput);
 
         if(!/^www\.amazon\./i.test(hostname)){
             dialogNotify("AmazonのURLではありません", "red");
@@ -38,13 +38,13 @@
             return;
         }
 
-        const path = `${origin}/dp/${asin}`;
+        const cbOutput = `${origin}/dp/${asin}`;
 
-        docI("result_path").value = path;
+        docI("result_path").value = cbOutput;
         docI("result_asin").value = asin;
         docI("result_name").value = decodeURIComponent(name) || "(取得失敗)";
 
-        await navigator.clipboard.writeText(path);
+        await navigator.clipboard.writeText(cbOutput);
         dialogNotify("クリップボードにコピーしました", "green");
     };
 </script>
@@ -80,7 +80,7 @@
         height: 48px !important;
         padding: 0 12px !important;
         overflow: hidden !important;
-        background-color: #8311FF !important;
+        background-color: #6611CC !important;
         box-shadow: 0 2px 4px 0 #000000 !important;
         display: flex !important;
         align-items: center !important;
@@ -97,21 +97,12 @@
         height: calc(100dvh - 48px) !important;
         padding: 12px !important;
         overflow: clip scroll !important;
-        background-color: #303030 !important;
+        background-color: #202020 !important;
 
         & > section {
             text-align: center !important;
             padding: 0 0 20px 0 !important;
         }
-    }
-
-    input {
-        box-sizing: border-box;
-        font-size: 16px;
-        margin: 4px 0;
-        padding: 4px;
-        border: none;
-        border-radius: 2px;
     }
 
     dl {
@@ -126,6 +117,15 @@
             font-weight: bold;
             margin: 0 0 4px 0;
         }
+    }
+
+    input {
+        box-sizing: border-box;
+        font-size: 16px;
+        margin: 4px 0;
+        padding: 4px;
+        border: none;
+        border-radius: 2px;
     }
 
     #convert {
@@ -148,10 +148,10 @@
     }
 </style>
 
-<title>Amazon URL Parser</title>
+<title>Amazon URL分解</title>
 
 <header>
-    <h1>Amazon URL Parser</h1>
+    <h1>Amazon URL分解</h1>
 </header>
 
 <main>
@@ -181,8 +181,9 @@
     <section>
         <dl>
             <dt>使い方</dt>
-            <dd>Amazonの商品ページURLをコピーして「解析する」ボタンを押すだけ。</dd>
-            <dd>クリップボードデータは自動的に解析後URLへ書き換わるので、そのまま目的の場所へペーストできます。</dd>
+            <dd>Amazonの商品ページURLをコピーします。</dd>
+            <dd><b>URL取得</b> を押します。</dd>
+            <dd>処理結果がクリップボードにコピーされます。</dd>
             <dd>(注意: クリップボードへのアクセス要求を許可してください)</dd>
         </dl>
     </section>
@@ -191,7 +192,6 @@
         <dl>
             <dt>このアプリについて</dt>
             <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
-            <dd>サードパーティ製のライブラリは使用していません。</dd>
             <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
             <dd>リポジトリ: <a target="_blank" rel="noopener" href="https://github.com/dojyorin/amazon-urlparser">GitHub</a></dd>
             <dd>お問い合わせ: <a target="_blank" rel="noopener" href="https://twitter.com/dojyorin">Twitter</a></dd>
