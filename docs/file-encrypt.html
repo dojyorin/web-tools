@@ -9,6 +9,9 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🔐</text></svg>">
 
 <script async type="module">
+    import {pkEncrypt, pkDecrypt, pkSign, pkVerify, pkGenerateECDH, pkGenerateECDSA, mpEncode, mpDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v1.5.2/mod.universal.ts?bundle&target=esnext";
+    import {dialogNotify, docI, docN, docC, radioActive, fsWrite, fileList} from "https://esm.sh/gh/dojyorin/dom_shortcut_pack@v1.1.4/mod.ts?bundle&target=esnext";
+
     //==================================================//
     // Sanitize URL and reload page                     //
     //==================================================//
@@ -35,430 +38,6 @@
     }
 
     //==================================================//
-    // Common functions ported from other modules       //
-    //==================================================//
-
-    // Type definition
-    //--------------------------------------------------
-
-    /**
-    * @description The file name and byte array pairs that make up the basic file.
-    * @typedef {[string, Uint8Array]} FileInit
-    */
-
-    /**
-    * @description Means the byte array after exporting `CryptoKey`.
-    * @typedef {Uint8Array} PortableCryptoKey
-    */
-
-    /**
-    * @description Each is `PortableCryptoKey` public/private key pair.
-    * @typedef {Record<keyof CryptoKeyPair, PortableCryptoKey>} PortableCryptoKeyPair
-    */
-
-    // DOM display control
-    //--------------------------------------------------
-
-    /**
-    * @description Return element from id.
-    * @param {string} id
-    * @return {HTMLElement}
-    */
-    function $id(id){
-        return document.getElementById(id);
-    }
-
-    /**
-    * @description Return elements from name.
-    * @param {string} name
-    * @return {HTMLElement[]}
-    */
-    function $nn(name){
-        return [...document.getElementsByName(name)];
-    }
-
-    /**
-    * @description Return elements from class name.
-    * @param {string} name
-    * @return {Element[]}
-    */
-    function $cn(name){
-        return [...document.getElementsByClassName(name)];
-    }
-
-    /**
-    * @description Show notification toast.
-    * @param {string} message
-    * @param {number} [color]
-    */
-    function dialogNotify(message, color){
-        const dialog = document.createElement("dialog");
-        dialog.style.position = "fixed";
-        dialog.style.top = "10px";
-        dialog.style.transition = "all 0.1s";
-        dialog.style.border = "0";
-        dialog.style.borderRadius = "8px";
-        dialog.style.padding = "10px 15px";
-        dialog.style.color = "#FFFFFF";
-        dialog.style.backgroundColor = `#${(color ?? 0x00CACACA).toString(16).padStart(6, "0")}`;
-        dialog.style.boxShadow = "2px 3px 4px 0 #0000004D";
-        dialog.textContent = `\u{1F514} ${message}`;
-
-        dialog.show();
-
-        setTimeout(() => dialog.remove(), 5000);
-        document.body.appendChild(dialog);
-    }
-
-    /**
-    * @description Get of the active element in the specified radio button group.
-    * @param {string} name
-    * @return {HTMLInputElement=}
-    */
-    function radioActive(name){
-        return [...$nn(name)].find(e => e instanceof HTMLInputElement && e.type === "radio" && e.checked);
-    }
-
-    // DOM file I/O
-    //--------------------------------------------------
-
-    /**
-    * @description Converts the `FileList` of the HTML file API to `FileList` that is easy to handle.
-    * @param {File[]|FileList|HTMLInputElement} element
-    * @return {Promise<FileInit[]>}
-    */
-    async function parseFileList(element){
-        const files = element instanceof HTMLInputElement ? element.files : element;
-
-        return Promise.all([...files ?? []].map(async f => [f.name, new Uint8Array(await f.arrayBuffer())]));
-    }
-
-    /**
-    * @description Trigger "a:download" in your script to download the file.
-    * @param {string} name
-    * @param {BlobPart} data
-    */
-    function fsWrite(name, data){
-        const anchor = document.createElement("a");
-        anchor.download = name;
-        anchor.href = URL.createObjectURL(new Blob([data]));
-
-        anchor.click();
-
-        URL.revokeObjectURL(anchor.href);
-    }
-
-    // Convert text byte
-    //--------------------------------------------------
-
-    /**
-    * @description Convert from unicode string to UTF-8 byte array.
-    * @param {string} data
-    * @return {Uint8Array}
-    */
-    function utfEncode(data){
-        return new TextEncoder().encode(data);
-    }
-
-    /**
-    * @description Convert from UTF-8 byte array to unicode string.
-    * @param {Uint8Array} data
-    * @return {string}
-    */
-    function utfDecode(data){
-        return new TextDecoder().decode(data);
-    }
-
-    /**
-    * @description Convert from byte array to HEX string.
-    * @param {Uint8Array} data
-    * @return {string}
-    */
-    function hexEncode(data){
-        return [...data].map(n => n.toString(16).toUpperCase().padStart(2, "0")).join("");
-    }
-
-    // Codec of deflate
-    //--------------------------------------------------
-
-    /**
-    * @private
-    * @description (INDIRECT USE ONLY!)
-    * @param {Uint8Array} data
-    * @param {TransformStream<Uint8Array, Uint8Array>} ts
-    * @return {Promise<Uint8Array>}
-    */
-    async function streamConvert(data, ts){
-        return new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(ts)).arrayBuffer());
-    }
-
-    /**
-    * @description Compress binary in "deflate" format (RFC1951). It does not include header information like "gzip" (RFC1952) or "zlib" (RFC1950) as it does purely "compression only".
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    */
-    async function deflateEncode(data){
-        return await streamConvert(data, new CompressionStream("deflate-raw"));
-    }
-
-    /**
-    * @description Decompress "deflate" format (RFC1951) binary. Binaries containing header information like "gzip" (RFC1952) or "zlib" (RFC1950) cannot be decompressed.
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    */
-    async function deflateDecode(data){
-        return await streamConvert(data, new DecompressionStream("deflate-raw"));
-    }
-
-    // Codec of minipack
-    //--------------------------------------------------
-
-    const sizeHash = 32;
-    const sizeName = 1;
-    const sizeBody = 4;
-
-    /**
-    * @description Encode data into a byte array in "minipack" format.
-    * @see https://deno.land/x/simple_utility
-    * @param {FileInit[]} files
-    * @return {Promise<Uint8Array>}
-    */
-    async function minipackEncode(files){
-        const archive = new Uint8Array(files.reduce((a, [k, v]) => a + sizeHash + sizeName + sizeBody + utfEncode(k).byteLength + v.byteLength, 0));
-
-        let offset = 0;
-
-        for(const [k, v] of files){
-            const name = utfEncode(k);
-            const body = v;
-
-            archive.set(await cryptoHash(false, body), offset);
-            offset += sizeHash;
-
-            new DataView(archive.buffer, offset).setUint8(0, name.byteLength);
-            offset += sizeName;
-
-            new DataView(archive.buffer, offset).setUint32(0, body.byteLength);
-            offset += sizeBody;
-
-            archive.set(name, offset);
-            offset += name.byteLength;
-
-            archive.set(body, offset);
-            offset += body.byteLength;
-        }
-
-        return archive;
-    }
-
-    /**
-    * @description Decode byte array in "minipack" format.
-    * @see https://deno.land/x/simple_utility
-    * @param {Uint8Array} archive
-    * @return {Promise<FileInit[]>}
-    */
-    async function minipackDecode(archive){
-        /** @type {FileInit[]} */
-        const files = [];
-
-        let offset = 0;
-
-        while(offset < archive.byteLength){
-            const hash = archive.subarray(offset, offset += sizeHash);
-
-            const ns = new DataView(archive.buffer, offset).getUint8(0);
-            offset += sizeName;
-
-            const bs = new DataView(archive.buffer, offset).getUint32(0);
-            offset += sizeBody;
-
-            const name = utfDecode(archive.subarray(offset, offset += ns));
-
-            const body = archive.subarray(offset, offset += bs);
-
-            if(hexEncode(hash) !== hexEncode(await cryptoHash(false, body))){
-                throw new Error();
-            }
-
-            files.push([name, body]);
-        }
-
-        return files;
-    }
-
-    // Web Crypto API
-    //--------------------------------------------------
-
-    const sizeTag = 16;
-    const sizeIv = 12;
-
-    /**
-    * @private
-    * @description (INDIRECT USE ONLY!)
-    * @param {number} tag
-    * @param {Uint8Array} iv
-    * @return {AesGcmParams}
-    */
-    function generateAesGcmConfig(tag, iv){
-        return {
-            name: "AES-GCM",
-            tagLength: tag * 8,
-            iv: iv
-        };
-    }
-
-    /**
-    * @private
-    * @description (INDIRECT USE ONLY!)
-    * @param {boolean} isECDH
-    * @return {EcKeyAlgorithm}
-    */
-    function generateEcKeyConfig(isECDH){
-        return {
-            name: isECDH ? "ECDH" : "ECDSA",
-            namedCurve: "P-521"
-        };
-    }
-
-    /**
-    * @private
-    * @description (INDIRECT USE ONLY!)
-    * @return {EcdsaParams}
-    */
-    function generateEcDsaConfig(){
-        return {
-            name: "ECDSA",
-            hash: {
-                name: "SHA-512"
-            }
-        };
-    }
-
-    /**
-    * @private
-    * @description (INDIRECT USE ONLY!)
-    * @param {PortableCryptoKeyPair} kp
-    * @return {Promise<CryptoKey>}
-    */
-    async function deriveSecretKey(kp){
-        const ec = generateEcKeyConfig(true);
-        const publicKey = await crypto.subtle.importKey("spki", kp.publicKey, ec, false, []);
-        const privateKey = await crypto.subtle.importKey("pkcs8", kp.privateKey, ec, false, ["deriveKey", "deriveBits"]);
-
-        /** @type {AesDerivedKeyParams} */
-        const aes = {
-            name: "AES-GCM",
-            length: 256
-        };
-
-        /** @type {EcdhKeyDeriveParams} */
-        const dh = {
-            name: "ECDH",
-            public: publicKey
-        };
-
-        return await crypto.subtle.deriveKey(dh, privateKey, aes, false, ["encrypt", "decrypt"]);
-    }
-
-    /**
-    * @description Returns random byte array with the specified number of bytes.
-    * @param {number} size
-    * @return {Uint8Array}
-    */
-    function cryptoRandom(size){
-        return crypto.getRandomValues(new Uint8Array(size));
-    }
-
-    /**
-    * @description Derive SHA2 hash value from byte array.
-    * @param {boolean} is512
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    */
-    async function cryptoHash(is512, data){
-        const sha = is512 ? "SHA-512" : "SHA-256";
-
-        return new Uint8Array(await crypto.subtle.digest(sha, data));
-    }
-
-    /**
-    * @description Generate and export public/private key pair as a portable byte array.
-    * @param {boolean} isECDH
-    * @return {Promise<PortableCryptoKeyPair>}
-    */
-    async function cryptoGenerateKey(isECDH){
-        /** @type {KeyUsage[]} */
-        const usage = isECDH ? ["deriveKey", "deriveBits"] : ["sign", "verify"];
-        const ec = generateEcKeyConfig(isECDH);
-        const {publicKey, privateKey} = await crypto.subtle.generateKey(ec, true, usage);
-
-        return {
-            publicKey: new Uint8Array(await crypto.subtle.exportKey("spki", publicKey)),
-            privateKey: new Uint8Array(await crypto.subtle.exportKey("pkcs8", privateKey))
-        };
-    }
-
-    /**
-    * @description Encrypt byte array using AES-GCM with 256 bits key, 128 bits tag and 96 bits IV. The IV is prepended to the byte array.
-    * @param {PortableCryptoKeyPair} kp
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    */
-    async function cryptoEncrypt(kp, data){
-        const gcm = generateAesGcmConfig(sizeTag, cryptoRandom(sizeIv));
-        const secretKey = await deriveSecretKey(kp);
-        const output = new Uint8Array(sizeTag + sizeIv + data.byteLength);
-
-        output.set(gcm.iv, 0);
-        output.set(new Uint8Array(await crypto.subtle.encrypt(gcm, secretKey, data)), gcm.iv.byteLength);
-
-        return output;
-    }
-
-    /**
-    * @description Decrypt encrypted byte array using AES-GCM with 256 bits key 128 bits tag and 96 bits IV. Read the IV prepended to the byte array.
-    * @function cryptoDecrypt
-    * @param {PortableCryptoKeyPair} kp
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    */
-    async function cryptoDecrypt(kp, data){
-        const gcm = generateAesGcmConfig(sizeTag, data.subarray(0, sizeIv));
-        const secretKey = await deriveSecretKey(kp);
-
-        return new Uint8Array(await crypto.subtle.decrypt(gcm, secretKey, data.subarray(sizeIv)));
-    }
-
-    /**
-    * @description Create byte array signature using the private key and SHA2 hash algorithm.
-    * @param {PortableCryptoKey} k
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    */
-    async function cryptoSign(k, data){
-        const ec = generateEcKeyConfig(false);
-        const dsa = generateEcDsaConfig();
-        const privateKey = await crypto.subtle.importKey("pkcs8", k, ec, false, ["sign"]);
-
-        return new Uint8Array(await crypto.subtle.sign(dsa, privateKey, data));
-    }
-
-    /**
-    * @description Verifies the correct signature of a byte array using the public key and SHA2 hash algorithm.
-    * @param {Uint8Array} signature
-    * @param {PortableCryptoKey} k
-    * @param {Uint8Array} data
-    * @return {Promise<boolean>}
-    */
-    async function cryptoVerify(signature, k, data){
-        const ec = generateEcKeyConfig(false);
-        const dsa = generateEcDsaConfig();
-        const publicKey = await crypto.subtle.importKey("spki", k, ec, false, ["verify"]);
-
-        return await crypto.subtle.verify(dsa, publicKey, signature, data);
-    }
-
-    //==================================================//
     // Application specific functions                   //
     //==================================================//
 
@@ -466,20 +45,11 @@
     //--------------------------------------------------
 
     /**
-    * @description Output random HEX with arbitrary number of bytes.
-    * @param {number} size
-    * @return {string}
-    */
-    function randomHex(size){
-        return hexEncode(cryptoRandom(size));
-    }
-
-    /**
     * @description Clear the blob attached to the file input.
     */
     function clearInputFile(){
         /** @type {HTMLInputElement[]} */
-        const inputs = $cn("j-input-file");
+        const inputs = docC("j-input-file");
 
         for(const input of inputs){
             input.value = "";
@@ -498,7 +68,7 @@
     */
     function handleSwitchTab(){
         return ()=>{
-            for(const element of $cn("j-tab-page")){
+            for(const element of docC("j-tab-page")){
                 element.setAttribute("hidden", "");
             }
 
@@ -509,7 +79,7 @@
             }
 
             clearInputFile();
-            $id(tab).removeAttribute("hidden");
+            docI(tab).removeAttribute("hidden");
         };
     }
 
@@ -522,10 +92,10 @@
             dialogNotify("暗号化を開始しました", colorGreen);
 
             try{
-                const files = await parseFileList($id("encrypt-files"));
-                const [publicKey] = await parseFileList($id("encrypt-public"));
-                const [privateKeyE] = await parseFileList($id("encrypt-private"));
-                const [privateKeyS] = await parseFileList($id("sign-private"));
+                const files = await parseFileList(docI("encrypt-files"));
+                const [publicKey] = await parseFileList(docI("encrypt-public"));
+                const [privateKeyE] = await parseFileList(docI("encrypt-private"));
+                const [privateKeyS] = await parseFileList(docI("sign-private"));
 
                 if(!files.length || !publicKey || !privateKeyE){
                     dialogNotify("ファイルを入力してください", colorRed);
@@ -571,11 +141,11 @@
             dialogNotify("復号を開始しました", colorGreen);
 
             try{
-                const [cipher] = await parseFileList($id("decrypt-file"));
-                const [publicKeyE] = await parseFileList($id("decrypt-public"));
-                const [privateKey] = await parseFileList($id("decrypt-private"));
-                const [publicKeyV] = await parseFileList($id("verify-public"));
-                const [signature] = await parseFileList($id("verify-signature"));
+                const [cipher] = await parseFileList(docI("decrypt-file"));
+                const [publicKeyE] = await parseFileList(docI("decrypt-public"));
+                const [privateKey] = await parseFileList(docI("decrypt-private"));
+                const [publicKeyV] = await parseFileList(docI("verify-public"));
+                const [signature] = await parseFileList(docI("verify-signature"));
 
                 if(!cipher || !publicKeyE || !privateKey){
                     dialogNotify("ファイルを入力してください", colorRed);
@@ -648,14 +218,14 @@
     // Registration DOM Event Handlers
     //--------------------------------------------------
 
-    for(const element of $nn("tab-switch")){
+    for(const element of docN("tab-switch")){
         element.onchange = handleSwitchTab();
     }
 
-    $id("execute-encrypt").onclick = handleExecuteEncrypt();
-    $id("execute-decrypt").onclick = handleExecuteDecrypt();
-    $id("generate-encrypt").onclick = handleGenerateKey(true);
-    $id("generate-sign").onclick = handleGenerateKey(false);
+    docI("execute-encrypt").onclick = handleExecuteEncrypt();
+    docI("execute-decrypt").onclick = handleExecuteDecrypt();
+    docI("generate-encrypt").onclick = handleGenerateKey(true);
+    docI("generate-sign").onclick = handleGenerateKey(false);
 
     window.onload = ()=>{
         document.body.removeAttribute("hidden");
