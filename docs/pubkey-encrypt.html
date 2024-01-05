@@ -184,8 +184,7 @@
     :root {
         --header-height-1: 48px;
         --header-height-2: 36px;
-        --header-height-total: calc(var(--header-height-1) + var(--header-height-2));
-        --main-height: calc(100dvh - var(--header-height-total));
+        --header-height: calc(var(--header-height-1) + var(--header-height-2));
     }
 
     ::file-selector-button {
@@ -215,14 +214,14 @@
 
     header {
         top: 0px;
-        height: var(--header-height-total);
+        height: var(--header-height);
         overflow: hidden;
         background-color: #7811FF;
     }
 
     main {
-        top: var(--header-height-total);
-        height: var(--main-height);
+        top: var(--header-height);
+        height: calc(100dvh - var(--header-height));
         background-color: #303030;
         overflow-y: scroll;
     }
