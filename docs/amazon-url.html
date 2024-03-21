@@ -77,15 +77,13 @@
     header {
         top: 0 !important;
         height: var(--header-height) !important;
-        padding: 0 12px !important;
         overflow: hidden !important;
         background-color: #6611CC !important;
-        box-shadow: 0 2px 4px 0 #000000 !important;
         display: flex !important;
         align-items: center !important;
 
         & > h1 {
-            margin: 0 !important;
+            margin: 0 12px !important;
             font-size: 24px !important;
             font-weight: unset !important;
         }
@@ -94,13 +92,12 @@
     main {
         top: var(--header-height) !important;
         height: calc(100dvh - var(--header-height)) !important;
-        padding: 12px !important;
         overflow: clip scroll !important;
         background-color: #202020 !important;
 
         & > section {
             text-align: center !important;
-            padding: 0 0 20px 0 !important;
+            margin: 20px 0 !important;
         }
     }
 
