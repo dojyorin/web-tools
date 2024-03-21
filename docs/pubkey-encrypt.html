@@ -9,8 +9,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🔐</text></svg>">
 
 <script async type="module">
-    import {pkEncrypt, pkDecrypt, pkSign, pkVerify, pkGenerateECDH, pkGenerateECDSA, mpEncode, mpDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v1.5.2/mod.universal.ts?bundle&target=esnext";
-    import {dialogNotify, docI, docN, docC, radioActive, fsWrite, fileList} from "https://esm.sh/gh/dojyorin/dom_shortcut_pack@v1.1.4/mod.ts?bundle&target=esnext";
+    import {pkEncrypt, pkDecrypt, pkSign, pkVerify, pkGenerateECDH, pkGenerateECDSA, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.6/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify, docI, docN, docC, radioActive, fsWrite, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
     if(location.hash || location.search){
         location.replace(`${location.origin}${location.pathname}`);
@@ -65,7 +65,7 @@
 
             const id = randomHex(6);
 
-            const archive = await mpEncode(files);
+            const archive = await minipackEncode(files);
             const compress = await deflateEncode(archive);
 
             if(privateKeyS){
@@ -124,7 +124,7 @@
             }
 
             const archive = await deflateDecode(compress);
-            const files = await mpDecode(archive);
+            const files = await minipackDecode(archive);
 
             for(const [name, body] of files){
                 fsWrite(name, body);
@@ -182,13 +182,9 @@
 
 <style>
     :root {
+        --header-height: calc(var(--header-height-1) + var(--header-height-2));
         --header-height-1: 48px;
         --header-height-2: 36px;
-        --header-height: calc(var(--header-height-1) + var(--header-height-2));
-    }
-
-    ::file-selector-button {
-        display: none !important;
     }
 
     ::-webkit-scrollbar {
@@ -226,6 +222,23 @@
             font-size: 24px !important;
             font-weight: unset !important;
         }
+
+        & > nav {
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        & > nav:nth-of-type(1) {
+            height: var(--header-height-1);
+            padding: 0 12px;
+        }
+
+        & > nav:nth-of-type(2) {
+            height: var(--header-height-2);
+            justify-content: center;
+        }
     }
 
     main {
@@ -238,6 +251,12 @@
         & > section {
             text-align: center !important;
             padding: 0 0 20px 0 !important;
+        }
+
+        & > article {
+            box-sizing: border-box;
+            padding: 12px;
+            width: 100%;
         }
     }
 
@@ -255,63 +274,9 @@
         }
     }
 
-    /* ::-webkit-scrollbar {
-        display: none !important;
+    input[type="file"]::file-selector-button {
+        display: none;
     }
-
-    :focus {
-        outline: none !important;
-    }
-
-    body {
-        user-select: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    header, main {
-        position: fixed;
-        box-sizing: border-box;
-        width: 100dvw;
-        color: #FFFFFF;
-    }
-
-    header {
-        top: 0px;
-        height: var(--header-height);
-        overflow: hidden;
-        background-color: #7811FF;
-    }
-
-    main {
-        top: var(--header-height);
-        height: calc(100dvh - var(--header-height));
-        background-color: #303030;
-        overflow-y: scroll;
-    }
-
-    header > nav {
-        display: flex;
-        align-items: center;
-        box-sizing: border-box;
-        width: 100%;
-    }
-
-    header > nav:nth-of-type(1) {
-        height: var(--header-height-1);
-        padding: 0 12px;
-    }
-
-    header > nav:nth-of-type(2) {
-        height: var(--header-height-2);
-        justify-content: center;
-    }
-
-    main > article {
-        box-sizing: border-box;
-        padding: 12px;
-        width: 100%;
-    } */
 
     input, label, button {
         box-sizing: border-box;
@@ -433,9 +398,7 @@
 <title>公開鍵暗号化ツール</title>
 
 <header>
-    <nav>
-        <h1 class="c_title_1 c_flex_center">公開鍵暗号化ツール</h1>
-    </nav>
+    <h1>公開鍵暗号化ツール</h1>
 
     <nav>
         <div class="c_tab_button">
@@ -633,11 +596,11 @@
 
         <section>
             <ul>
-                <li>実装: <a target="_blank" rel="noopener" href="https://www.w3.org/TR/WebCryptoAPI">Web Crypto API</a></li>
-                <li>鍵交換: <a target="_blank" rel="noopener" href="https://ja.wikipedia.org/wiki/楕円曲線ディフィー・ヘルマン鍵共有">ECDH</a></li>
-                <li>署名: <a target="_blank" rel="noopener" href="https://ja.wikipedia.org/wiki/楕円曲線DSA">ECDSA</a></li>
-                <li>公開鍵パラメータ: <a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc4492">NIST P-521</a> - 521bit Key</li>
-                <li>共通鍵暗号: <a target="_blank" rel="noopener" href="https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard">AES-GCM</a> - 256bit Key, 128bit Tag, 128bit IV</li>
+                <li>実装: <a target="_blank" href="https://www.w3.org/TR/WebCryptoAPI">Web Crypto API</a></li>
+                <li>鍵交換: <a target="_blank" href="https://ja.wikipedia.org/wiki/楕円曲線ディフィー・ヘルマン鍵共有">ECDH</a></li>
+                <li>署名: <a target="_blank" href="https://ja.wikipedia.org/wiki/楕円曲線DSA">ECDSA</a></li>
+                <li>公開鍵パラメータ: <a target="_blank" href="https://datatracker.ietf.org/doc/html/rfc4492">NIST P-521</a> - 521bit Key</li>
+                <li>共通鍵暗号: <a target="_blank" href="https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard">AES-GCM</a> - 256bit Key, 128bit Tag, 128bit IV</li>
             </ul>
         </section>
 
@@ -645,10 +608,11 @@
 
         <section>
             <dl>
+                <dt>このアプリについて</dt>
                 <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
                 <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-                <dd>リポジトリ: <a target="_blank" rel="noopener" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
-                <dd>お問い合わせ: <a target="_blank" rel="noopener" href="https://twitter.com/dojyorin">Twitter</a></dd>
+                <dd>リポジトリ: <a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
+                <dd>お問い合わせ: <a target="_blank" href="https://twitter.com/dojyorin">Twitter</a></dd>
             </dl>
         </section>
     </article>
