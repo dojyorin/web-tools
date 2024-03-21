@@ -182,9 +182,7 @@
 
 <style>
     :root {
-        --header-height: calc(var(--header-height-1) + var(--header-height-2));
-        --header-height-1: 48px;
-        --header-height-2: 36px;
+        --header-height: 48px;
     }
 
     ::-webkit-scrollbar {
@@ -210,17 +208,32 @@
     header {
         top: 0 !important;
         height: var(--header-height) !important;
-        padding: 0 12px !important;
         overflow: hidden !important;
         background-color: #6611CC !important;
-        box-shadow: 0 2px 4px 0 #000000 !important;
         display: flex !important;
         align-items: center !important;
 
         & > h1 {
-            margin: 0 !important;
+            margin: 0 12px !important;
             font-size: 24px !important;
             font-weight: unset !important;
+        }
+    }
+
+    main {
+        top: var(--header-height) !important;
+        height: calc(100dvh - var(--header-height)) !important;
+        overflow: clip scroll !important;
+        background-color: #202020 !important;
+
+        & > section {
+            text-align: center !important;
+            margin: 20px 0 !important;
+        }
+
+        & > article {
+            box-sizing: border-box;
+            width: 100%;
         }
 
         & > nav {
@@ -228,35 +241,9 @@
             align-items: center;
             box-sizing: border-box;
             width: 100%;
-        }
-
-        & > nav:nth-of-type(1) {
-            height: var(--header-height-1);
-            padding: 0 12px;
-        }
-
-        & > nav:nth-of-type(2) {
-            height: var(--header-height-2);
+            height: 36px;
             justify-content: center;
-        }
-    }
-
-    main {
-        top: var(--header-height) !important;
-        height: calc(100dvh - var(--header-height)) !important;
-        padding: 12px !important;
-        overflow: clip scroll !important;
-        background-color: #202020 !important;
-
-        & > section {
-            text-align: center !important;
-            padding: 0 0 20px 0 !important;
-        }
-
-        & > article {
-            box-sizing: border-box;
-            padding: 12px;
-            width: 100%;
+            background-color: #6611CC;
         }
     }
 
@@ -399,7 +386,9 @@
 
 <header>
     <h1>公開鍵暗号化ツール</h1>
+</header>
 
+<main>
     <nav>
         <div class="c_tab_button">
             <input hidden checked type="radio" name="tab_switch" id="tab_switch_1" value="tab_1">
@@ -421,9 +410,7 @@
             <label for="tab_switch_4">ヘルプ</label>
         </div>
     </nav>
-</header>
 
-<main>
     <article class="j_tab_page" id="tab_1">
         <h2 class="c_title_2 c_flex_center">ファイルを暗号化</h2>
 
