@@ -29,8 +29,8 @@
         }
     }
 
-    for(const element of docN("tab_switch")){
-        element.onchange = ()=>{
+    for(const tab of docN("tab_switch")){
+        tab.onchange = ()=>{
             for(const page of docC("j_tab_page")){
                 page.setAttribute("hidden", "");
             }
