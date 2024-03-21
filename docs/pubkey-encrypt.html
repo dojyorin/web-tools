@@ -24,10 +24,7 @@
     delete globalThis.HTMLFormElement.prototype.submit;
 
     function clearInputFile(){
-        /** @type {HTMLInputElement[]} */
-        const inputs = docC("j_input_file");
-
-        for(const input of inputs){
+        for(const input of docC("j_input_file")){
             input.value = "";
         }
     }
@@ -38,14 +35,8 @@
                 element.setAttribute("hidden", "");
             }
 
-            const tab = radioActive("tab_switch")?.value;
-
-            if(!tab){
-                throw new Error();
-            }
-
             clearInputFile();
-            docI(tab).removeAttribute("hidden");
+            docI(radioActive("tab_switch")?.value ?? "").removeAttribute("hidden");
         };
     }
 
