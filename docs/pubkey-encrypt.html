@@ -31,8 +31,8 @@
 
     for(const element of docN("tab_switch")){
         element.onchange = ()=>{
-            for(const element of docC("j_tab_page")){
-                element.setAttribute("hidden", "");
+            for(const page of docC("j_tab_page")){
+                page.setAttribute("hidden", "");
             }
 
             clearInputFile();
