@@ -9,8 +9,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
 <script async type="module">
-    import {cleanText} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v1.5.2/mod.universal.ts?bundle&target=esnext";
-    import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_shortcut_pack@v1.1.4/mod.ts?bundle&target=esnext";
+    import {cleanText} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.6/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
     docI("convert").onclick = async()=>{
         const cbInput = await navigator.clipboard.readText();
@@ -192,8 +192,8 @@
             <dt>このアプリについて</dt>
             <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
             <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-            <dd>リポジトリ: <a target="_blank" rel="noopener" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
-            <dd>お問い合わせ: <a target="_blank" rel="noopener" href="https://twitter.com/dojyorin">Twitter</a></dd>
+            <dd>リポジトリ: <a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
+            <dd>お問い合わせ: <a target="_blank" href="https://twitter.com/dojyorin">Twitter</a></dd>
         </dl>
     </section>
 </main>
