@@ -246,15 +246,22 @@
         }
     }
 
-    input[type="file"]::file-selector-button {
-        display: none;
-    }
-
     input, label, button {
         box-sizing: border-box;
         border: none;
-        cursor: pointer;
         -webkit-tap-highlight-color: #00000000;
+    }
+
+    input[type="file"] {
+        cursor: pointer;
+
+        &::file-selector-button {
+            display: none;
+        }
+    }
+
+    button {
+        cursor: pointer;
     }
 
     code {
