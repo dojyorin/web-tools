@@ -9,43 +9,15 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🖼️</text></svg>">
 
 <script async type="module">
-    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v0.0.1/mod.ts?bundle&target=esnext";
+    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v0.0.2/mod.ts?bundle&target=esnext";
     import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
-    docI("convert").onclick = async()=>{
-        const cbInput = await navigator.clipboard.readText();
+    docI("encode").onclick = async()=>{
 
-        try{
-            new URL(cbInput);
-        }
-        catch{
-            dialogNotify("クリップボードの内容がURLではありません", "red");
-            return;
-        }
+    };
 
-        const {origin, hostname, pathname} = new URL(cbInput);
+    docI("decode").onclick = async()=>{
 
-        if(!/^www\.amazon\./i.test(hostname)){
-            dialogNotify("AmazonのURLではありません", "red");
-            return;
-        }
-
-        const [, asin] = pathname.match(/\/dp\/([0-9a-zA-Z]+)/) ?? [];
-        const [, name] = pathname.match(/\/([^/]+)\/dp\/[0-9a-zA-Z]+/) ?? [];
-
-        if(!asin){
-            dialogNotify("商品URLではありません", "red");
-            return;
-        }
-
-        const cbOutput = `${origin}/dp/${asin}`;
-
-        docI("result_path").value = cbOutput;
-        docI("result_asin").value = asin;
-        docI("result_name").value = decodeURIComponent(name) || "(取得失敗)";
-
-        await navigator.clipboard.writeText(cbOutput);
-        dialogNotify("クリップボードにコピーしました", "green");
     };
 </script>
 
@@ -115,16 +87,8 @@
         }
     }
 
-    input {
-        box-sizing: border-box;
-        font-size: 16px;
-        margin: 4px 0;
-        padding: 4px;
-        border: none;
-        border-radius: 2px;
-    }
-
-    #convert {
+    #encode, #decode {
+        cursor: pointer;
         font-size: 24px;
         height: 48px;
         width: 100%;
@@ -133,26 +97,26 @@
         border-radius: 4px;
         background-color: #2299FF;
 
+        &:hover {
+            background-color: #39B3FF;
+        }
+
         &:active {
             background-color: #77CCFF;
         }
     }
-
-    #result_path, #result_asin, #result_name {
-        width: 100%;
-        max-width: 500px;
-    }
 </style>
 
-<title>Amazon URL分解</title>
+<title>DataPNG</title>
 
 <header>
-    <h1>Amazon URL分解</h1>
+    <h1>DataPNG</h1>
 </header>
 
 <main>
     <section>
-        <button type="button" id="convert">URL取得</button>
+        <button type="button" id="encode">PNG生成</button>
+        <button type="button" id="decode">バイナリ抽出</button>
     </section>
 
     <section>
@@ -161,26 +125,12 @@
             <dd>
                 <input readonly type="text" id="result_path">
             </dd>
-
-            <dt>商品コード(ASIN)</dt>
-            <dd>
-                <input readonly type="text" id="result_asin">
-            </dd>
-
-            <dt>商品名</dt>
-            <dd>
-                <input readonly type="text" id="result_name">
-            </dd>
         </dl>
     </section>
 
     <section>
         <dl>
             <dt>使い方</dt>
-            <dd>Amazonの商品ページURLをコピーします。</dd>
-            <dd><b>URL取得</b> を押します。</dd>
-            <dd>処理結果がクリップボードにコピーされます。</dd>
-            <dd>(注意: クリップボードへのアクセス要求を許可してください)</dd>
         </dl>
     </section>
 
