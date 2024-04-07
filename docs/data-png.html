@@ -10,10 +10,34 @@
 
 <script async type="module">
     import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v0.0.2/mod.ts?bundle&target=esnext";
-    import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
+    import {dialogNotify, docI, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
+
+    async function cbRaw(mime){
+        for(const cb of await navigator.clipboard.read()){
+            for(const type of cb.types){
+                if(type !== mime){
+                    continue;
+                }
+
+                const blob = await cb.getType(type);
+
+                if(!blob.size){
+                    continue;
+                }
+
+                return new Uint8Array(await blob.arrayBuffer());
+            }
+        }
+    }
 
     docI("encode").onclick = async()=>{
+        const [file] = await fileList(docI("file_bin"));
 
+        if(!file){
+            console.log(await cbRaw("image/png"));
+        }
+
+        // await pngEncode(file);
     };
 
     docI("decode").onclick = async()=>{
@@ -160,8 +184,18 @@
 
 <main>
     <section>
-        <button type="button" id="encode">PNG生成</button>
-        <button type="button" id="decode">バイナリ抽出</button>
+        <dl>
+            <dt>URL</dt>
+            <dd>
+                <div class="c_input_file">
+                    <label for="encrypt_files">バイナリファイル</label>
+                    <input type="file" id="file_bin">
+                </div>
+            </dd>
+            <dd>
+                <button type="button" id="encode">PNG生成</button>
+            </dd>
+        </dl>
     </section>
 
     <section>
@@ -169,9 +203,12 @@
             <dt>URL</dt>
             <dd>
                 <div class="c_input_file">
-                    <label for="encrypt_files">暗号化対象ファイル</label>
-                    <input multiple type="file" class="j_input_file" id="encrypt_files">
+                    <label for="encrypt_files">PNG画像ファイル</label>
+                    <input type="file" accept="*.png,image/png" id="file_png">
                 </div>
+            </dd>
+            <dd>
+                <button type="button" id="decode">バイナリ抽出</button>
             </dd>
         </dl>
     </section>
