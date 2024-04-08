@@ -91,8 +91,12 @@
         overflow: clip scroll !important;
 
         & > section {
-            margin: 20px auto;
+            margin: 0 auto 56px auto;
             max-width: 800px;
+
+            & > h2 {
+                margin: 16px 0;
+            }
         }
     }
 
@@ -103,8 +107,8 @@
             margin: 0;
         }
 
-        &.form > dd {
-            margin: 16px 0;
+        &.form > dd:not(:last-of-type) {
+            margin-bottom: 16px;
         }
     }
 
@@ -177,15 +181,9 @@
         <h2>バイナリからPNGを生成</h2>
 
         <dl class="form">
-            <dd>
-                <input type="file" id="input_bin">
-            </dd>
-            <dd>
-                <button type="button" id="encode">PNG生成</button>
-            </dd>
-            <dd>
-                <img hidden id="output_png">
-            </dd>
+            <dd><input type="file" id="input_bin"></dd>
+            <dd><button type="button" id="encode">PNG生成</button></dd>
+            <dd><img hidden id="output_png"></dd>
         </dl>
     </section>
 
@@ -193,15 +191,9 @@
         <h2>PNGからバイナリを抽出</h2>
 
         <dl class="form">
-            <dd>
-                <input type="file" accept="*.png,image/png" id="input_png">
-            </dd>
-            <dd>
-                <button type="button" id="decode">バイナリ抽出</button>
-            </dd>
-            <dd>
-                <a hidden download id="output_bin"></a>
-            </dd>
+            <dd><input type="file" accept="*.png,image/png" id="input_png"></dd>
+            <dd><button type="button" id="decode">バイナリ抽出</button></dd>
+            <dd><a hidden download id="output_bin"></a></dd>
         </dl>
     </section>
 
