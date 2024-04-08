@@ -1,0 +1,209 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
+
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#6611CC">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🖼️</text></svg>">
+
+<script async type="module">
+    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v0.0.3/mod.ts?bundle&target=esnext";
+    import {dialogNotify, docI, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
+
+    docI("encode").onclick = async()=>{
+        const [input] = await fileList(docI("input_bin"));
+
+        if(!input){
+            dialogNotify("ファイルを選択してください", "red");
+            return;
+        }
+
+        const output = await pngEncode(input.body);
+        const element = docI("output_png");
+
+        element.hidden = false;
+        element.src = URL.createObjectURL(new Blob([output]));
+    };
+
+    docI("decode").onclick = async()=>{
+        const [input] = await fileList(docI("input_png"));
+
+        if(!input){
+            dialogNotify("ファイルを選択してください", "red");
+            return;
+        }
+
+        const output = await pngDecode(input.body);
+        const element = docI("output_bin");
+
+        element.hidden = false;
+        element.href = URL.createObjectURL(new Blob([output]));
+        element.textContent = element.href;
+    };
+</script>
+
+<style>
+    :root {
+        --header-height: 48px;
+    }
+
+    ::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    :focus {
+        outline: none !important;
+    }
+
+    body {
+        user-select: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    header, main {
+        position: fixed !important;
+        width: 100dvw !important;
+    }
+
+    header {
+        top: 0 !important;
+        height: var(--header-height) !important;
+        background-color: #6611CC !important;
+
+        & > h1 {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            height: 48px !important;
+            margin: 0 12px !important;
+            font-size: 24px !important;
+            font-weight: unset !important;
+        }
+    }
+
+    main {
+        top: var(--header-height) !important;
+        height: calc(100dvh - var(--header-height)) !important;
+        background-color: #202020 !important;
+        overflow: clip scroll !important;
+
+        & > section {
+            text-align: center;
+            margin: 0 auto 56px auto;
+
+            & > h2 {
+                margin: 16px 0;
+            }
+        }
+    }
+
+    dl {
+        margin: 0;
+
+        & > dd {
+            margin: 0;
+        }
+
+        &.form > dd:not(:last-of-type) {
+            margin-bottom: 16px;
+        }
+    }
+
+    input, button {
+        box-sizing: border-box;
+        border: none;
+        -webkit-tap-highlight-color: #00000000;
+    }
+
+    input[type="file"] {
+        cursor: pointer;
+        padding: 8px;
+        width: 400px;
+        max-width: calc(100dvw - 20px);
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #444444;
+
+        &:hover {
+            background-color: #555555;
+        }
+
+        &:active {
+            background-color: #777777;
+        }
+
+        &::file-selector-button {
+            cursor: pointer;
+            margin: 0 16px 0 8px;
+            padding: 0;
+            border: none;
+            background-color: transparent;
+        }
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    img {
+        display: block;
+    }
+
+    #encode, #decode {
+        font-size: 24px;
+        height: 48px;
+        width: 100%;
+        max-width: 200px;
+        border-radius: 4px;
+        background-color: #2299FF;
+
+        &:hover {
+            background-color: #39B3FF;
+        }
+
+        &:active {
+            background-color: #77CCFF;
+        }
+    }
+</style>
+
+<title>DataPNG</title>
+
+<header>
+    <h1>DataPNG</h1>
+</header>
+
+<main>
+    <section>
+        <h2>バイナリからPNGを生成</h2>
+
+        <dl class="form">
+            <dd><input type="file" id="input_bin"></dd>
+            <dd><button type="button" id="encode">PNG生成</button></dd>
+            <dd><img hidden id="output_png"></dd>
+        </dl>
+    </section>
+
+    <section>
+        <h2>PNGからバイナリを抽出</h2>
+
+        <dl class="form">
+            <dd><input type="file" accept="*.png,image/png" id="input_png"></dd>
+            <dd><button type="button" id="decode">バイナリ抽出</button></dd>
+            <dd><a hidden download id="output_bin"></a></dd>
+        </dl>
+    </section>
+
+    <section>
+        <h2>このアプリについて</h2>
+
+        <dl>
+            <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
+            <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
+            <dd>リポジトリ: <a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
+        </dl>
+    </section>
+</main>

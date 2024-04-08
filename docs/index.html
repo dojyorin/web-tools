@@ -6,107 +6,13 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#6611CC">
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
-
-<script async type="module">
-    /**
-    * @param {string} data
-    */
-    function trimExtend(data){
-        return data.trim().replace(/\r/g, "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/\n+/g, "\n").replace(/^ /mg, "").replace(/ $/mg, "");
-    }
-
-    /**
-    * @param {string} data
-    */
-    function fixWidth(data){
-        return Object.entries({
-            "ｳﾞ": "ヴ",
-            "ｶﾞ": "ガ", "ｷﾞ": "ギ", "ｸﾞ": "グ", "ｹﾞ": "ゲ", "ｺﾞ": "ゴ",
-            "ｻﾞ": "ザ", "ｼﾞ": "ジ", "ｽﾞ": "ズ", "ｾﾞ": "ゼ", "ｿﾞ": "ゾ",
-            "ﾀﾞ": "ダ", "ﾁﾞ": "ヂ", "ﾂﾞ": "ヅ", "ﾃﾞ": "デ", "ﾄﾞ": "ド",
-            "ﾊﾞ": "バ", "ﾋﾞ": "ビ", "ﾌﾞ": "ブ", "ﾍﾞ": "ベ", "ﾎﾞ": "ボ",
-            "ﾊﾟ": "パ", "ﾋﾟ": "ピ", "ﾌﾟ": "プ", "ﾍﾟ": "ペ", "ﾎﾟ": "ポ",
-            "ｱ": "ア", "ｲ": "イ", "ｳ": "ウ", "ｴ": "エ", "ｵ": "オ",
-            "ｶ": "カ", "ｷ": "キ", "ｸ": "ク", "ｹ": "ケ", "ｺ": "コ",
-            "ｻ": "サ", "ｼ": "シ", "ｽ": "ス", "ｾ": "セ", "ｿ": "ソ",
-            "ﾀ": "タ", "ﾁ": "チ", "ﾂ": "ツ", "ﾃ": "テ", "ﾄ": "ト",
-            "ﾅ": "ナ", "ﾆ": "ニ", "ﾇ": "ヌ", "ﾈ": "ネ", "ﾉ": "ノ",
-            "ﾊ": "ハ", "ﾋ": "ヒ", "ﾌ": "フ", "ﾍ": "ヘ", "ﾎ": "ホ",
-            "ﾏ": "マ", "ﾐ": "ミ", "ﾑ": "ム", "ﾒ": "メ", "ﾓ": "モ",
-            "ﾔ": "ヤ", "ﾕ": "ユ", "ﾖ": "ヨ",
-            "ﾗ": "ラ", "ﾘ": "リ", "ﾙ": "ル", "ﾚ": "レ", "ﾛ": "ロ",
-            "ﾜ": "ワ", "ｦ": "ヲ", "ﾝ": "ン",
-            "ｧ": "ァ", "ｨ": "ィ", "ｩ": "ゥ", "ｪ": "ェ", "ｫ": "ォ",
-            "ｯ": "ッ",
-            "ｬ": "ャ", "ｭ": "ュ", "ｮ": "ョ",
-            "､": "、", "｡": "。", "･": "・", "ｰ": "ー", "｢": "「", "｣": "」",
-            "Ａ": "A", "Ｂ": "B", "Ｃ": "C", "Ｄ": "D", "Ｅ": "E", "Ｆ": "F", "Ｇ": "G", "Ｈ": "H", "Ｉ": "I", "Ｊ": "J", "Ｋ": "K", "Ｌ": "L", "Ｍ": "M",
-            "Ｎ": "N", "Ｏ": "O", "Ｐ": "P", "Ｑ": "Q", "Ｒ": "R", "Ｓ": "S", "Ｔ": "T", "Ｕ": "U", "Ｖ": "V", "Ｗ": "W", "Ｘ": "X", "Ｙ": "Y", "Ｚ": "Z",
-            "ａ": "a", "ｂ": "b", "ｃ": "c", "ｄ": "d", "ｅ": "e", "ｆ": "f", "ｇ": "g", "ｈ": "h", "ｉ": "i", "ｊ": "j", "ｋ": "k", "ｌ": "l", "ｍ": "m",
-            "ｎ": "n", "ｏ": "o", "ｐ": "p", "ｑ": "q", "ｒ": "r", "ｓ": "s", "ｔ": "t", "ｕ": "u", "ｖ": "v", "ｗ": "w", "ｘ": "x", "ｙ": "y", "ｚ": "z",
-            "０": "0", "１": "1", "２": "2", "３": "3", "４": "4", "５": "5", "６": "6", "７": "7", "８": "8", "９": "9",
-            "！": "!", "＂": "\"", "＃": "#", "＄": "$", "％": "%", "＆": "&", "＇": "'", "（": "(", "）": ")", "＊": "*", "＋": "+", "，": ",", "－": "-", "．": ".", "／": "/", "：": ":",
-            "；": ";", "＜": "<", "＝": "=", "＞": ">", "？": "?", "＠": "@", "［": "[", "＼": "\\", "］": "]", "＾": "^", "＿": "_", "｀": "`", "｛": "{", "｜": "|", "｝": "}", "～": "~", "　": " "
-        }).reduce((text, [k, v]) => text.replace(new RegExp(k, "g"), v), data);
-    }
-
-    /**
-    * @param {string} message
-    * @param {number} color
-    */
-    function dialogNotify(message, color){
-        if(0x00FFFFFF < color){
-            throw new RangeError(color);
-        }
-
-        const dialog = document.createElement("dialog");
-        dialog.style.position = "fixed";
-        dialog.style.zIndex = "255";
-        dialog.style.top = "16px";
-        dialog.style.padding = "8px 16px";
-        dialog.style.maxWidth = "calc(100dvw - 20px)";
-        dialog.style.border = "0";
-        dialog.style.borderRadius = "8px";
-        dialog.style.fontSize = "16px";
-        dialog.style.backgroundColor = `#${color.toString(16).padStart(6, "0")}`;
-        dialog.style.boxShadow = "0 2px 4px 0 #000000";
-        dialog.style.overflowWrap = "break-word";
-        dialog.textContent = message;
-        dialog.show();
-
-        setTimeout(() => dialog.remove(), 5000);
-        document.body.appendChild(dialog);
-    }
-
-    document.getElementById("convert")?.addEventListener("click", async()=>{
-        const text = await navigator.clipboard.readText();
-        const products = [];
-
-        for(const record of trimExtend(text.replace(/\n/g, " ")).match(/[A-Z]-\d{5}\t.+?数量: \d+/g) ?? []){
-            const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+?)\t.+?￥([1-9][0-9,]+).+?(\d+)$/) ?? [];
-            const [e, f] = b.split(/ /);
-
-            products.push({
-                code: a,
-                name: fixWidth(e === f ? f : b),
-                price: Number(c.replace(/,/g, "")),
-                quantity: Number(d)
-            });
-        }
-
-        if(!products.length){
-            dialogNotify("商品テーブルが存在しません", 0x00FF3322);
-            return;
-        }
-
-        await navigator.clipboard.writeText(products.map(({code, quantity}) => `${code} ${quantity}`).join("\n"));
-
-        dialogNotify("クリップボードにコピーしました", 0x0022CC44);
-    });
-</script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🧰</text></svg>">
 
 <style>
+    :root {
+        --header-height: 48px;
+    }
+
     ::-webkit-scrollbar {
         display: none !important;
     }
@@ -115,113 +21,59 @@
         outline: none !important;
     }
 
-    html {
-        height: 0 !important;
-        width: 0 !important;
-    }
-
     body {
+        user-select: none !important;
         margin: 0 !important;
         padding: 0 !important;
+    }
 
-        & > header,
-        & > main {
-            position: fixed !important;
-            width: 100dvw !important;
-            box-sizing: border-box !important;
-            user-select: none !important;
-        }
+    header, main {
+        position: fixed !important;
+        width: 100dvw !important;
+    }
 
-        & > header {
-            top: 0 !important;
-            height: 48px !important;
-            padding: 0 12px !important;
-            overflow: hidden !important;
-            background-color: #6611CC !important;
-            z-index: 1 !important;
-            box-shadow: 0 2px 4px 0 #000000 !important;
+    header {
+        top: 0 !important;
+        height: var(--header-height) !important;
+        background-color: #6611CC !important;
+
+        & > h1 {
             display: flex !important;
-            align-items: center !important;
-
-            & > h1 {
-                margin: 0 !important;
-                font-size: 24px !important;
-                font-weight: unset !important;
-            }
-        }
-
-        & > main {
-            top: 48px !important;
-            height: calc(100dvh - 48px) !important;
-            padding: 12px !important;
-            overflow: clip scroll !important;
-            background-color: #202020 !important;
-
-            & > section {
-                text-align: center !important;
-                padding: 0 0 20px 0 !important;
-            }
+            flex-direction: column !important;
+            justify-content: center !important;
+            height: 48px !important;
+            margin: 0 12px !important;
+            font-size: 24px !important;
+            font-weight: unset !important;
         }
     }
 
-    dl {
-        margin: 0;
+    main {
+        top: var(--header-height) !important;
+        height: calc(100dvh - var(--header-height)) !important;
+        background-color: #202020 !important;
+        overflow: clip scroll !important;
 
-        & > dd {
-            margin: 0;
-        }
-
-        & > dt {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 0 0 8px 0;
-        }
-    }
-
-    button {
-        font-size: 24px;
-        height: 48px;
-        width: 100%;
-        max-width: 200px;
-        border: none;
-        border-radius: 4px;
-        background-color: #2299FF;
-
-        &:active {
-            background-color: #77CCFF;
+        & > section {
+            margin: 20px auto;
+            max-width: 800px;
         }
     }
 </style>
 
-<title>秋月カート抽出</title>
+<title>Web Tools</title>
 
 <header>
-    <h1>秋月カート抽出</h1>
+    <h1>Web Tools</h1>
 </header>
 
 <main>
     <section>
-        <dl>
-            <dt>使い方</dt>
-            <dd><a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/cart/cart.aspx">買い物かご</a> の商品テーブルを <b>範囲選択コピー</b> します。</dd>
-            <dd><b>抽出</b> を押します。</dd>
-            <dd>処理結果がクリップボードにコピーされます。</dd>
-            <dd>(クリップボードへのアクセスを許可してください)</dd>
-            <dd><a target="_blank" rel="noopener" href="https://akizukidenshi.com/catalog/quickorder/blanketorder.aspx">一括入力</a> にペーストできます。</dd>
-        </dl>
-    </section>
-
-    <section>
-        <button type="button" id="convert">抽出</button>
-    </section>
-
-    <section>
-        <dl>
-            <dt>このアプリについて</dt>
-            <dd>処理はクライアント側で完結します。</dd>
-            <dd>サードパーティ製のライブラリは使用していません。</dd>
-            <dd>リポジトリ: <a target="_blank" rel="noopener" href="https://github.com/dojyorin/akizuki-cart">GitHub</a></dd>
-            <dd>お問い合わせ: <a target="_blank" rel="noopener" href="https://twitter.com/dojyorin">Twitter</a></dd>
-        </dl>
+        <ul>
+            <li><a href="./akizuki-cart.html">秋月カート抽出</a></li>
+            <li><a href="./amazon-url.html">Amazon URL分解</a></li>
+            <li><a href="./data-png.html">データPNG生成</a></li>
+            <li><a href="./pubkey-encrypt.html">公開鍵暗号化</a></li>
+        </ul>
     </section>
 </main>
