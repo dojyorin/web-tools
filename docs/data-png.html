@@ -13,27 +13,34 @@
     import {dialogNotify, docI, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
     docI("encode").onclick = async()=>{
-        const [file] = await fileList(docI("file_bin"));
+        const [input] = await fileList(docI("input_bin"));
 
-        if(!file){
+        if(!input){
             dialogNotify("ファイルを選択してください", "red");
             return;
         }
 
-        const result = await pngEncode(file);
+        const output = await pngEncode(input.body);
+        const element = docI("output_png");
 
-        docI("result_png").src = URL.createObjectURL(new Blob([result]));
+        element.hidden = false;
+        element.src = URL.createObjectURL(new Blob([output]));
     };
 
     docI("decode").onclick = async()=>{
-        const [file] = await fileList(docI("file_png"));
+        const [input] = await fileList(docI("input_png"));
 
-        if(!file){
+        if(!input){
             dialogNotify("ファイルを選択してください", "red");
             return;
         }
 
-        const result = await pngDecode(file);
+        const output = await pngDecode(input.body);
+        const element = docI("output_bin");
+
+        element.hidden = false;
+        element.href = URL.createObjectURL(new Blob([output]));
+        element.textContent = element.href;
     };
 </script>
 
@@ -96,10 +103,8 @@
             margin: 0;
         }
 
-        & > dt {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 0 0 4px 0;
+        &.form > dd {
+            margin: 16px 0;
         }
     }
 
@@ -111,10 +116,9 @@
 
     input[type="file"] {
         cursor: pointer;
-        margin: 8px 0;
         padding: 8px;
         width: 400px;
-        max-width: calc(100dvw - 40px);
+        max-width: calc(100dvw - 20px);
         border-radius: 4px;
         font-size: 16px;
         background-color: #444444;
@@ -138,6 +142,10 @@
 
     button {
         cursor: pointer;
+    }
+
+    img {
+        display: block;
     }
 
     #encode, #decode {
@@ -166,41 +174,41 @@
 
 <main>
     <section>
-        <dl>
-            <dt>URL</dt>
+        <h2>バイナリからPNGを生成</h2>
+
+        <dl class="form">
             <dd>
-                <input type="file" id="file_bin">
+                <input type="file" id="input_bin">
             </dd>
             <dd>
                 <button type="button" id="encode">PNG生成</button>
             </dd>
             <dd>
-                <img id="result_png">
+                <img hidden id="output_png">
             </dd>
         </dl>
     </section>
 
     <section>
-        <dl>
-            <dt>URL</dt>
+        <h2>PNGからバイナリを抽出</h2>
+
+        <dl class="form">
             <dd>
-                <input type="file" accept="*.png,image/png" id="file_png">
+                <input type="file" accept="*.png,image/png" id="input_png">
             </dd>
             <dd>
                 <button type="button" id="decode">バイナリ抽出</button>
             </dd>
+            <dd>
+                <a hidden download id="output_bin"></a>
+            </dd>
         </dl>
     </section>
 
     <section>
-        <dl>
-            <dt>使い方</dt>
-        </dl>
-    </section>
+        <h2>このアプリについて</h2>
 
-    <section>
         <dl>
-            <dt>このアプリについて</dt>
             <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
             <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
             <dd>リポジトリ: <a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
