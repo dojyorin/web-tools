@@ -12,36 +12,28 @@
     import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v0.0.3/mod.ts?bundle&target=esnext";
     import {dialogNotify, docI, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
-    async function cbRaw(mime){
-        for(const cb of await navigator.clipboard.read()){
-            for(const type of cb.types){
-                if(type !== mime){
-                    continue;
-                }
-
-                const blob = await cb.getType(type);
-
-                if(!blob.size){
-                    continue;
-                }
-
-                return new Uint8Array(await blob.arrayBuffer());
-            }
-        }
-    }
-
     docI("encode").onclick = async()=>{
         const [file] = await fileList(docI("file_bin"));
 
         if(!file){
-            console.log(await cbRaw("image/png"));
+            dialogNotify("ファイルを選択してください", "red");
+            return;
         }
 
-        // await pngEncode(file);
+        const result = await pngEncode(file);
+
+        docI("result_png").src = URL.createObjectURL(new Blob([result]));
     };
 
     docI("decode").onclick = async()=>{
+        const [file] = await fileList(docI("file_png"));
 
+        if(!file){
+            dialogNotify("ファイルを選択してください", "red");
+            return;
+        }
+
+        const result = await pngDecode(file);
     };
 </script>
 
@@ -111,7 +103,7 @@
         }
     }
 
-    input, label, button {
+    input, button {
         box-sizing: border-box;
         border: none;
         -webkit-tap-highlight-color: #00000000;
@@ -119,26 +111,12 @@
 
     input[type="file"] {
         cursor: pointer;
-
-        &::file-selector-button {
-            display: none;
-        }
-    }
-
-    button {
-        cursor: pointer;
-    }
-
-    .c_input_file {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 28px;
+        margin: 8px 0;
+        padding: 8px;
         width: 400px;
         max-width: calc(100dvw - 40px);
-        margin: 4px 0;
-        padding: 4px;
         border-radius: 4px;
+        font-size: 16px;
         background-color: #444444;
 
         &:hover {
@@ -149,13 +127,17 @@
             background-color: #777777;
         }
 
-        & > label, & > input {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            width: calc(100% / 2);
+        &::file-selector-button {
+            cursor: pointer;
+            margin: 0 16px 0 8px;
+            padding: 0;
+            border: none;
+            background-color: transparent;
         }
+    }
+
+    button {
+        cursor: pointer;
     }
 
     #encode, #decode {
@@ -187,13 +169,13 @@
         <dl>
             <dt>URL</dt>
             <dd>
-                <div class="c_input_file">
-                    <label for="encrypt_files">バイナリファイル</label>
-                    <input type="file" id="file_bin">
-                </div>
+                <input type="file" id="file_bin">
             </dd>
             <dd>
                 <button type="button" id="encode">PNG生成</button>
+            </dd>
+            <dd>
+                <img id="result_png">
             </dd>
         </dl>
     </section>
@@ -202,10 +184,7 @@
         <dl>
             <dt>URL</dt>
             <dd>
-                <div class="c_input_file">
-                    <label for="encrypt_files">PNG画像ファイル</label>
-                    <input type="file" accept="*.png,image/png" id="file_png">
-                </div>
+                <input type="file" accept="*.png,image/png" id="file_png">
             </dd>
             <dd>
                 <button type="button" id="decode">バイナリ抽出</button>
