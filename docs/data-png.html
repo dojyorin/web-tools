@@ -132,6 +132,8 @@
 
     img {
         display: block;
+        margin: auto;
+        max-width: 100%;
     }
 
     input[type="file"] {
@@ -176,6 +178,10 @@
             background-color: #77CCFF;
         }
     }
+
+    #output_png {
+        width: 300px;
+    }
 </style>
 
 <title>DataPNG</title>
@@ -201,7 +207,7 @@
         <dl class="form">
             <dd><input type="file" accept="*.png,image/png" id="input_png"></dd>
             <dd><button type="button" id="decode">データ抽出</button></dd>
-            <dd><a hidden download id="output_bin"></a></dd>
+            <dd><a hidden id="output_bin"></a></dd>
         </dl>
     </section>
 
