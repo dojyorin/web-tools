@@ -9,38 +9,77 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🖼️</text></svg>">
 
 <script async type="module">
-    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v0.0.3/mod.ts?bundle&target=esnext";
+    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v0.0.4/mod.ts?bundle&target=esnext";
     import {dialogNotify, docI, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
-    docI("encode").onclick = async()=>{
-        const [input] = await fileList(docI("input_bin"));
+    /**
+    * @typedef {object} DataMap
+    * @prop {string} name
+    * @prop {Uint8Array} body
+    */
 
-        if(!input){
+    /**
+    * @param {string} id
+    */
+    async function fileGet(id){
+        /** @type {DataMap[]} */
+        const [file] = await fileList(docI(id));
+
+        if(!file){
             dialogNotify("ファイルを選択してください", "red");
-            return;
+            throw new Error();
         }
 
-        const output = await pngEncode(input.body);
-        const element = docI("output_png");
+        return file;
+    }
 
-        element.hidden = false;
-        element.src = URL.createObjectURL(new Blob([output]));
+    /**
+    * @param {BlobPart} data
+    * @param {string} mime
+    */
+    function blobURL(data, mime){
+        const blob = new Blob([data], {
+            type: mime
+        });
+
+        return URL.createObjectURL(blob);
+    }
+
+    docI("encode").onclick = async()=>{
+        /** @type {HTMLImageElement} */
+        const element = docI("output_png");
+        const file = await fileGet("input_bin");
+
+        try{
+            element.src = blobURL(await pngEncode(file.body), "image/png");
+            element.alt = `${file.name}.png`;
+            element.hidden = false;
+
+            dialogNotify("PNGを生成しました", "green");
+        }
+        catch(e){
+            console.error(e);
+            dialogNotify("エラーが発生しました", "red");
+        }
     };
 
     docI("decode").onclick = async()=>{
-        const [input] = await fileList(docI("input_png"));
-
-        if(!input){
-            dialogNotify("ファイルを選択してください", "red");
-            return;
-        }
-
-        const output = await pngDecode(input.body);
+        /** @type {HTMLAnchorElement} */
         const element = docI("output_bin");
+        const file = await fileGet("input_png");
 
-        element.hidden = false;
-        element.href = URL.createObjectURL(new Blob([output]));
-        element.textContent = element.href;
+        try{
+            element.href = blobURL(await pngDecode(file.body), "application/octet-stream");
+            element.textContent = element.href;
+            element.download = `${file.name}.bin`;
+            element.hidden = false;
+
+            dialogNotify("データを抽出しました", "green");
+        }
+        catch(e){
+            console.error(e);
+            dialogNotify("エラーが発生しました", "red");
+        }
     };
 </script>
 
@@ -92,10 +131,18 @@
 
         & > section {
             text-align: center;
-            margin: 0 auto 56px auto;
+            margin: 0 16px 56px 16px;
+
+            &:first-of-type {
+                margin-top: 16px;
+            }
+
+            &:last-of-type {
+                margin-bottom: 16px;
+            }
 
             & > h2 {
-                margin: 16px 0;
+                margin: 0 0 16px 0;
             }
         }
     }
@@ -118,11 +165,21 @@
         -webkit-tap-highlight-color: #00000000;
     }
 
+    button {
+        cursor: pointer;
+    }
+
+    img {
+        display: block;
+        margin: auto;
+        max-width: 100%;
+    }
+
     input[type="file"] {
         cursor: pointer;
         padding: 8px;
         width: 400px;
-        max-width: calc(100dvw - 20px);
+        max-width: 100%;
         border-radius: 4px;
         font-size: 16px;
         background-color: #444444;
@@ -144,14 +201,6 @@
         }
     }
 
-    button {
-        cursor: pointer;
-    }
-
-    img {
-        display: block;
-    }
-
     #encode, #decode {
         font-size: 24px;
         height: 48px;
@@ -168,6 +217,10 @@
             background-color: #77CCFF;
         }
     }
+
+    #output_png {
+        width: 300px;
+    }
 </style>
 
 <title>DataPNG</title>
@@ -178,7 +231,7 @@
 
 <main>
     <section>
-        <h2>バイナリからPNGを生成</h2>
+        <h2>データからPNGを生成</h2>
 
         <dl class="form">
             <dd><input type="file" id="input_bin"></dd>
@@ -188,12 +241,12 @@
     </section>
 
     <section>
-        <h2>PNGからバイナリを抽出</h2>
+        <h2>PNGからデータを抽出</h2>
 
         <dl class="form">
             <dd><input type="file" accept="*.png,image/png" id="input_png"></dd>
-            <dd><button type="button" id="decode">バイナリ抽出</button></dd>
-            <dd><a hidden download id="output_bin"></a></dd>
+            <dd><button type="button" id="decode">データ抽出</button></dd>
+            <dd><a hidden id="output_bin"></a></dd>
         </dl>
     </section>
 
@@ -203,7 +256,7 @@
         <dl>
             <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
             <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-            <dd>リポジトリ: <a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
+            <dd><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
         </dl>
     </section>
 </main>
