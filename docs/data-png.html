@@ -23,14 +23,14 @@
     */
     async function fileGet(id){
         /** @type {DataMap[]} */
-        const [input] = await fileList(docI(id));
+        const [file] = await fileList(docI(id));
 
-        if(!input){
+        if(!file){
             dialogNotify("ファイルを選択してください", "red");
             throw new Error();
         }
 
-        return input;
+        return file;
     }
 
     /**
@@ -46,27 +46,40 @@
     }
 
     docI("encode").onclick = async()=>{
-        const input = await fileGet("input_bin");
-        /** @type {Uint8Array} */
-        const output = await pngEncode(input.body);
         /** @type {HTMLImageElement} */
         const element = docI("output_png");
+        const file = await fileGet("input_bin");
 
-        element.src = blobURL(output, "image/png");
-        element.hidden = false;
+        try{
+            element.src = blobURL(await pngEncode(file.body), "image/png");
+            element.alt = `${file.name}.png`;
+            element.hidden = false;
+
+            dialogNotify("PNGを生成しました", "green");
+        }
+        catch(e){
+            console.error(e);
+            dialogNotify("エラーが発生しました", "red");
+        }
     };
 
     docI("decode").onclick = async()=>{
-        const input = await fileGet("input_png");
-        /** @type {Uint8Array} */
-        const output = await pngDecode(input.body);
         /** @type {HTMLAnchorElement} */
         const element = docI("output_bin");
+        const file = await fileGet("input_png");
 
-        element.href = blobURL(output, "application/octet-stream");
-        element.textContent = element.href;
-        element.download = `${input}.bin`;
-        element.hidden = false;
+        try{
+            element.href = blobURL(await pngDecode(file.body), "application/octet-stream");
+            element.textContent = element.href;
+            element.download = `${file.name}.bin`;
+            element.hidden = false;
+
+            dialogNotify("データを抽出しました", "green");
+        }
+        catch(e){
+            console.error(e);
+            dialogNotify("エラーが発生しました", "red");
+        }
     };
 </script>
 
