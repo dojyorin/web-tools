@@ -130,8 +130,9 @@
         overflow: clip scroll;
 
         & > section {
-            text-align: center;
-            margin: 0 16px 56px 16px;
+            max-width: 500px;
+            margin: 0 auto 56px auto;
+            padding: 0 16px;
 
             &:first-of-type {
                 margin-top: 16px;
@@ -142,6 +143,7 @@
             }
 
             & > h2 {
+                text-align: center;
                 margin: 0 0 16px 0;
             }
         }
@@ -154,9 +156,14 @@
             margin: 0;
         }
 
-        &.form > dd:not(:last-of-type) {
-            margin-bottom: 16px;
+        &.form > dd {
+            text-align: center;
+
+            &:not(:last-of-type) {
+                margin-bottom: 16px;
+            }
         }
+
     }
 
     input, button {
