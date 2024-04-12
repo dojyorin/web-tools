@@ -14,7 +14,7 @@
 
     docI("convert").onclick = async()=>{
         /** @type {string} */
-        const text = cleanText(docI("input_url").value);
+        const text = docI("input_url").value.trim();
 
         try{
             const {origin, hostname, pathname} = new URL(text);
@@ -32,7 +32,7 @@
 
             docI("output_url").value = `${origin}/dp/${asin}`;
             docI("output_asin").value = asin;
-            docI("output_pn").value = decodeURIComponent(pn ?? "") || "(取得失敗)";
+            docI("output_pn").value = cleanText(decodeURIComponent(pn ?? "")) || "(取得失敗)";
 
             dialogNotify("変換しました", "green");
         }
