@@ -96,8 +96,22 @@
         overflow: clip scroll;
 
         & > section {
-            margin: 20px auto;
-            max-width: 800px;
+            max-width: 500px;
+            margin: 0 auto 56px auto;
+            padding: 0 16px;
+
+            &:first-of-type {
+                margin-top: 16px;
+            }
+
+            &:last-of-type {
+                margin-bottom: 16px;
+            }
+
+            & > h2 {
+                text-align: center;
+                margin: 0 0 16px 0;
+            }
         }
     }
 
@@ -108,11 +122,14 @@
             margin: 0;
         }
 
-        & > dt {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 0 0 4px 0;
+        &.form > dd {
+            text-align: center;
+
+            &:not(:last-of-type) {
+                margin-bottom: 16px;
+            }
         }
+
     }
 
     input, button {
@@ -123,6 +140,24 @@
 
     button {
         cursor: pointer;
+    }
+
+    input[type="text"], input[type="url"] {
+        cursor: text;
+        padding: 8px;
+        width: 400px;
+        max-width: 100%;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #444444;
+
+        &:hover {
+            background-color: #555555;
+        }
+
+        &:active {
+            background-color: #777777;
+        }
     }
 
     #convert {
@@ -141,64 +176,41 @@
             background-color: #77CCFF;
         }
     }
-
-    #result_path, #result_asin, #result_name {
-        font-size: 16px;
-        margin: 4px 0;
-        padding: 4px;
-        width: 100%;
-        max-width: 500px;
-        border-radius: 2px;
-    }
 </style>
 
-<title>Amazon URL分解</title>
+<title>Amazonリンク短縮</title>
 
 <header>
-    <h1>Amazon URL分解</h1>
+    <h1>Amazonリンク短縮</h1>
 </header>
 
 <main>
     <section>
-        <button type="button" id="convert">URL取得</button>
-    </section>
+        <h2>リンク短縮</h2>
 
-    <section>
-        <dl>
-            <dt>URL</dt>
-            <dd>
-                <input readonly type="text" id="result_path">
-            </dd>
-
-            <dt>商品コード(ASIN)</dt>
-            <dd>
-                <input readonly type="text" id="result_asin">
-            </dd>
-
-            <dt>商品名</dt>
-            <dd>
-                <input readonly type="text" id="result_name">
-            </dd>
+        <dl class="form">
+            <dd><input type="url" placeholder="ここにAmazonリンクを貼付" id="input_url"></dd>
+            <dd><button type="button" id="convert">URL取得</button></dd>
         </dl>
     </section>
 
     <section>
-        <dl>
-            <dt>使い方</dt>
-            <dd>Amazonの商品ページURLをコピーします。</dd>
-            <dd><b>URL取得</b> を押します。</dd>
-            <dd>処理結果がクリップボードにコピーされます。</dd>
-            <dd>(注意: クリップボードへのアクセス要求を許可してください)</dd>
+        <h2>処理結果</h2>
+
+        <dl class="form">
+            <dd><input readonly type="url" placeholder="最短URL" id="output_url"></dd>
+            <dd><input readonly type="text" placeholder="商品コード(ASIN)" id="output_asin"></dd>
+            <dd><input readonly type="text" placeholder="商品名" id="output_pn"></dd>
         </dl>
     </section>
 
     <section>
+        <h2>このアプリについて</h2>
+
         <dl>
-            <dt>このアプリについて</dt>
             <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
             <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-            <dd>リポジトリ: <a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
-            <dd>お問い合わせ: <a target="_blank" href="https://twitter.com/dojyorin">Twitter</a></dd>
+            <dd><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
         </dl>
     </section>
 </main>
