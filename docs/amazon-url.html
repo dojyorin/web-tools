@@ -151,12 +151,8 @@
         font-size: 16px;
         background-color: #444444;
 
-        &:hover {
+        &:hover, &:focus {
             background-color: #555555;
-        }
-
-        &:active {
-            background-color: #777777;
         }
     }
 
@@ -190,7 +186,7 @@
 
         <dl class="form">
             <dd><input type="url" placeholder="ここにAmazonリンクを貼付" id="input_url"></dd>
-            <dd><button type="button" id="convert">URL取得</button></dd>
+            <dd><button type="button" id="convert">リンク短縮</button></dd>
         </dl>
     </section>
 
