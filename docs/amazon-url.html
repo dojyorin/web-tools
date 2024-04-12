@@ -14,7 +14,7 @@
 
     docI("convert").onclick = async()=>{
         /** @type {string} */
-        const text = docI("input_url").value.trim();
+        const text = cleanText(docI("input_url").value);
 
         try{
             const {origin, hostname, pathname} = new URL(text);

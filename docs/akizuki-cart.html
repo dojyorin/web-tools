@@ -12,31 +12,45 @@
     import {cleanText} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.10/mod.pure.ts?bundle&target=esnext";
     import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
+    /**
+    * @typedef {object} AkizukiProduct
+    * @prop {number} code
+    * @prop {string} name
+    * @prop {number} price
+    * @prop {number} quantity
+    */
+
     docI("convert").onclick = async()=>{
-        const cbInput = await navigator.clipboard.readText();
+        /** @type {string} */
+        const text = cleanText(docI("input_cart").value);
+        /** @type {AkizukiProduct[]} */
         const products = [];
 
-        for(const record of cleanText(cbInput.replace(/\n/g, " ")).match(/[A-Z]-\d{5}\t.+?数量: \d+/g) ?? []){
-            const [, a, b, c, d] = record.match(/^([A-Z]-\d{5})\t(.+?)\t.+?￥([1-9][0-9,]+).+?(\d+)$/) ?? [];
-            const [e, f] = b.split(/ /);
+        try{
+            for(const record of text.match(/[1-9][0-9]{5}\t.+?\n.+?\n￥.+?\n[1-9][0-9]*/g) ?? []){
+                const [, code, name, price, quantity] = record.match(/^([1-9][0-9]{5})\t(.+?)\n.+?\n￥(.+?)\n([1-9][0-9]*)$/) ?? [];
 
-            products.push({
-                code: a,
-                name: cleanText(e === f ? f : b),
-                price: Number(c.replace(/,/g, "")),
-                quantity: Number(d)
-            });
+                products.push({
+                    code: Number(code),
+                    name: name.slice(name.length / 2),
+                    price: Number(price.replace(/,/g, "")),
+                    quantity: Number(quantity)
+                });
+            }
+
+            if(!products.length){
+                throw new Error("商品テーブルが存在しません");
+            }
+
+            docI("output_cart").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
+            docI("output_json").value = JSON.stringify(products, undefined, 4);
+
+            dialogNotify("変換しました", "green");
         }
-
-        if(!products.length){
-            dialogNotify("商品テーブルが存在しません", "red");
-            return;
+        catch(e){
+            console.error(e);
+            dialogNotify("エラーが発生しました", "red");
         }
-
-        const cbOutput = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
-
-        await navigator.clipboard.writeText(cbOutput);
-        dialogNotify("クリップボードにコピーしました", "green");
     };
 </script>
 
@@ -187,7 +201,8 @@
         <h2>処理結果</h2>
 
         <dl class="form">
-            <dd><textarea placeholder="加工済カート内容" id="output_cart"></textarea></dd>
+            <dd><textarea placeholder="カート内容(一括入力形式)" id="output_cart"></textarea></dd>
+            <dd><textarea placeholder="カート内容詳細(JSON)" id="output_json"></textarea></dd>
         </dl>
     </section>
 
