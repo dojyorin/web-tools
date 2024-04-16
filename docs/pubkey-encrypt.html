@@ -38,7 +38,6 @@
             const files = await fileList(document.getElementById("encrypt_files"));
             const [publicKey] = await fileList(document.getElementById("encrypt_public"));
             const [privateKeyE] = await fileList(document.getElementById("encrypt_private"));
-            const [privateKeyS] = await fileList(document.getElementById("sign_private"));
 
             if(!files.length || !publicKey || !privateKeyE){
                 dialogNotify("ファイルを入力してください", "red");
@@ -76,8 +75,6 @@
             const [cipher] = await fileList(document.getElementById("decrypt_file"));
             const [publicKeyE] = await fileList(document.getElementById("decrypt_public"));
             const [privateKey] = await fileList(document.getElementById("decrypt_private"));
-            const [publicKeyV] = await fileList(document.getElementById("verify_public"));
-            const [signature] = await fileList(document.getElementById("verify_signature"));
 
             if(!cipher || !publicKeyE || !privateKey){
                 dialogNotify("ファイルを入力してください", "red");
@@ -115,7 +112,7 @@
         }
     };
 
-    document.getElementById("generate").onclick = async()=>{
+    document.getElementById("keygen_encrypt").onclick = async()=>{
         try{
             const {publicKey, privateKey} = await pkGenerateECDH();
 
@@ -132,7 +129,7 @@
         }
     };
 
-    document.getElementById("generate_sign").onclick = async()=>{
+    document.getElementById("keygen_sign").onclick = async()=>{
         dialogNotify("鍵生成を開始しました", "green");
 
         try{
@@ -347,10 +344,9 @@
         <h2>ファイルを暗号化</h2>
 
         <dl>
-            <dd><input multiple type="file" class="j_input_file" id="encrypt_files"></dd>
-            <dd><input type="file" accept=".enc.pubkey" class="j_input_file" id="encrypt_public"></dd>
-            <dd><input type="file" accept=".enc.prikey" class="j_input_file" id="encrypt_private"></dd>
-            <dd><input type="file" accept=".sig.prikey" class="j_input_file" id="sign_private"></dd>
+            <dd><input multiple type="file" id="encrypt_files"></dd>
+            <dd><input type="file" accept=".enc.pubkey" id="encrypt_public"></dd>
+            <dd><input type="file" accept=".enc.prikey" id="encrypt_private"></dd>
             <dd><button type="button" id="encrypt">&#x1F512;暗号化</button></dd>
         </dl>
     </section>
@@ -361,11 +357,9 @@
         <h2>ファイルを復号</h2>
 
         <dl>
-            <dd><input type="file" accept=".enc" class="j_input_file" id="decrypt_file"> </dd>
-            <dd><input type="file" accept=".enc.pubkey" class="j_input_file" id="decrypt_public"></dd>
-            <dd><input type="file" accept=".enc.prikey" class="j_input_file" id="decrypt_private"></dd>
-            <dd><input type="file" accept=".sig" class="j_input_file" id="verify_signature"></dd>
-            <dd><input type="file" accept=".sig.pubkey" class="j_input_file" id="verify_public"></dd>
+            <dd><input type="file" accept=".enc" id="decrypt_file"> </dd>
+            <dd><input type="file" accept=".enc.pubkey" id="decrypt_public"></dd>
+            <dd><input type="file" accept=".enc.prikey" id="decrypt_private"></dd>
             <dd><button type="button" id="decrypt">&#x1F513;復号</button></dd>
         </dl>
     </section>
@@ -376,8 +370,8 @@
         <h2>鍵を生成</h2>
 
         <dl>
-            <dd><button type="button" id="generate">&#x1F511;暗号化鍵生成</button></dd>
-            <dd><button type="button" id="generate_sign">&#x1F511;署名鍵生成</button></dd>
+            <dd><button type="button" id="keygen_encrypt">&#x1F511;暗号化鍵生成</button></dd>
+            <dd><button type="button" id="keygen_sign">&#x1F511;署名鍵生成</button></dd>
         </dl>
     </section>
 </main>
