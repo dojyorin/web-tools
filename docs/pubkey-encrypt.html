@@ -262,14 +262,10 @@
         }
     }
 
-    input, button, label {
+    input, textarea, button, label {
         box-sizing: border-box;
         border: none;
         -webkit-tap-highlight-color: #00000000;
-    }
-
-    button {
-        cursor: pointer;
     }
 
     code {
@@ -278,11 +274,30 @@
         background-color: #505050;
     }
 
+    button[type="button"] {
+        cursor: pointer;
+        font-size: 24px;
+        height: 48px;
+        width: 100%;
+        max-width: 200px;
+        border-radius: 4px;
+        background-color: #2299FF;
+
+        &:hover {
+            background-color: #39B3FF;
+        }
+
+        &:active {
+            background-color: #77CCFF;
+        }
+    }
+
     input[type="file"] {
         cursor: pointer;
-        padding: 8px;
+        height: 40px;
         width: 400px;
         max-width: 100%;
+        padding: 8px;
         border-radius: 4px;
         font-size: 16px;
         background-color: #444444;
@@ -303,23 +318,6 @@
             background-color: transparent;
         }
     }
-
-    #encrypt, #decrypt, #generate {
-        font-size: 24px;
-        height: 48px;
-        width: 100%;
-        max-width: 200px;
-        border-radius: 4px;
-        background-color: #2299FF;
-
-        &:hover {
-            background-color: #39B3FF;
-        }
-
-        &:active {
-            background-color: #77CCFF;
-        }
-    }
 </style>
 
 <title>公開鍵暗号化ツール</title>
@@ -333,9 +331,13 @@
         <input hidden type="radio" name="tab_select" id="tab_select_2">
         <label for="tab_select_2">復号</label>
         <input hidden type="radio" name="tab_select" id="tab_select_3">
-        <label for="tab_select_3">鍵生成</label>
+        <label for="tab_select_3">署名</label>
         <input hidden type="radio" name="tab_select" id="tab_select_4">
-        <label for="tab_select_4">ヘルプ</label>
+        <label for="tab_select_4">検証</label>
+        <input hidden type="radio" name="tab_select" id="tab_select_5">
+        <label for="tab_select_5">鍵生成</label>
+        <input hidden type="radio" name="tab_select" id="tab_select_6">
+        <label for="tab_select_6">ヘルプ</label>
     </nav>
 </header>
 
@@ -367,6 +369,31 @@
 
 <main hidden id="tab_3">
     <section>
+        <h2>ファイルに署名</h2>
+
+        <dl>
+            <dd><input type="file" accept=".enc" id="decrypt_file"> </dd>
+            <dd><input type="file" accept=".enc.prikey" id="decrypt_private"></dd>
+            <dd><button type="button" id="decrypt">&#x1F513;署名</button></dd>
+        </dl>
+    </section>
+</main>
+
+<main hidden id="tab_4">
+    <section>
+        <h2>ファイルの署名を検証</h2>
+
+        <dl>
+            <dd><input type="file" accept=".enc" id="decrypt_file"> </dd>
+            <dd><input type="file" accept=".enc.pubkey" id="decrypt_public"></dd>
+            <dd><input type="file" accept=".enc.prikey" id="decrypt_private"></dd>
+            <dd><button type="button" id="decrypt">&#x1F513;検証</button></dd>
+        </dl>
+    </section>
+</main>
+
+<main hidden id="tab_5">
+    <section>
         <h2>鍵を生成</h2>
 
         <dl>
@@ -376,7 +403,7 @@
     </section>
 </main>
 
-<main hidden id="tab_4">
+<main hidden id="tab_6">
     <section>
         <h2>使用方法</h2>
 

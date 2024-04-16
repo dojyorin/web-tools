@@ -162,14 +162,10 @@
         }
     }
 
-    input, button {
+    input, textarea, button, label {
         box-sizing: border-box;
         border: none;
         -webkit-tap-highlight-color: #00000000;
-    }
-
-    button {
-        cursor: pointer;
     }
 
     img {
@@ -178,11 +174,30 @@
         max-width: 100%;
     }
 
+    button[type="button"] {
+        cursor: pointer;
+        font-size: 24px;
+        height: 48px;
+        width: 100%;
+        max-width: 200px;
+        border-radius: 4px;
+        background-color: #2299FF;
+
+        &:hover {
+            background-color: #39B3FF;
+        }
+
+        &:active {
+            background-color: #77CCFF;
+        }
+    }
+
     input[type="file"] {
         cursor: pointer;
-        padding: 8px;
+        height: 40px;
         width: 400px;
         max-width: 100%;
+        padding: 8px;
         border-radius: 4px;
         font-size: 16px;
         background-color: #444444;
@@ -201,23 +216,6 @@
             padding: 0;
             border: none;
             background-color: transparent;
-        }
-    }
-
-    #encode, #decode {
-        font-size: 24px;
-        height: 48px;
-        width: 100%;
-        max-width: 200px;
-        border-radius: 4px;
-        background-color: #2299FF;
-
-        &:hover {
-            background-color: #39B3FF;
-        }
-
-        &:active {
-            background-color: #77CCFF;
         }
     }
 

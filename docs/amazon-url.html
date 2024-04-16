@@ -122,31 +122,14 @@
         }
     }
 
-    input, button {
+    input, textarea, button, label {
         box-sizing: border-box;
         border: none;
         -webkit-tap-highlight-color: #00000000;
     }
 
-    button {
+    button[type="button"] {
         cursor: pointer;
-    }
-
-    input[type="text"], input[type="url"] {
-        cursor: text;
-        padding: 8px;
-        width: 400px;
-        max-width: 100%;
-        border-radius: 4px;
-        font-size: 16px;
-        background-color: #444444;
-
-        &:hover, &:focus {
-            background-color: #555555;
-        }
-    }
-
-    #convert {
         font-size: 24px;
         height: 48px;
         width: 100%;
@@ -160,6 +143,21 @@
 
         &:active {
             background-color: #77CCFF;
+        }
+    }
+
+    input[type="text"], input[type="url"] {
+        cursor: text;
+        height: 40px;
+        width: 400px;
+        max-width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #444444;
+
+        &:hover, &:focus {
+            background-color: #555555;
         }
     }
 </style>
