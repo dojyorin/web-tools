@@ -12,20 +12,24 @@
     import {pkEncrypt, pkDecrypt, pkSign, pkVerify, pkGenerateECDH, pkGenerateECDSA, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.10/mod.pure.ts?bundle&target=esnext";
     import {dialogNotify, docI, docN, docC, radioActive, fsWrite, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
-    function clearInputFile(){
-        for(const input of docC("j_input_file")){
-            input.value = "";
-        }
-    }
-
-    for(const tab of docN("tab_switch")){
-        tab.onchange = ()=>{
-            for(const page of docC("j_tab_page")){
+    for(const select of document.getElementsByName("tab_select")){
+        select.onchange = ({target})=>{
+            for(const page of document.getElementsByTagName("main")){
                 page.setAttribute("hidden", "");
             }
 
-            clearInputFile();
-            docI(radioActive("tab_switch")?.value ?? "").removeAttribute("hidden");
+            for(const input of document.getElementsByTagName("input")){
+                if(target.name === input.name){
+                    continue;
+                }
+
+                input.value = "";
+                input.checked = false;
+            }
+
+            if(target.checked){
+                document.getElementById(target.id.replace(/_select/, "")).removeAttribute("hidden");
+            }
         };
     }
 
@@ -66,9 +70,6 @@
         catch(e){
             console.error(e);
             dialogNotify("暗号化中にエラーが発生しました", "red");
-        }
-        finally{
-            clearInputFile();
         }
     };
 
@@ -115,9 +116,6 @@
         catch(e){
             console.error(e);
             dialogNotify("復号中にエラーが発生しました", "red");
-        }
-        finally{
-            clearInputFile();
         }
     };
 
@@ -240,24 +238,22 @@
         background-color: #202020;
         overflow: clip scroll;
 
-        & > article {
-            & > section {
-                max-width: 500px;
-                margin: 0 auto 56px auto;
-                padding: 0 16px;
+        & > section {
+            max-width: 500px;
+            margin: 0 auto 56px auto;
+            padding: 0 16px;
 
-                &:first-of-type {
-                    margin-top: 16px;
-                }
+            &:first-of-type {
+                margin-top: 16px;
+            }
 
-                &:last-of-type {
-                    margin-bottom: 16px;
-                }
+            &:last-of-type {
+                margin-bottom: 16px;
+            }
 
-                & > h2 {
-                    text-align: center;
-                    margin: 0 0 16px 0;
-                }
+            & > h2 {
+                text-align: center;
+                margin: 0 0 16px 0;
             }
         }
     }
@@ -341,153 +337,151 @@
     <h1>公開鍵暗号化ツール</h1>
 
     <nav>
-        <input hidden checked type="radio" name="tab_switch" id="tab_switch_1" value="tab_1">
-        <label for="tab_switch_1">暗号化</label>
-        <input hidden type="radio" name="tab_switch" id="tab_switch_2" value="tab_2">
-        <label for="tab_switch_2">復号</label>
-        <input hidden type="radio" name="tab_switch" id="tab_switch_3" value="tab_3">
-        <label for="tab_switch_3">鍵生成</label>
-        <input hidden type="radio" name="tab_switch" id="tab_switch_4" value="tab_4">
-        <label for="tab_switch_4">ヘルプ</label>
+        <input hidden checked type="radio" name="tab_select" id="tab_select_1">
+        <label for="tab_select_1">暗号化</label>
+        <input hidden type="radio" name="tab_select" id="tab_select_2">
+        <label for="tab_select_2">復号</label>
+        <input hidden type="radio" name="tab_select" id="tab_select_3">
+        <label for="tab_select_3">鍵生成</label>
+        <input hidden type="radio" name="tab_select" id="tab_select_4">
+        <label for="tab_select_4">ヘルプ</label>
     </nav>
 </header>
 
-<main>
-    <article class="j_tab_page" id="tab_1">
-        <section>
-            <h2>ファイルを暗号化</h2>
+<main id="tab_1">
+    <section>
+        <h2>ファイルを暗号化</h2>
 
-            <dl>
-                <dd><input multiple type="file" class="j_input_file" id="encrypt_files"></dd>
-                <dd><input type="file" accept=".enc.pubkey" class="j_input_file" id="encrypt_public"></dd>
-                <dd><input type="file" accept=".enc.prikey" class="j_input_file" id="encrypt_private"></dd>
-                <dd><input type="file" accept=".sig.prikey" class="j_input_file" id="sign_private"></dd>
-                <dd><button type="button" id="encrypt">&#x1F512;暗号化</button></dd>
-            </dl>
-        </section>
-    </article>
+        <dl>
+            <dd><input multiple type="file" class="j_input_file" id="encrypt_files"></dd>
+            <dd><input type="file" accept=".enc.pubkey" class="j_input_file" id="encrypt_public"></dd>
+            <dd><input type="file" accept=".enc.prikey" class="j_input_file" id="encrypt_private"></dd>
+            <dd><input type="file" accept=".sig.prikey" class="j_input_file" id="sign_private"></dd>
+            <dd><button type="button" id="encrypt">&#x1F512;暗号化</button></dd>
+        </dl>
+    </section>
+</main>
 
-    <article hidden class="j_tab_page" id="tab_2">
-        <section>
-            <h2>ファイルを復号</h2>
+<main hidden id="tab_2">
+    <section>
+        <h2>ファイルを復号</h2>
 
-            <dl>
-                <dd><input type="file" accept=".enc" class="j_input_file" id="decrypt_file"> </dd>
-                <dd><input type="file" accept=".enc.pubkey" class="j_input_file" id="decrypt_public"></dd>
-                <dd><input type="file" accept=".enc.prikey" class="j_input_file" id="decrypt_private"></dd>
-                <dd><input type="file" accept=".sig" class="j_input_file" id="verify_signature"></dd>
-                <dd><input type="file" accept=".sig.pubkey" class="j_input_file" id="verify_public"></dd>
-                <dd><button type="button" id="decrypt">&#x1F513;復号</button></dd>
-            </dl>
-        </section>
-    </article>
+        <dl>
+            <dd><input type="file" accept=".enc" class="j_input_file" id="decrypt_file"> </dd>
+            <dd><input type="file" accept=".enc.pubkey" class="j_input_file" id="decrypt_public"></dd>
+            <dd><input type="file" accept=".enc.prikey" class="j_input_file" id="decrypt_private"></dd>
+            <dd><input type="file" accept=".sig" class="j_input_file" id="verify_signature"></dd>
+            <dd><input type="file" accept=".sig.pubkey" class="j_input_file" id="verify_public"></dd>
+            <dd><button type="button" id="decrypt">&#x1F513;復号</button></dd>
+        </dl>
+    </section>
+</main>
 
-    <article hidden class="j_tab_page" id="tab_3">
-        <section>
-            <h2>鍵を生成</h2>
+<main hidden id="tab_3">
+    <section>
+        <h2>鍵を生成</h2>
 
-            <dl>
-                <dd><button type="button" id="generate">&#x1F511;暗号化鍵生成</button></dd>
-                <dd><button type="button" id="generate_sign">&#x1F511;署名鍵生成</button></dd>
-            </dl>
-        </section>
-    </article>
+        <dl>
+            <dd><button type="button" id="generate">&#x1F511;暗号化鍵生成</button></dd>
+            <dd><button type="button" id="generate_sign">&#x1F511;署名鍵生成</button></dd>
+        </dl>
+    </section>
+</main>
 
-    <article hidden class="j_tab_page" id="tab_4">
-        <section>
-            <h2>使用方法</h2>
+<main hidden id="tab_4">
+    <section>
+        <h2>使用方法</h2>
 
-            <h3>STEP0: 署名鍵を生成する (任意) (操作: 送信者)</h3>
+        <h3>STEP0: 署名鍵を生成する (任意) (操作: 送信者)</h3>
 
-            <ol>
-                <li>署名が不要な場合は、本手順をスキップし次の手順へ進みます。</li>
-                <li>送信者は、最初に <a href="#sign-generate">署名鍵生成ボタン</a> を押し、処理を開始します。</li>
-                <li>処理が完了すると、2個のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
-                <ul>
-                    <li><code>{乱数}.sign.pub</code> : 公開鍵 (公開しても問題ない)</li>
-                    <li><code>{乱数}.sign.sec</code> : 秘密鍵 (絶対に公開してはいけない)</li>
-                </ul>
-                <li>生成した <code>{乱数}.sign.pub</code> を任意の方法で受信者へ送信します。</li>
-                <ul>
-                    <li>署名鍵は、秘密鍵の紛失や漏洩が無い限り再利用を推奨します。</li>
-                    <li>送信方法は、後述の暗号化ファイルの送信で使用する方法とは別の方法を推奨します。</li>
-                </ul>
-            </ol>
-        </section>
-
-        <section>
-            <h3>STEP1: 暗号化鍵を生成する (操作: 送信者/受信者)</h3>
-
-            <ol>
-                <li>送信者と受信者は、それぞれ <a href="#encrypt-generate">暗号化鍵生成ボタン</a> を押し、処理を開始します。</li>
-                <li>処理が完了すると、2個のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
-                <ul>
-                    <li><code>{乱数}.encrypt.pub</code> : 公開鍵 (公開しても問題ない)</li>
-                    <li><code>{乱数}.encrypt.sec</code> : 秘密鍵 (絶対に公開してはいけない)</li>
-                </ul>
-                <li>送信者と受信者は、それぞれ生成した <code>{乱数}.encrypt.pub</code> を、電子メールなどで相互に交換します。</li>
-                <ul>
-                    <li>暗号化鍵は、再利用せず都度生成を推奨します。</li>
-                </ul>
-            </ol>
-        </section>
-
-        <section>
-            <h3>STEP2: 暗号化を行う (操作: 送信者)</h3>
-
-            <ol>
-                <li>送信者は、ツールの各フォームへファイルを入力します。</li>
-                <ul>
-                    <li><a href="#encrypt_files">データ</a> : 暗号化したいファイル (複数指定可能)</li>
-                    <li><a href="#encrypt_public">公開鍵</a> : <code>{乱数}.encrypt.pub</code> (受信者から受け取ったもの)</li>
-                    <li><a href="#encrypt-secret">秘密鍵(暗号化)</a> : <code>{乱数}.encrypt.sec</code> (自身で生成したもの)</li>
-                    <li><a href="#sign-secret">秘密鍵(署名/任意)</a> : <code>{乱数}.sign.sec</code> (自身で生成したもの)</li>
-                </ul>
-                <li><a href="#encrypt-execute">暗号化</a> ボタンを押し、処理を開始します。</li>
-                <li>処理が完了すると、1個のファイルがダウンロードされます。</li>
-                <ul>
-                    <li><code>{乱数}.cipher.bin</code> : 暗号データ (公開しても問題ない)</li>
-                </ul>
-                <li>送信者は、暗号化された <code>{乱数}.cipher.bin</code> を、電子メールなど任意の方法で受信者へ送信します。</li>
-            </ol>
-        </section>
-
-        <section>
-            <h3>STEP3: 暗号データを復号する (操作: 受信者)</h3>
-
-            <ol>
-                <li>受信者は、ツールの各フォームへファイルを入力します。</li>
-                <ul>
-                    <li><a href="#decrypt_file">データ</a> : <code>{乱数}.cipher.bin</code> (送信者から受け取ったもの)</li>
-                    <li><a href="#decrypt_public">公開鍵(復号)</a> : <code>{乱数}.encrypt.pub</code> (送信者から受け取ったもの)</li>
-                    <li><a href="#decrypt-secret">秘密鍵</a> : <code>{乱数}.encrypt.sec</code> (自身で生成したもの)</li>
-                    <li><a href="#verify_public">公開鍵(検証/任意)</a> : <code>{乱数}.sign.pub</code> (送信者から受け取ったもの)</li>
-                </ul>
-                <li><a href="#decrypt-execute">復号</a> ボタンを押し、処理を開始します。</li>
-                <li>処理が完了すると、元のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
-            </ol>
-        </section>
-
-        <h2 class="c_title_2 c_flex_center">技術仕様</h2>
-
-        <section>
+        <ol>
+            <li>署名が不要な場合は、本手順をスキップし次の手順へ進みます。</li>
+            <li>送信者は、最初に <a href="#sign-generate">署名鍵生成ボタン</a> を押し、処理を開始します。</li>
+            <li>処理が完了すると、2個のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
             <ul>
-                <li>実装: <a target="_blank" href="https://www.w3.org/TR/WebCryptoAPI">Web Crypto API</a></li>
-                <li>鍵交換: <a target="_blank" href="https://ja.wikipedia.org/wiki/楕円曲線ディフィー・ヘルマン鍵共有">ECDH</a></li>
-                <li>署名: <a target="_blank" href="https://ja.wikipedia.org/wiki/楕円曲線DSA">ECDSA</a></li>
-                <li>公開鍵パラメータ: <a target="_blank" href="https://datatracker.ietf.org/doc/html/rfc4492">NIST P-521</a> - 521bit Key</li>
-                <li>共通鍵暗号: <a target="_blank" href="https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard">AES-GCM</a> - 256bit Key, 128bit Tag, 128bit IV</li>
+                <li><code>{乱数}.sign.pub</code> : 公開鍵 (公開しても問題ない)</li>
+                <li><code>{乱数}.sign.sec</code> : 秘密鍵 (絶対に公開してはいけない)</li>
             </ul>
-        </section>
-
-        <section>
-            <h2>このアプリについて</h2>
-
+            <li>生成した <code>{乱数}.sign.pub</code> を任意の方法で受信者へ送信します。</li>
             <ul>
-                <li>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</li>
-                <li>MITライセンス準拠のオープンソースソフトウェアとなります。</li>
-                <li><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></li>
+                <li>署名鍵は、秘密鍵の紛失や漏洩が無い限り再利用を推奨します。</li>
+                <li>送信方法は、後述の暗号化ファイルの送信で使用する方法とは別の方法を推奨します。</li>
             </ul>
-        </section>
-    </article>
+        </ol>
+    </section>
+
+    <section>
+        <h3>STEP1: 暗号化鍵を生成する (操作: 送信者/受信者)</h3>
+
+        <ol>
+            <li>送信者と受信者は、それぞれ <a href="#encrypt-generate">暗号化鍵生成ボタン</a> を押し、処理を開始します。</li>
+            <li>処理が完了すると、2個のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
+            <ul>
+                <li><code>{乱数}.encrypt.pub</code> : 公開鍵 (公開しても問題ない)</li>
+                <li><code>{乱数}.encrypt.sec</code> : 秘密鍵 (絶対に公開してはいけない)</li>
+            </ul>
+            <li>送信者と受信者は、それぞれ生成した <code>{乱数}.encrypt.pub</code> を、電子メールなどで相互に交換します。</li>
+            <ul>
+                <li>暗号化鍵は、再利用せず都度生成を推奨します。</li>
+            </ul>
+        </ol>
+    </section>
+
+    <section>
+        <h3>STEP2: 暗号化を行う (操作: 送信者)</h3>
+
+        <ol>
+            <li>送信者は、ツールの各フォームへファイルを入力します。</li>
+            <ul>
+                <li><a href="#encrypt_files">データ</a> : 暗号化したいファイル (複数指定可能)</li>
+                <li><a href="#encrypt_public">公開鍵</a> : <code>{乱数}.encrypt.pub</code> (受信者から受け取ったもの)</li>
+                <li><a href="#encrypt-secret">秘密鍵(暗号化)</a> : <code>{乱数}.encrypt.sec</code> (自身で生成したもの)</li>
+                <li><a href="#sign-secret">秘密鍵(署名/任意)</a> : <code>{乱数}.sign.sec</code> (自身で生成したもの)</li>
+            </ul>
+            <li><a href="#encrypt-execute">暗号化</a> ボタンを押し、処理を開始します。</li>
+            <li>処理が完了すると、1個のファイルがダウンロードされます。</li>
+            <ul>
+                <li><code>{乱数}.cipher.bin</code> : 暗号データ (公開しても問題ない)</li>
+            </ul>
+            <li>送信者は、暗号化された <code>{乱数}.cipher.bin</code> を、電子メールなど任意の方法で受信者へ送信します。</li>
+        </ol>
+    </section>
+
+    <section>
+        <h3>STEP3: 暗号データを復号する (操作: 受信者)</h3>
+
+        <ol>
+            <li>受信者は、ツールの各フォームへファイルを入力します。</li>
+            <ul>
+                <li><a href="#decrypt_file">データ</a> : <code>{乱数}.cipher.bin</code> (送信者から受け取ったもの)</li>
+                <li><a href="#decrypt_public">公開鍵(復号)</a> : <code>{乱数}.encrypt.pub</code> (送信者から受け取ったもの)</li>
+                <li><a href="#decrypt-secret">秘密鍵</a> : <code>{乱数}.encrypt.sec</code> (自身で生成したもの)</li>
+                <li><a href="#verify_public">公開鍵(検証/任意)</a> : <code>{乱数}.sign.pub</code> (送信者から受け取ったもの)</li>
+            </ul>
+            <li><a href="#decrypt-execute">復号</a> ボタンを押し、処理を開始します。</li>
+            <li>処理が完了すると、元のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
+        </ol>
+    </section>
+
+    <h2 class="c_title_2 c_flex_center">技術仕様</h2>
+
+    <section>
+        <ul>
+            <li>実装: <a target="_blank" href="https://www.w3.org/TR/WebCryptoAPI">Web Crypto API</a></li>
+            <li>鍵交換: <a target="_blank" href="https://ja.wikipedia.org/wiki/楕円曲線ディフィー・ヘルマン鍵共有">ECDH</a></li>
+            <li>署名: <a target="_blank" href="https://ja.wikipedia.org/wiki/楕円曲線DSA">ECDSA</a></li>
+            <li>公開鍵パラメータ: <a target="_blank" href="https://datatracker.ietf.org/doc/html/rfc4492">NIST P-521</a> - 521bit Key</li>
+            <li>共通鍵暗号: <a target="_blank" href="https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard">AES-GCM</a> - 256bit Key, 128bit Tag, 128bit IV</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>このアプリについて</h2>
+
+        <ul>
+            <li>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</li>
+            <li>MITライセンス準拠のオープンソースソフトウェアとなります。</li>
+            <li><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></li>
+        </ul>
+    </section>
 </main>
