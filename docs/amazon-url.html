@@ -114,16 +114,12 @@
 
         & > dd {
             margin: 0;
-        }
-
-        &.form > dd {
             text-align: center;
 
             &:not(:last-of-type) {
                 margin-bottom: 16px;
             }
         }
-
     }
 
     input, button {
@@ -178,7 +174,7 @@
     <section>
         <h2>リンク短縮</h2>
 
-        <dl class="form">
+        <dl>
             <dd><input type="url" placeholder="ここにAmazonリンクを貼付" id="input_url"></dd>
             <dd><button type="button" id="convert">リンク短縮</button></dd>
         </dl>
@@ -187,7 +183,7 @@
     <section>
         <h2>処理結果</h2>
 
-        <dl class="form">
+        <dl>
             <dd><input readonly type="url" placeholder="最短URL" id="output_url"></dd>
             <dd><input readonly type="text" placeholder="商品コード(ASIN)" id="output_asin"></dd>
             <dd><input readonly type="text" placeholder="商品名" id="output_pn"></dd>
@@ -197,10 +193,10 @@
     <section>
         <h2>このアプリについて</h2>
 
-        <dl>
-            <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
-            <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-            <dd><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
-        </dl>
+        <ul>
+            <li>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</li>
+            <li>MITライセンス準拠のオープンソースソフトウェアとなります。</li>
+            <li><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></li>
+        </ul>
     </section>
 </main>

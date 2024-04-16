@@ -154,16 +154,12 @@
 
         & > dd {
             margin: 0;
-        }
-
-        &.form > dd {
             text-align: center;
 
             &:not(:last-of-type) {
                 margin-bottom: 16px;
             }
         }
-
     }
 
     input, button {
@@ -240,7 +236,7 @@
     <section>
         <h2>データからPNGを生成</h2>
 
-        <dl class="form">
+        <dl>
             <dd><input type="file" id="input_bin"></dd>
             <dd><button type="button" id="encode">PNG生成</button></dd>
             <dd><img hidden id="output_png"></dd>
@@ -250,7 +246,7 @@
     <section>
         <h2>PNGからデータを抽出</h2>
 
-        <dl class="form">
+        <dl>
             <dd><input type="file" accept="*.png,image/png" id="input_png"></dd>
             <dd><button type="button" id="decode">データ抽出</button></dd>
             <dd><a hidden id="output_bin"></a></dd>
@@ -260,10 +256,10 @@
     <section>
         <h2>このアプリについて</h2>
 
-        <dl>
-            <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
-            <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-            <dd><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
-        </dl>
+        <ul>
+            <li>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</li>
+            <li>MITライセンス準拠のオープンソースソフトウェアとなります。</li>
+            <li><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></li>
+        </ul>
     </section>
 </main>

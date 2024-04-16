@@ -125,16 +125,12 @@
 
         & > dd {
             margin: 0;
-        }
-
-        &.form > dd {
             text-align: center;
 
             &:not(:last-of-type) {
                 margin-bottom: 16px;
             }
         }
-
     }
 
     textarea, button {
@@ -191,7 +187,7 @@
     <section>
         <h2>カート抽出</h2>
 
-        <dl class="form">
+        <dl>
             <dd><textarea placeholder="ここにカート内容を貼付" id="input_cart"></textarea></dd>
             <dd><button type="button" id="convert">カート抽出</button></dd>
         </dl>
@@ -200,7 +196,7 @@
     <section>
         <h2>処理結果</h2>
 
-        <dl class="form">
+        <dl>
             <dd><textarea readonly placeholder="カート内容(一括入力形式)" id="output_cart"></textarea></dd>
             <dd><textarea readonly placeholder="カート内容詳細(JSON)" id="output_json"></textarea></dd>
         </dl>
@@ -219,10 +215,10 @@
     <section>
         <h2>このアプリについて</h2>
 
-        <dl>
-            <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
-            <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-            <dd><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
-        </dl>
+        <ul>
+            <li>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</li>
+            <li>MITライセンス準拠のオープンソースソフトウェアとなります。</li>
+            <li><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></li>
+        </ul>
     </section>
 </main>
