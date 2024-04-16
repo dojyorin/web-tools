@@ -94,11 +94,10 @@
     document.getElementById("keygen_encrypt").onclick = async()=>{
         try{
             const {publicKey, privateKey} = await pkGenerateECDH();
+            const uuid = crypto.randomUUID();
 
-            const id = randomHex(6);
-
-            fsWrite(`${id}.enc.pubkey`, publicKey);
-            fsWrite(`${id}.enc.prikey`, privateKey);
+            fsWrite(`${uuid}.enc.pub`, publicKey);
+            fsWrite(`${uuid}.enc.key`, privateKey);
 
             dialogNotify("鍵生成が完了しました", "green");
         }
@@ -109,15 +108,12 @@
     };
 
     document.getElementById("keygen_sign").onclick = async()=>{
-        dialogNotify("鍵生成を開始しました", "green");
-
         try{
             const {publicKey, privateKey} = await pkGenerateECDSA();
+            const uuid = crypto.randomUUID();
 
-            const id = randomHex(6);
-
-            fsWrite(`${id}.sig.pubkey`, publicKey);
-            fsWrite(`${id}.sig.prikey`, privateKey);
+            fsWrite(`${uuid}.sig.pub`, publicKey);
+            fsWrite(`${uuid}.sig.key`, privateKey);
 
             dialogNotify("鍵生成が完了しました", "green");
         }
