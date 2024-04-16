@@ -10,7 +10,7 @@
 
 <script async type="module">
     import {cleanText} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.10/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
+    import {dialogNotify} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} AkizukiProduct
@@ -20,9 +20,9 @@
     * @prop {number} quantity
     */
 
-    docI("convert").onclick = async()=>{
+    document.getElementById("convert").onclick = async()=>{
         /** @type {string} */
-        const text = cleanText(docI("input_cart").value);
+        const text = cleanText(document.getElementById("input_cart").value);
         /** @type {AkizukiProduct[]} */
         const products = [];
 
@@ -42,8 +42,8 @@
                 throw new Error("商品テーブルが存在しません");
             }
 
-            docI("output_cart").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
-            docI("output_json").value = JSON.stringify(products, undefined, 4);
+            document.getElementById("output_cart").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
+            document.getElementById("output_json").value = JSON.stringify(products, undefined, 4);
 
             dialogNotify("変換しました", "green");
         }

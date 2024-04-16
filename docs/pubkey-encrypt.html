@@ -10,7 +10,7 @@
 
 <script async type="module">
     import {pkEncrypt, pkDecrypt, pkSign, pkVerify, pkGenerateECDH, pkGenerateECDSA, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.10/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify, docI, docN, docC, radioActive, fsWrite, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
+    import {dialogNotify, fsWrite, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
     for(const select of document.getElementsByName("tab_select")){
         select.onchange = ({target})=>{
@@ -33,14 +33,12 @@
         };
     }
 
-    docI("encrypt").onclick = async()=>{
-        dialogNotify("暗号化を開始しました", "green");
-
+    document.getElementById("encrypt").onclick = async()=>{
         try{
-            const files = await fileList(docI("encrypt_files"));
-            const [publicKey] = await fileList(docI("encrypt_public"));
-            const [privateKeyE] = await fileList(docI("encrypt_private"));
-            const [privateKeyS] = await fileList(docI("sign_private"));
+            const files = await fileList(document.getElementById("encrypt_files"));
+            const [publicKey] = await fileList(document.getElementById("encrypt_public"));
+            const [privateKeyE] = await fileList(document.getElementById("encrypt_private"));
+            const [privateKeyS] = await fileList(document.getElementById("sign_private"));
 
             if(!files.length || !publicKey || !privateKeyE){
                 dialogNotify("ファイルを入力してください", "red");
@@ -73,15 +71,13 @@
         }
     };
 
-    docI("decrypt").onclick = async()=>{
-        dialogNotify("復号を開始しました", "green");
-
+    document.getElementById("decrypt").onclick = async()=>{
         try{
-            const [cipher] = await fileList(docI("decrypt_file"));
-            const [publicKeyE] = await fileList(docI("decrypt_public"));
-            const [privateKey] = await fileList(docI("decrypt_private"));
-            const [publicKeyV] = await fileList(docI("verify_public"));
-            const [signature] = await fileList(docI("verify_signature"));
+            const [cipher] = await fileList(document.getElementById("decrypt_file"));
+            const [publicKeyE] = await fileList(document.getElementById("decrypt_public"));
+            const [privateKey] = await fileList(document.getElementById("decrypt_private"));
+            const [publicKeyV] = await fileList(document.getElementById("verify_public"));
+            const [signature] = await fileList(document.getElementById("verify_signature"));
 
             if(!cipher || !publicKeyE || !privateKey){
                 dialogNotify("ファイルを入力してください", "red");
@@ -119,9 +115,7 @@
         }
     };
 
-    docI("generate").onclick = async()=>{
-        dialogNotify("鍵生成を開始しました", "green");
-
+    document.getElementById("generate").onclick = async()=>{
         try{
             const {publicKey, privateKey} = await pkGenerateECDH();
 
@@ -138,7 +132,7 @@
         }
     };
 
-    docI("generate_sign").onclick = async()=>{
+    document.getElementById("generate_sign").onclick = async()=>{
         dialogNotify("鍵生成を開始しました", "green");
 
         try{

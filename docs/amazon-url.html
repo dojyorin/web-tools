@@ -10,11 +10,11 @@
 
 <script async type="module">
     import {cleanText} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.10/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
+    import {dialogNotify} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
-    docI("convert").onclick = async()=>{
+    document.getElementById("convert").onclick = async()=>{
         /** @type {string} */
-        const text = cleanText(docI("input_url").value);
+        const text = cleanText(document.getElementById("input_url").value);
 
         try{
             const {origin, hostname, pathname} = new URL(text);
@@ -30,9 +30,9 @@
                 throw new Error("商品URLではありません");
             }
 
-            docI("output_url").value = `${origin}/dp/${asin}`;
-            docI("output_asin").value = asin;
-            docI("output_pn").value = cleanText(decodeURIComponent(pn ?? "")) || "(取得失敗)";
+            document.getElementById("output_url").value = `${origin}/dp/${asin}`;
+            document.getElementById("output_asin").value = asin;
+            document.getElementById("output_pn").value = cleanText(decodeURIComponent(pn ?? "")) || "(取得失敗)";
 
             dialogNotify("変換しました", "green");
         }
