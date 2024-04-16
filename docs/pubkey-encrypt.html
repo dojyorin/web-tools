@@ -160,17 +160,13 @@
 
     body {
         user-select: none;
+        height: 100dvh;
+        width: 100dvw;
         margin: 0;
         padding: 0;
     }
 
-    header, main {
-        position: fixed;
-        width: 100dvw;
-    }
-
     header {
-        top: 0;
         height: var(--header-height);
         background-color: #6611CC;
 
@@ -220,7 +216,6 @@
     }
 
     main {
-        top: var(--header-height);
         height: calc(100dvh - var(--header-height));
         background-color: #202020;
         overflow: clip scroll;
