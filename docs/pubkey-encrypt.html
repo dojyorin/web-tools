@@ -14,8 +14,8 @@
 
     for(const select of document.getElementsByName("tab_select")){
         select.onchange = ({target})=>{
-            for(const page of document.getElementsByTagName("main")){
-                page.setAttribute("hidden", "");
+            for(const tab of document.getElementsByTagName("main")){
+                tab.setAttribute("hidden", "");
             }
 
             for(const input of document.getElementsByTagName("input")){
@@ -34,73 +34,52 @@
     }
 
     document.getElementById("encrypt").onclick = async()=>{
+        const files = await fileList(document.getElementById("encrypt_files"));
+        const [pub] = await fileList(document.getElementById("encrypt_pub"));
+        const [key] = await fileList(document.getElementById("encrypt_key"));
+
         try{
-            const files = await fileList(document.getElementById("encrypt_files"));
-            const [publicKey] = await fileList(document.getElementById("encrypt_public"));
-            const [privateKeyE] = await fileList(document.getElementById("encrypt_private"));
-
-            if(!files.length || !publicKey || !privateKeyE){
-                dialogNotify("ファイルを入力してください", "red");
-                return;
+            if(!files.length || !pub || !key){
+                throw new Error("ファイルを選択してください");
             }
 
-            const id = randomHex(6);
-
-            const archive = await minipackEncode(files);
-            const compress = await deflateEncode(archive);
-
-            if(privateKeyS){
-                const signature = await pkSign(privateKeyS[1], compress);
-
-                fsWrite(`${id}.sig`, signature);
-            }
+            const minipack = await minipackEncode(files);
+            const deflate = await deflateEncode(minipack);
 
             const cipher = await pkEncrypt({
-                publicKey: publicKey[1],
-                privateKey: privateKeyE[1]
-            }, compress);
+                publicKey: pub.body,
+                privateKey: key.body
+            }, deflate);
 
-            fsWrite(`${id}.enc`, cipher);
+            fsWrite(`${id}.bin`, cipher);
 
             dialogNotify("暗号化が完了しました", "green");
         }
         catch(e){
             console.error(e);
-            dialogNotify("暗号化中にエラーが発生しました", "red");
+            dialogNotify("エラーが発生しました", "red");
         }
     };
 
     document.getElementById("decrypt").onclick = async()=>{
+        const [cipher] = await fileList(document.getElementById("decrypt_file"));
+        const [pub] = await fileList(document.getElementById("decrypt_pub"));
+        const [key] = await fileList(document.getElementById("decrypt_key"));
+
         try{
-            const [cipher] = await fileList(document.getElementById("decrypt_file"));
-            const [publicKeyE] = await fileList(document.getElementById("decrypt_public"));
-            const [privateKey] = await fileList(document.getElementById("decrypt_private"));
-
-            if(!cipher || !publicKeyE || !privateKey){
-                dialogNotify("ファイルを入力してください", "red");
-                return;
+            if(!cipher || !pub || !key){
+                throw new Error("ファイルを選択してください");
             }
 
-            const compress = await pkDecrypt({
-                publicKey: publicKeyE[1],
-                privateKey: privateKey[1]
-            }, cipher[1]);
+            const deflate = await pkDecrypt({
+                publicKey: pub.body,
+                privateKey: key.body,
+            }, cipher.body);
 
-            if(publicKeyV && signature){
-                const verify = await pkVerify(signature[1], publicKeyV[1], compress);
+            const minipack = await deflateDecode(deflate);
+            const files = await minipackDecode(minipack);
 
-                if(!verify){
-                    clearInputFile();
-
-                    dialogNotify("署名が一致しないため復号を中止しました", "red");
-                    return;
-                }
-            }
-
-            const archive = await deflateDecode(compress);
-            const files = await minipackDecode(archive);
-
-            for(const [name, body] of files){
+            for(const {name, body} of files){
                 fsWrite(name, body);
             }
 
@@ -108,7 +87,7 @@
         }
         catch(e){
             console.error(e);
-            dialogNotify("復号中にエラーが発生しました", "red");
+            dialogNotify("エラーが発生しました", "red");
         }
     };
 
@@ -125,7 +104,7 @@
         }
         catch(e){
             console.error(e);
-            dialogNotify("鍵生成中にエラーが発生しました", "red");
+            dialogNotify("エラーが発生しました", "red");
         }
     };
 
@@ -144,7 +123,7 @@
         }
         catch(e){
             console.error(e);
-            dialogNotify("鍵生成中にエラーが発生しました", "red");
+            dialogNotify("エラーが発生しました", "red");
         }
     };
 </script>
@@ -339,8 +318,8 @@
 
         <dl>
             <dd><input multiple type="file" id="encrypt_files"></dd>
-            <dd><input type="file" accept=".enc.pubkey" id="encrypt_public"></dd>
-            <dd><input type="file" accept=".enc.prikey" id="encrypt_private"></dd>
+            <dd><input type="file" accept=".pub" id="encrypt_pub"></dd>
+            <dd><input type="file" accept=".key" id="encrypt_key"></dd>
             <dd><button type="button" id="encrypt">&#x1F512;暗号化</button></dd>
         </dl>
     </section>
@@ -351,9 +330,9 @@
         <h2>ファイルを復号</h2>
 
         <dl>
-            <dd><input type="file" accept=".enc" id="decrypt_file"> </dd>
-            <dd><input type="file" accept=".enc.pubkey" id="decrypt_public"></dd>
-            <dd><input type="file" accept=".enc.prikey" id="decrypt_private"></dd>
+            <dd><input type="file" id="decrypt_file"></dd>
+            <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
+            <dd><input type="file" accept=".key" id="decrypt_key"></dd>
             <dd><button type="button" id="decrypt">&#x1F513;復号</button></dd>
         </dl>
     </section>
@@ -364,9 +343,9 @@
         <h2>ファイルに署名</h2>
 
         <dl>
-            <dd><input type="file" accept=".enc" id="decrypt_file"> </dd>
-            <dd><input type="file" accept=".enc.prikey" id="decrypt_private"></dd>
-            <dd><button type="button" id="decrypt">&#x1F513;署名</button></dd>
+            <dd><input type="file" id="sign_file"></dd>
+            <dd><input type="file" accept=".key" id="sign_key"></dd>
+            <dd><button type="button" id="sign">&#x1F513;署名</button></dd>
         </dl>
     </section>
 </main>
@@ -376,10 +355,10 @@
         <h2>ファイルの署名を検証</h2>
 
         <dl>
-            <dd><input type="file" accept=".enc" id="decrypt_file"> </dd>
-            <dd><input type="file" accept=".enc.pubkey" id="decrypt_public"></dd>
-            <dd><input type="file" accept=".enc.prikey" id="decrypt_private"></dd>
-            <dd><button type="button" id="decrypt">&#x1F513;検証</button></dd>
+            <dd><input type="file" id="verify_file"></dd>
+            <dd><input type="file" accept=".sig" id="verify_sign"></dd>
+            <dd><input type="file" accept=".pub" id="verify_pub"></dd>
+            <dd><button type="button" id="verify">&#x1F513;検証</button></dd>
         </dl>
     </section>
 </main>
