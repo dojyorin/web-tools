@@ -155,11 +155,7 @@
     }
 
     ::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    :focus {
-        outline: none !important;
+        display: none;
     }
 
     body {
@@ -262,7 +258,8 @@
         }
     }
 
-    input, textarea, button, label {
+    input, textarea, select, button, label {
+        outline: none;
         box-sizing: border-box;
         border: none;
         -webkit-tap-highlight-color: #00000000;
