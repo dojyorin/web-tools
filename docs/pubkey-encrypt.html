@@ -12,17 +12,6 @@
     import {pkEncrypt, pkDecrypt, pkSign, pkVerify, pkGenerateECDH, pkGenerateECDSA, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.10/mod.pure.ts?bundle&target=esnext";
     import {dialogNotify, docI, docN, docC, radioActive, fsWrite, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
 
-    if(location.hash || location.search){
-        location.replace(`${location.origin}${location.pathname}`);
-    }
-
-    delete globalThis.fetch;
-    delete globalThis.XMLHttpRequest;
-    delete globalThis.WebTransport;
-    delete globalThis.WebSocket;
-    delete globalThis.RTCPeerConnection;
-    delete globalThis.HTMLFormElement.prototype.submit;
-
     function clearInputFile(){
         for(const input of docC("j_input_file")){
             input.value = "";
@@ -40,7 +29,7 @@
         };
     }
 
-    docI("execute_encrypt").onclick = async()=>{
+    docI("encrypt").onclick = async()=>{
         dialogNotify("暗号化を開始しました", "green");
 
         try{
@@ -83,7 +72,7 @@
         }
     };
 
-    docI("execute_decrypt").onclick = async()=>{
+    docI("decrypt").onclick = async()=>{
         dialogNotify("復号を開始しました", "green");
 
         try{
@@ -132,7 +121,7 @@
         }
     };
 
-    docI("generate_encrypt").onclick = async()=>{
+    docI("generate").onclick = async()=>{
         dialogNotify("鍵生成を開始しました", "green");
 
         try{
@@ -215,6 +204,33 @@
             justify-content: center;
             align-items: center;
             height: 36px;
+
+            & > label, & > input {
+                height: 100%;
+                width: calc(100dvw / 4);
+                max-width: 200px;
+            }
+
+            & > label {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 16px;
+                height: 100%;
+
+                &:hover {
+                    background-color: #8639FF;
+                }
+
+                &:active {
+                    background-color: #9856F8;
+                }
+            }
+
+            & > input:checked + label {
+                background-color: #904EFD;
+            }
         }
     }
 
@@ -226,8 +242,22 @@
 
         & > article {
             & > section {
-                margin: 20px auto;
-                max-width: 800px;
+                max-width: 500px;
+                margin: 0 auto 56px auto;
+                padding: 0 16px;
+
+                &:first-of-type {
+                    margin-top: 16px;
+                }
+
+                &:last-of-type {
+                    margin-bottom: 16px;
+                }
+
+                & > h2 {
+                    text-align: center;
+                    margin: 0 0 16px 0;
+                }
             }
         }
     }
@@ -237,27 +267,18 @@
 
         & > dd {
             margin: 0;
-        }
+            text-align: center;
 
-        & > dt {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 0 0 4px 0;
+            &:not(:last-of-type) {
+                margin-bottom: 16px;
+            }
         }
     }
 
-    input, label, button {
+    input, button, label {
         box-sizing: border-box;
         border: none;
         -webkit-tap-highlight-color: #00000000;
-    }
-
-    input[type="file"] {
-        cursor: pointer;
-
-        &::file-selector-button {
-            display: none;
-        }
     }
 
     button {
@@ -270,69 +291,13 @@
         background-color: #505050;
     }
 
-    .c_flex_center {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .c_title_1 {
-        margin: 0;
-        font-size: 28px;
-    }
-
-    .c_title_2 {
-        margin: 16px 0;
-        font-size: 22px;
-    }
-
-    .c_tab_button {
-        height: 100%;
-        width: calc(100dvw / 4);
-        max-width: 200px;
-
-        & > label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 16px;
-            height: 100%;
-
-            &:hover {
-                background-color: #8639FF;
-            }
-
-            &:active {
-                background-color: #9856F8;
-            }
-        }
-
-        & > input:checked + label {
-            background-color: #904EFD;
-        }
-    }
-
-    .c_input_list {
-        list-style: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        margin: 0;
-        padding: 0;
-    }
-
-    .c_input_file {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 28px;
+    input[type="file"] {
+        cursor: pointer;
+        padding: 8px;
         width: 400px;
-        max-width: calc(100dvw - 40px);
-        margin: 4px 0;
-        padding: 4px;
+        max-width: 100%;
         border-radius: 4px;
+        font-size: 16px;
         background-color: #444444;
 
         &:hover {
@@ -343,23 +308,20 @@
             background-color: #777777;
         }
 
-        & > label, & > input {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            width: calc(100% / 2);
+        &::file-selector-button {
+            cursor: pointer;
+            margin: 0 16px 0 8px;
+            padding: 0;
+            border: none;
+            background-color: transparent;
         }
     }
 
-    .c_start_button {
-        font-size: 20px;
-        margin: 8px;
-        padding: 0;
-        height: 36px;
+    #encrypt, #decrypt, #generate {
+        font-size: 24px;
+        height: 48px;
         width: 100%;
-        max-width: 180px;
-        color: #FFFFFF;
+        max-width: 200px;
         border-radius: 4px;
         background-color: #2299FF;
 
@@ -379,126 +341,62 @@
     <h1>公開鍵暗号化ツール</h1>
 
     <nav>
-        <div class="c_tab_button">
-            <input hidden checked type="radio" name="tab_switch" id="tab_switch_1" value="tab_1">
-            <label for="tab_switch_1">暗号化</label>
-        </div>
-
-        <div class="c_tab_button">
-            <input hidden type="radio" name="tab_switch" id="tab_switch_2" value="tab_2">
-            <label for="tab_switch_2">復号</label>
-        </div>
-
-        <div class="c_tab_button">
-            <input hidden type="radio" name="tab_switch" id="tab_switch_3" value="tab_3">
-            <label for="tab_switch_3">鍵生成</label>
-        </div>
-
-        <div class="c_tab_button">
-            <input hidden type="radio" name="tab_switch" id="tab_switch_4" value="tab_4">
-            <label for="tab_switch_4">ヘルプ</label>
-        </div>
+        <input hidden checked type="radio" name="tab_switch" id="tab_switch_1" value="tab_1">
+        <label for="tab_switch_1">暗号化</label>
+        <input hidden type="radio" name="tab_switch" id="tab_switch_2" value="tab_2">
+        <label for="tab_switch_2">復号</label>
+        <input hidden type="radio" name="tab_switch" id="tab_switch_3" value="tab_3">
+        <label for="tab_switch_3">鍵生成</label>
+        <input hidden type="radio" name="tab_switch" id="tab_switch_4" value="tab_4">
+        <label for="tab_switch_4">ヘルプ</label>
     </nav>
 </header>
 
 <main>
     <article class="j_tab_page" id="tab_1">
-        <h2 class="c_title_2 c_flex_center">ファイルを暗号化</h2>
+        <section>
+            <h2>ファイルを暗号化</h2>
 
-        <ul class="c_input_list">
-            <li>
-                <div class="c_input_file">
-                    <label for="encrypt_files">暗号化対象ファイル</label>
-                    <input multiple type="file" class="j_input_file" id="encrypt_files">
-                </div>
-            </li>
-
-            <li>
-                <div class="c_input_file">
-                    <label for="encrypt_public">公開鍵</label>
-                    <input type="file" accept=".enc.pubkey" class="j_input_file" id="encrypt_public">
-                </div>
-            </li>
-
-            <li>
-                <div class="c_input_file">
-                    <label for="encrypt_private">秘密鍵</label>
-                    <input type="file" accept=".enc.prikey" class="j_input_file" id="encrypt_private">
-                </div>
-            </li>
-
-            <li>
-                <div class="c_input_file">
-                    <label for="sign_private">署名秘密鍵 (任意)</label>
-                    <input type="file" accept=".sig.prikey" class="j_input_file" id="sign_private">
-                </div>
-            </li>
-        </ul>
-
-        <section class="c_flex_center">
-            <button type="button" class="c_start_button" id="execute_encrypt">&#x1F512;暗号化</button>
+            <dl>
+                <dd><input multiple type="file" class="j_input_file" id="encrypt_files"></dd>
+                <dd><input type="file" accept=".enc.pubkey" class="j_input_file" id="encrypt_public"></dd>
+                <dd><input type="file" accept=".enc.prikey" class="j_input_file" id="encrypt_private"></dd>
+                <dd><input type="file" accept=".sig.prikey" class="j_input_file" id="sign_private"></dd>
+                <dd><button type="button" id="encrypt">&#x1F512;暗号化</button></dd>
+            </dl>
         </section>
     </article>
 
     <article hidden class="j_tab_page" id="tab_2">
-        <h2 class="c_title_2 c_flex_center">ファイルを復号</h2>
+        <section>
+            <h2>ファイルを復号</h2>
 
-        <ul class="c_input_list">
-            <li>
-                <div class="c_input_file">
-                    <label for="decrypt_file">暗号ファイル</label>
-                    <input type="file" accept=".enc" class="j_input_file" id="decrypt_file">
-                </div>
-            </li>
-
-            <li>
-                <div class="c_input_file">
-                    <label for="decrypt_public">公開鍵</label>
-                    <input type="file" accept=".enc.pubkey" class="j_input_file" id="decrypt_public">
-                </div>
-            </li>
-
-            <li>
-                <div class="c_input_file">
-                    <label for="decrypt_private">秘密鍵</label>
-                    <input type="file" accept=".enc.prikey" class="j_input_file" id="decrypt_private">
-                </div>
-
-            </li>
-
-            <li>
-                <div class="c_input_file">
-                    <label for="verify_signature">電子署名 (任意)</label>
-                    <input type="file" accept=".sig" class="j_input_file" id="verify_signature">
-                </div>
-            </li>
-
-            <li>
-                <div class="c_input_file">
-                    <label for="verify_public">署名公開鍵 (任意)</label>
-                    <input type="file" accept=".sig.pubkey" class="j_input_file" id="verify_public">
-                </div>
-            </li>
-        </ul>
-
-        <section class="c_flex_center">
-            <button type="button" class="c_start_button" id="execute_decrypt">&#x1F513;復号</button>
+            <dl>
+                <dd><input type="file" accept=".enc" class="j_input_file" id="decrypt_file"> </dd>
+                <dd><input type="file" accept=".enc.pubkey" class="j_input_file" id="decrypt_public"></dd>
+                <dd><input type="file" accept=".enc.prikey" class="j_input_file" id="decrypt_private"></dd>
+                <dd><input type="file" accept=".sig" class="j_input_file" id="verify_signature"></dd>
+                <dd><input type="file" accept=".sig.pubkey" class="j_input_file" id="verify_public"></dd>
+                <dd><button type="button" id="decrypt">&#x1F513;復号</button></dd>
+            </dl>
         </section>
     </article>
 
     <article hidden class="j_tab_page" id="tab_3">
-        <h2 class="c_title_2 c_flex_center">鍵を生成</h2>
+        <section>
+            <h2>鍵を生成</h2>
 
-        <section class="c_flex_center">
-            <button type="button" class="c_start_button" id="generate_encrypt">&#x1F511;暗号化鍵生成</button>
-            <button type="button" class="c_start_button" id="generate_sign">&#x1F511;署名鍵生成</button>
+            <dl>
+                <dd><button type="button" id="generate">&#x1F511;暗号化鍵生成</button></dd>
+                <dd><button type="button" id="generate_sign">&#x1F511;署名鍵生成</button></dd>
+            </dl>
         </section>
     </article>
 
     <article hidden class="j_tab_page" id="tab_4">
-        <h2 class="c_title_2 c_flex_center">使用方法</h2>
-
         <section>
+            <h2>使用方法</h2>
+
             <h3>STEP0: 署名鍵を生成する (任意) (操作: 送信者)</h3>
 
             <ol>
@@ -582,16 +480,14 @@
             </ul>
         </section>
 
-        <h2 class="c_title_2 c_flex_center">安全性</h2>
-
         <section>
-            <dl>
-                <dt>このアプリについて</dt>
-                <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
-                <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-                <dd>リポジトリ: <a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
-                <dd>お問い合わせ: <a target="_blank" href="https://twitter.com/dojyorin">Twitter</a></dd>
-            </dl>
+            <h2>このアプリについて</h2>
+
+            <ul>
+                <li>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</li>
+                <li>MITライセンス準拠のオープンソースソフトウェアとなります。</li>
+                <li><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></li>
+            </ul>
         </section>
     </article>
 </main>
