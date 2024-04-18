@@ -27,8 +27,8 @@
         const products = [];
 
         try{
-            for(const record of text.match(/[1-9][0-9]{5}\t.+?\n.+?\n￥[1-9][0-9,]*\n[1-9][0-9]*/g) ?? []){
-                const [, code, name, price, quantity] = record.match(/^([1-9][0-9]{5})\t(.+?)\n.+?\n￥(.+?)\n([1-9][0-9]*)$/) ?? [];
+            for(const record of text.match(/[1-9][0-9]{5}\t(.|\n)+?\n￥[1-9][0-9,]*\n[1-9][0-9]*/g) ?? []){
+                const [, code, , , name, price, quantity] = record.match(/^([1-9][0-9]{5})(\t|(.|\n)+?)(.+?)\n・.+?\n￥([1-9][0-9,]*)\n([1-9][0-9]*)$/) ?? [];
 
                 products.push({
                     code: Number(code),
