@@ -39,10 +39,6 @@
         const [key] = await fileList(document.getElementById("encrypt_key"));
 
         try{
-            if(!files.length || !pub || !key){
-                throw new Error("ファイルを選択してください");
-            }
-
             const minipack = await minipackEncode(files);
             const deflate = await deflateEncode(minipack);
 
@@ -51,7 +47,7 @@
                 privateKey: key.body
             }, deflate);
 
-            fsWrite(`${id}.bin`, cipher);
+            fsWrite(crypto.randomUUID(), cipher);
 
             dialogNotify("暗号化が完了しました", "green");
         }
@@ -62,15 +58,11 @@
     };
 
     document.getElementById("decrypt").onclick = async()=>{
-        const [cipher] = await fileList(document.getElementById("decrypt_file"));
+        const [cipher] = await fileList(document.getElementById("decrypt_cipher"));
         const [pub] = await fileList(document.getElementById("decrypt_pub"));
         const [key] = await fileList(document.getElementById("decrypt_key"));
 
         try{
-            if(!cipher || !pub || !key){
-                throw new Error("ファイルを選択してください");
-            }
-
             const deflate = await cryptoDecrypt({
                 publicKey: pub.body,
                 privateKey: key.body,
@@ -84,6 +76,44 @@
             }
 
             dialogNotify("復号が完了しました", "green");
+        }
+        catch(e){
+            console.error(e);
+            dialogNotify("エラーが発生しました", "red");
+        }
+    };
+
+    document.getElementById("sign").onclick = async()=>{
+        const [file] = await fileList(document.getElementById("sign_file"));
+        const [key] = await fileList(document.getElementById("sign_key"));
+
+        try{
+            const sign = await cryptoSign(file.body, key.body);
+
+            fsWrite(`${file.name}.sig`, sign);
+
+            dialogNotify("署名が完了しました", "green");
+        }
+        catch(e){
+            console.error(e);
+            dialogNotify("エラーが発生しました", "red");
+        }
+    };
+
+    document.getElementById("verify").onclick = async()=>{
+        const [file] = await fileList(document.getElementById("verify_file"));
+        const [pub] = await fileList(document.getElementById("verify_pub"));
+        const [sign] = await fileList(document.getElementById("verify_sig"));
+
+        try{
+            const ok = await cryptoVerify(file.body, pub.body, sign.body);
+
+            if(ok){
+                dialogNotify("正当な署名です", "green");
+            }
+            else{
+                dialogNotify("無効な署名です", "green");
+            }
         }
         catch(e){
             console.error(e);
@@ -326,7 +356,7 @@
         <h2>ファイルを復号</h2>
 
         <dl>
-            <dd><input type="file" id="decrypt_file"></dd>
+            <dd><input type="file" id="decrypt_cipher"></dd>
             <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
             <dd><input type="file" accept=".key" id="decrypt_key"></dd>
             <dd><button type="button" id="decrypt">&#x1F513;復号</button></dd>
@@ -352,8 +382,8 @@
 
         <dl>
             <dd><input type="file" id="verify_file"></dd>
-            <dd><input type="file" accept=".sig" id="verify_sign"></dd>
             <dd><input type="file" accept=".pub" id="verify_pub"></dd>
+            <dd><input type="file" accept=".sig" id="verify_sig"></dd>
             <dd><button type="button" id="verify">&#x1F513;検証</button></dd>
         </dl>
     </section>
