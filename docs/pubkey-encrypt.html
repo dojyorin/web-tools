@@ -343,8 +343,11 @@
         <h2>ファイルを暗号化</h2>
 
         <dl>
+            <dd>暗号化するファイル</dd>
             <dd><input multiple type="file" id="encrypt_files"></dd>
+            <dd>公開鍵</dd>
             <dd><input type="file" accept=".pub" id="encrypt_pub"></dd>
+            <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="encrypt_key"></dd>
             <dd><button type="button" id="encrypt">&#x1F512;暗号化</button></dd>
         </dl>
@@ -356,8 +359,11 @@
         <h2>ファイルを復号</h2>
 
         <dl>
+            <dd>暗号化されたファイル</dd>
             <dd><input type="file" id="decrypt_cipher"></dd>
+            <dd>公開鍵</dd>
             <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
+            <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="decrypt_key"></dd>
             <dd><button type="button" id="decrypt">&#x1F513;復号</button></dd>
         </dl>
@@ -369,7 +375,9 @@
         <h2>ファイルに署名</h2>
 
         <dl>
+            <dd>署名するファイル</dd>
             <dd><input type="file" id="sign_file"></dd>
+            <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="sign_key"></dd>
             <dd><button type="button" id="sign">&#x1F513;署名</button></dd>
         </dl>
@@ -381,8 +389,11 @@
         <h2>ファイルの署名を検証</h2>
 
         <dl>
+            <dd>署名対象のファイル</dd>
             <dd><input type="file" id="verify_file"></dd>
+            <dd>公開鍵</dd>
             <dd><input type="file" accept=".pub" id="verify_pub"></dd>
+            <dd>署名ファイル</dd>
             <dd><input type="file" accept=".sig" id="verify_sig"></dd>
             <dd><button type="button" id="verify">&#x1F513;検証</button></dd>
         </dl>
