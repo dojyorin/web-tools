@@ -255,6 +255,10 @@
             &:not(:last-of-type) {
                 margin-bottom: 16px;
             }
+
+            &:nth-of-type(2n + 1) {
+                margin-bottom: 4px;
+            }
         }
     }
 
@@ -405,8 +409,10 @@
         <h2>鍵を生成</h2>
 
         <dl>
-            <dd><button type="button" id="keygen_encrypt">&#x1F511;暗号化鍵生成</button></dd>
-            <dd><button type="button" id="keygen_sign">&#x1F511;署名鍵生成</button></dd>
+            <dd>暗号化鍵</dd>
+            <dd><button type="button" id="keygen_encrypt">&#x1F511;鍵生成</button></dd>
+            <dd>署名鍵</dd>
+            <dd><button type="button" id="keygen_sign">&#x1F511;鍵生成</button></dd>
         </dl>
     </section>
 </main>
