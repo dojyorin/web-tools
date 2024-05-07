@@ -9,8 +9,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
 <script async type="module">
-    import {cleanText} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.10/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
+    import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.1.0/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.3.0/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} AkizukiProduct
@@ -20,15 +20,15 @@
     * @prop {number} quantity
     */
 
-    docI("convert").onclick = async()=>{
+    document.getElementById("convert").onclick = async()=>{
         /** @type {string} */
-        const text = cleanText(docI("input_cart").value);
+        const text = textGetReady(document.getElementById("input_cart").value);
         /** @type {AkizukiProduct[]} */
         const products = [];
 
         try{
-            for(const record of text.match(/[1-9][0-9]{5}\t.+?\n.+?\n￥.+?\n[1-9][0-9]*/g) ?? []){
-                const [, code, name, price, quantity] = record.match(/^([1-9][0-9]{5})\t(.+?)\n.+?\n￥(.+?)\n([1-9][0-9]*)$/) ?? [];
+            for(const record of text.match(/[1-9][0-9]{5}\t(.|\n)+?\n￥[1-9][0-9,]*\n[1-9][0-9]*/g) ?? []){
+                const [, code, , , name, price, quantity] = record.match(/^([1-9][0-9]{5})(\t|(.|\n)+?)(.+?)\n・.+?\n￥([1-9][0-9,]*)\n([1-9][0-9]*)$/) ?? [];
 
                 products.push({
                     code: Number(code),
@@ -42,8 +42,8 @@
                 throw new Error("商品テーブルが存在しません");
             }
 
-            docI("output_cart").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
-            docI("output_json").value = JSON.stringify(products, undefined, 4);
+            document.getElementById("output_cart").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
+            document.getElementById("output_json").value = JSON.stringify(products, undefined, 4);
 
             dialogNotify("変換しました", "green");
         }
@@ -60,26 +60,18 @@
     }
 
     ::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    :focus {
-        outline: none !important;
+        display: none;
     }
 
     body {
         user-select: none;
+        height: 100dvh;
+        width: 100dvw;
         margin: 0;
         padding: 0;
     }
 
-    header, main {
-        position: fixed;
-        width: 100dvw;
-    }
-
     header {
-        top: 0;
         height: var(--header-height);
         background-color: #6611CC;
 
@@ -95,7 +87,6 @@
     }
 
     main {
-        top: var(--header-height);
         height: calc(100dvh - var(--header-height));
         background-color: #202020;
         overflow: clip scroll;
@@ -125,45 +116,23 @@
 
         & > dd {
             margin: 0;
-        }
-
-        &.form > dd {
             text-align: center;
 
             &:not(:last-of-type) {
                 margin-bottom: 16px;
             }
         }
-
     }
 
-    textarea, button {
+    input, textarea, select, button, label {
+        outline: none;
         box-sizing: border-box;
         border: none;
         -webkit-tap-highlight-color: #00000000;
     }
 
-    button {
+    button[type="button"] {
         cursor: pointer;
-    }
-
-    textarea {
-        resize: none;
-        cursor: text;
-        padding: 8px;
-        height: 100px;
-        width: 400px;
-        max-width: 100%;
-        border-radius: 4px;
-        font-size: 16px;
-        background-color: #444444;
-
-        &:hover, &:focus {
-            background-color: #555555;
-        }
-    }
-
-    #convert {
         font-size: 24px;
         height: 48px;
         width: 100%;
@@ -179,6 +148,22 @@
             background-color: #77CCFF;
         }
     }
+
+    textarea {
+        resize: none;
+        cursor: text;
+        height: 100px;
+        width: 400px;
+        max-width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #444444;
+
+        &:hover, &:focus {
+            background-color: #555555;
+        }
+    }
 </style>
 
 <title>秋月カート抽出</title>
@@ -191,7 +176,7 @@
     <section>
         <h2>カート抽出</h2>
 
-        <dl class="form">
+        <dl>
             <dd><textarea placeholder="ここにカート内容を貼付" id="input_cart"></textarea></dd>
             <dd><button type="button" id="convert">カート抽出</button></dd>
         </dl>
@@ -200,9 +185,9 @@
     <section>
         <h2>処理結果</h2>
 
-        <dl class="form">
-            <dd><textarea placeholder="カート内容(一括入力形式)" id="output_cart"></textarea></dd>
-            <dd><textarea placeholder="カート内容詳細(JSON)" id="output_json"></textarea></dd>
+        <dl>
+            <dd><textarea readonly placeholder="カート内容(一括入力形式)" id="output_cart"></textarea></dd>
+            <dd><textarea readonly placeholder="カート内容詳細(JSON)" id="output_json"></textarea></dd>
         </dl>
     </section>
 
@@ -219,10 +204,10 @@
     <section>
         <h2>このアプリについて</h2>
 
-        <dl>
-            <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
-            <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-            <dd><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
-        </dl>
+        <ul>
+            <li>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</li>
+            <li>MITライセンス準拠のオープンソースソフトウェアとなります。</li>
+            <li><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></li>
+        </ul>
     </section>
 </main>

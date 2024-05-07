@@ -9,12 +9,12 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
 <script async type="module">
-    import {cleanText} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.0.10/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify, docI} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.2.2/mod.ts?bundle&target=esnext";
+    import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.1.0/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.3.0/mod.ts?bundle&target=esnext";
 
-    docI("convert").onclick = async()=>{
+    document.getElementById("convert").onclick = async()=>{
         /** @type {string} */
-        const text = cleanText(docI("input_url").value);
+        const text = textGetReady(document.getElementById("input_url").value);
 
         try{
             const {origin, hostname, pathname} = new URL(text);
@@ -30,9 +30,9 @@
                 throw new Error("商品URLではありません");
             }
 
-            docI("output_url").value = `${origin}/dp/${asin}`;
-            docI("output_asin").value = asin;
-            docI("output_pn").value = cleanText(decodeURIComponent(pn ?? "")) || "(取得失敗)";
+            document.getElementById("output_url").value = `${origin}/dp/${asin}`;
+            document.getElementById("output_asin").value = asin;
+            document.getElementById("output_pn").value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
 
             dialogNotify("変換しました", "green");
         }
@@ -49,26 +49,18 @@
     }
 
     ::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    :focus {
-        outline: none !important;
+        display: none;
     }
 
     body {
         user-select: none;
+        height: 100dvh;
+        width: 100dvw;
         margin: 0;
         padding: 0;
     }
 
-    header, main {
-        position: fixed;
-        width: 100dvw;
-    }
-
     header {
-        top: 0;
         height: var(--header-height);
         background-color: #6611CC;
 
@@ -84,7 +76,6 @@
     }
 
     main {
-        top: var(--header-height);
         height: calc(100dvh - var(--header-height));
         background-color: #202020;
         overflow: clip scroll;
@@ -114,43 +105,23 @@
 
         & > dd {
             margin: 0;
-        }
-
-        &.form > dd {
             text-align: center;
 
             &:not(:last-of-type) {
                 margin-bottom: 16px;
             }
         }
-
     }
 
-    input, button {
+    input, textarea, select, button, label {
+        outline: none;
         box-sizing: border-box;
         border: none;
         -webkit-tap-highlight-color: #00000000;
     }
 
-    button {
+    button[type="button"] {
         cursor: pointer;
-    }
-
-    input[type="text"], input[type="url"] {
-        cursor: text;
-        padding: 8px;
-        width: 400px;
-        max-width: 100%;
-        border-radius: 4px;
-        font-size: 16px;
-        background-color: #444444;
-
-        &:hover, &:focus {
-            background-color: #555555;
-        }
-    }
-
-    #convert {
         font-size: 24px;
         height: 48px;
         width: 100%;
@@ -166,6 +137,21 @@
             background-color: #77CCFF;
         }
     }
+
+    input[type="text"], input[type="url"] {
+        cursor: text;
+        height: 40px;
+        width: 400px;
+        max-width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: #444444;
+
+        &:hover, &:focus {
+            background-color: #555555;
+        }
+    }
 </style>
 
 <title>Amazonリンク短縮</title>
@@ -178,7 +164,7 @@
     <section>
         <h2>リンク短縮</h2>
 
-        <dl class="form">
+        <dl>
             <dd><input type="url" placeholder="ここにAmazonリンクを貼付" id="input_url"></dd>
             <dd><button type="button" id="convert">リンク短縮</button></dd>
         </dl>
@@ -187,9 +173,9 @@
     <section>
         <h2>処理結果</h2>
 
-        <dl class="form">
-            <dd><input readonly type="url" placeholder="最短URL" id="output_url"></dd>
-            <dd><input readonly type="text" placeholder="商品コード(ASIN)" id="output_asin"></dd>
+        <dl>
+            <dd><input readonly type="url" placeholder="URL" id="output_url"></dd>
+            <dd><input readonly type="text" placeholder="ASIN(商品コード)" id="output_asin"></dd>
             <dd><input readonly type="text" placeholder="商品名" id="output_pn"></dd>
         </dl>
     </section>
@@ -197,10 +183,10 @@
     <section>
         <h2>このアプリについて</h2>
 
-        <dl>
-            <dd>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</dd>
-            <dd>MITライセンス準拠のオープンソースソフトウェアとなります。</dd>
-            <dd><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></dd>
-        </dl>
+        <ul>
+            <li>処理はローカルで完結するため、インターネット通信を伴う処理はありません。</li>
+            <li>MITライセンス準拠のオープンソースソフトウェアとなります。</li>
+            <li><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></li>
+        </ul>
     </section>
 </main>

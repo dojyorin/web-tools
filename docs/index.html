@@ -14,26 +14,18 @@
     }
 
     ::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    :focus {
-        outline: none !important;
+        display: none;
     }
 
     body {
         user-select: none;
+        height: 100dvh;
+        width: 100dvw;
         margin: 0;
         padding: 0;
     }
 
-    header, main {
-        position: fixed;
-        width: 100dvw;
-    }
-
     header {
-        top: 0;
         height: var(--header-height);
         background-color: #6611CC;
 
@@ -49,7 +41,6 @@
     }
 
     main {
-        top: var(--header-height);
         height: calc(100dvh - var(--header-height));
         background-color: #202020;
         overflow: clip scroll;
@@ -75,7 +66,7 @@
     }
 
     ul {
-        &.form {
+        &.fit {
             width: fit-content;
             margin: 0 auto;
         }
@@ -92,7 +83,7 @@
     <section>
         <h2>Tools</h2>
 
-        <ul class="form">
+        <ul class="fit">
             <li><a target="_blank" href="./akizuki-cart.html">秋月カート抽出</a></li>
             <li><a target="_blank" href="./amazon-url.html">Amazon URL分解</a></li>
             <li><a target="_blank" href="./data-png.html">データPNG生成</a></li>
