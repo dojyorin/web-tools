@@ -42,12 +42,12 @@
             const minipack = await minipackEncode(files);
             const deflate = await deflateEncode(minipack);
 
-            const cipher = await cryptoEncrypt({
+            const encrypt = await cryptoEncrypt(deflate, {
                 publicKey: pub.body,
                 privateKey: key.body
-            }, deflate);
+            });
 
-            fsWrite(crypto.randomUUID(), cipher);
+            fsWrite(`${crypto.randomUUID()}.bin`, encrypt);
 
             dialogNotify("暗号化が完了しました", "green");
         }
@@ -58,15 +58,15 @@
     };
 
     document.getElementById("decrypt").onclick = async()=>{
-        const [cipher] = await fileList(document.getElementById("decrypt_cipher"));
+        const [file] = await fileList(document.getElementById("decrypt_file"));
         const [pub] = await fileList(document.getElementById("decrypt_pub"));
         const [key] = await fileList(document.getElementById("decrypt_key"));
 
         try{
-            const deflate = await cryptoDecrypt({
+            const deflate = await cryptoDecrypt(file.body, {
                 publicKey: pub.body,
                 privateKey: key.body,
-            }, cipher.body);
+            });
 
             const minipack = await deflateDecode(deflate);
             const files = await minipackDecode(minipack);
@@ -364,7 +364,7 @@
 
         <dl>
             <dd>暗号化されたファイル</dd>
-            <dd><input type="file" id="decrypt_cipher"></dd>
+            <dd><input type="file" id="decrypt_file"></dd>
             <dd>公開鍵</dd>
             <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
             <dd>秘密鍵</dd>
