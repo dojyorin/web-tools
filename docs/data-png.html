@@ -9,9 +9,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🖼️</text></svg>">
 
 <script async type="module">
-    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v1.0.2/mod.ts?bundle&target=esnext";
-    import {dialogNotify, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.3.0/mod.ts?bundle&target=esnext";
-
+    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v1.0.3/mod.ts?bundle&target=esnext";
+    import {dialogNotify, fileList} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
     /**
     * @typedef {object} DataMap
     * @prop {string} name
@@ -21,11 +20,11 @@
     /**
     * @param {string} id
     */
-    async function fileGet(id){
+    async function fileGet(id) {
         /** @type {DataMap[]} */
         const [file] = await fileList(document.getElementById(id));
 
-        if(!file){
+        if(!file) {
             dialogNotify("ファイルを選択してください", "red");
             throw new Error();
         }
@@ -37,7 +36,7 @@
     * @param {BlobPart} data
     * @param {string} mime
     */
-    function blobURL(data, mime){
+    function blobURL(data, mime) {
         const blob = new Blob([data], {
             type: mime
         });
@@ -45,38 +44,36 @@
         return URL.createObjectURL(blob);
     }
 
-    document.getElementById("encode").onclick = async()=>{
+    document.getElementById("encode").onclick = async () => {
         /** @type {HTMLImageElement} */
         const element = document.getElementById("output_png");
         const file = await fileGet("input_bin");
 
-        try{
+        try {
             element.src = blobURL(await pngEncode(file.body), "image/png");
             element.alt = `${file.name}.png`;
             element.hidden = false;
 
             dialogNotify("PNGを生成しました", "green");
-        }
-        catch(e){
+        } catch(e) {
             console.error(e);
             dialogNotify("エラーが発生しました", "red");
         }
     };
 
-    document.getElementById("decode").onclick = async()=>{
+    document.getElementById("decode").onclick = async () => {
         /** @type {HTMLAnchorElement} */
         const element = document.getElementById("output_bin");
         const file = await fileGet("input_png");
 
-        try{
+        try {
             element.href = blobURL(await pngDecode(file.body), "application/octet-stream");
             element.textContent = element.href;
             element.download = `${file.name}.bin`;
             element.hidden = false;
 
             dialogNotify("データを抽出しました", "green");
-        }
-        catch(e){
+        } catch(e) {
             console.error(e);
             dialogNotify("エラーが発生しました", "red");
         }
