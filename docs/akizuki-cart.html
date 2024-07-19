@@ -20,6 +20,36 @@
     * @prop {number} quantity
     */
 
+    const LS_KEY_PRODUCTS = "products";
+
+    /**
+    * @param {AkizukiProduct[]} products
+    */
+    function outputDisplay(products) {
+        document.getElementById("output_cart").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
+        document.getElementById("output_json").value = JSON.stringify(products, undefined, 4);
+    }
+
+    try {
+        /** @type {AkizukiProduct[]} */
+        const products = JSON.parse(localStorage.getItem(LS_KEY_PRODUCTS) ?? "");
+
+        if(
+            products instanceof Array
+            && products.length
+            && products.every(v => typeof v.code === "number")
+            && products.every(v => typeof v.name === "string")
+            && products.every(v => typeof v.price === "number")
+            && products.every(v => typeof v.quantity === "number")
+        ) {
+            outputDisplay(products);
+        } else {
+            throw undefined;
+        }
+    } catch {
+        localStorage.removeItem(LS_KEY_PRODUCTS);
+    }
+
     document.getElementById("convert").onclick = async () => {
         /** @type {string} */
         const text = textGetReady(document.getElementById("input_cart").value);
@@ -42,8 +72,8 @@
                 throw new Error("商品テーブルが存在しません");
             }
 
-            document.getElementById("output_cart").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
-            document.getElementById("output_json").value = JSON.stringify(products, undefined, 4);
+            outputDisplay(products);
+            localStorage.setItem(LS_KEY_PRODUCTS, json.stringify(products));
 
             dialogNotify("変換しました", "green");
         } catch(e) {
