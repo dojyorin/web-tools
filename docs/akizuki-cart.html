@@ -23,11 +23,11 @@
     const LS_KEY_PRODUCTS = "products";
 
     /**
-    * @param {AkizukiProduct[]} products
+    * @param {AkizukiProduct[]=} products
     */
     function outputDisplay(products) {
-        document.getElementById("output_cart").value = products.map(({code, quantity}) => `${code} ${quantity}`).join("\n");
-        document.getElementById("output_json").value = JSON.stringify(products, undefined, 4);
+        document.getElementById("output_cart").value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
+        document.getElementById("output_json").value = products ? JSON.stringify(products, undefined, 4) : "";
     }
 
     try {
@@ -43,11 +43,12 @@
             && products.every(v => typeof v.quantity === "number")
         ) {
             outputDisplay(products);
+            dialogNotify("前回の結果を復元しました", "green");
         } else {
             throw undefined;
         }
     } catch {
-        localStorage.removeItem(LS_KEY_PRODUCTS);
+        localStorage.clear();
     }
 
     document.getElementById("convert").onclick = async () => {
@@ -73,13 +74,18 @@
             }
 
             outputDisplay(products);
-            localStorage.setItem(LS_KEY_PRODUCTS, json.stringify(products));
+            localStorage.setItem(LS_KEY_PRODUCTS, JSON.stringify(products));
 
             dialogNotify("変換しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("エラーが発生しました", "red");
         }
+    };
+
+    document.getElementById("clear").onclick = () => {
+        outputDisplay();
+        localStorage.clear();
     };
 </script>
 
@@ -217,6 +223,7 @@
         <dl>
             <dd><textarea readonly placeholder="カート内容(一括入力形式)" id="output_cart"></textarea></dd>
             <dd><textarea readonly placeholder="カート内容詳細(JSON)" id="output_json"></textarea></dd>
+            <dd><button type="button" id="clear">クリア</button></dd>
         </dl>
     </section>
 
