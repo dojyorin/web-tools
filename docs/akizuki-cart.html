@@ -73,8 +73,8 @@
                 throw new Error("商品テーブルが存在しません");
             }
 
-            outputDisplay(products);
             localStorage.setItem(LS_KEY_PRODUCTS, JSON.stringify(products));
+            outputDisplay(products);
 
             dialogNotify("変換しました", "green");
         } catch(e) {
@@ -84,8 +84,8 @@
     };
 
     document.getElementById("clear").onclick = () => {
-        outputDisplay();
         localStorage.clear();
+        outputDisplay();
     };
 </script>
 
