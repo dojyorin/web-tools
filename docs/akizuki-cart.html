@@ -27,7 +27,7 @@
     */
     function outputDisplay(products) {
         document.getElementById("output_cart").value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
-        document.getElementById("output_json").value = products ? JSON.stringify(products, undefined, 4) : "";
+        document.getElementById("output_json").value = products?.length ? JSON.stringify(products, undefined, 4) : "";
     }
 
     try {
@@ -65,7 +65,8 @@
             }
 
             if(!products.length) {
-                throw new Error("商品テーブルが存在しません");
+                dialogNotify("商品テーブルが存在しません", "red");
+                return;
             }
 
             localStorage.setItem(LS_KEY_PRODUCTS, JSON.stringify(products));
