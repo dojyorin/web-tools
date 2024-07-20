@@ -50,6 +50,11 @@
             /** @type {string} */
             const text = textGetReady(document.getElementById("input_cart").value);
 
+            if(!text) {
+                dialogNotify("商品リストを貼り付けてください", "red");
+                return;
+            }
+
             /** @type {AkizukiProduct[]} */
             const products = [];
 
@@ -65,7 +70,7 @@
             }
 
             if(!products.length) {
-                dialogNotify("商品テーブルが存在しません", "red");
+                dialogNotify("結果が存在しません", "red");
                 return;
             }
 
@@ -228,7 +233,7 @@
         <h2>使い方</h2>
 
         <ol>
-            <li><a target="_blank" href="https://akizukidenshi.com/catalog/cart/cart.aspx">買い物かご</a> の商品テーブルを <b>範囲選択コピー</b> します。</li>
+            <li><a target="_blank" href="https://akizukidenshi.com/catalog/cart/cart.aspx">買い物かご</a> の商品リストを <b>範囲選択コピー</b> します。</li>
             <li><b>抽出</b> を押します。</li>
             <li><a target="_blank" href="https://akizukidenshi.com/catalog/quickorder/blanketorder.aspx">一括入力</a> にペーストできます。</li>
         </ol>
