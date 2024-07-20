@@ -34,14 +34,7 @@
         /** @type {AkizukiProduct[]} */
         const products = JSON.parse(localStorage.getItem(LS_KEY_PRODUCTS) ?? "");
 
-        if(
-            products instanceof Array
-            && products.length
-            && products.every(v => typeof v.code === "number")
-            && products.every(v => typeof v.name === "string")
-            && products.every(v => typeof v.price === "number")
-            && products.every(v => typeof v.quantity === "number")
-        ) {
+        if(products instanceof Array && products.length && products.every(v => [["code", 0], ["name", ""], ["price", 0], ["quantity", 0]].every(([k, t]) => typeof v[k] === typeof t))) {
             outputDisplay(products);
             dialogNotify("前回の結果を復元しました", "green");
         } else {
@@ -53,12 +46,13 @@
     }
 
     document.getElementById("convert").onclick = async () => {
-        /** @type {string} */
-        const text = textGetReady(document.getElementById("input_cart").value);
-        /** @type {AkizukiProduct[]} */
-        const products = [];
-
         try {
+            /** @type {string} */
+            const text = textGetReady(document.getElementById("input_cart").value);
+
+            /** @type {AkizukiProduct[]} */
+            const products = [];
+
             for(const record of text.match(/[1-9][0-9]{5}\t(.|\n)+?\n￥[1-9][0-9,]*\n[1-9][0-9]*/g) ?? []) {
                 const [, code, , , name, price, quantity] = record.match(/^([1-9][0-9]{5})(\t|(.|\n)+?)(.+?)\n・.+?\n￥([1-9][0-9,]*)\n([1-9][0-9]*)$/) ?? [];
 
