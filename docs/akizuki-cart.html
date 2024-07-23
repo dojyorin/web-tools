@@ -30,19 +30,27 @@
         document.getElementById("output_json").value = products?.length ? JSON.stringify(products, undefined, 4) : "";
     }
 
-    try {
-        /** @type {AkizukiProduct[]} */
-        const products = JSON.parse(localStorage.getItem(LS_KEY_PRODUCTS) ?? "");
+    /**
+    * @param {string} json
+    * @return {AkizukiProduct[]=}
+    */
+    function parseProduct(json) {
+        try {
+            const object = JSON.parse(json);
 
-        if(products instanceof Array && products.length && products.every(v => [["code", 0], ["name", ""], ["price", 0], ["quantity", 0]].every(([k, t]) => typeof v[k] === typeof t))) {
-            outputDisplay(products);
-            dialogNotify("前回の結果を復元しました", "green");
-        } else {
-            throw undefined;
-        }
-    } catch {
+            if(object instanceof Array && object.length && object.every(v => [["code", 0], ["name", ""], ["price", 0], ["quantity", 0]].every(([k, t]) => typeof v[k] === typeof t))) {
+                return object;
+            }
+        } catch {};
+    }
+
+    const products = parseProduct(localStorage.getItem(LS_KEY_PRODUCTS) ?? "");
+    outputDisplay(products);
+
+    if(products) {
+        dialogNotify("前回の結果を復元しました", "green");
+    } else {
         localStorage.clear();
-        outputDisplay();
     }
 
     document.getElementById("convert").onclick = async () => {
