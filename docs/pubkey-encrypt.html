@@ -44,12 +44,12 @@
             const enc = await cryptoEncrypt(deflate, pub.body, key.body);
 
             fsWrite(`${crypto.randomUUID()}.bin`, enc);
-
-            dialogNotify("暗号化が完了しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("暗号化できませんでした", "red");
         }
+
+        dialogNotify("暗号化しました", "green");
     };
 
     document.getElementById("decrypt").onclick = async () => {
@@ -65,12 +65,12 @@
             for(const {name, body} of files) {
                 fsWrite(name, body);
             }
-
-            dialogNotify("復号が完了しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("復号できませんでした", "red");
         }
+
+        dialogNotify("復号しました", "green");
     };
 
     document.getElementById("sign").onclick = async () => {
@@ -81,12 +81,12 @@
             const sign = await cryptoSign(file.body, key.body);
 
             fsWrite(`${file.name}.sig`, sign);
-
-            dialogNotify("署名が完了しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("署名できませんでした", "red");
         }
+
+        dialogNotify("署名を生成しました", "green");
     };
 
     document.getElementById("verify").onclick = async () => {
@@ -95,17 +95,18 @@
         const [sign] = await fileList(document.getElementById("verify_sig"));
 
         try {
+            /** @type {boolean} */
             const ok = await cryptoVerify(file.body, pub.body, sign.body);
 
-            if(ok) {
-                dialogNotify("正当な署名です", "green");
-            } else {
-                dialogNotify("無効な署名です", "green");
+            if(!ok) {
+                dialogNotify("署名が一致しません", "red");
             }
         } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("検証できませんでした", "red");
         }
+
+        dialogNotify("正当な署名です", "green");
     };
 
     document.getElementById("keygen_encrypt").onclick = async () => {
@@ -115,12 +116,12 @@
 
             fsWrite(`${uuid}.enc.pub`, pub);
             fsWrite(`${uuid}.enc.key`, key);
-
-            dialogNotify("鍵生成が完了しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("生成できませんでした", "red");
         }
+
+        dialogNotify("暗号化鍵を生成しました", "green");
     };
 
     document.getElementById("keygen_sign").onclick = async () => {
@@ -130,12 +131,12 @@
 
             fsWrite(`${uuid}.sig.pub`, pub);
             fsWrite(`${uuid}.sig.key`, key);
-
-            dialogNotify("鍵生成が完了しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("生成できませんでした", "red");
         }
+
+        dialogNotify("署名鍵を生成しました", "green");
     };
 </script>
 
