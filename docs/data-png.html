@@ -29,9 +29,14 @@
             return;
         }
 
-        image.src = URL.createObjectURL(new Blob([await pngEncode(file.body)], {type: "image/png"}));
-        image.alt = `${file.name}.png`;
-        image.hidden = false;
+        try {
+            image.src = URL.createObjectURL(new Blob([await pngEncode(file.body)], {type: "image/png"}));
+            image.alt = `${file.name}.png`;
+            image.hidden = false;
+        } catch(e) {
+            console.error(e);
+            dialogNotify("生成できませんでした", "green");
+        }
 
         dialogNotify("生成しました", "green");
     };
@@ -47,10 +52,15 @@
             return;
         }
 
-        anchor.href = URL.createObjectURL(new Blob([await pngDecode(file.body)], {type: "application/octet-stream"}));
-        anchor.textContent = anchor.href;
-        anchor.download = `${file.name}.bin`;
-        anchor.hidden = false;
+        try {
+            anchor.href = URL.createObjectURL(new Blob([await pngDecode(file.body)], {type: "application/octet-stream"}));
+            anchor.textContent = anchor.href;
+            anchor.download = `${file.name}.bin`;
+            anchor.hidden = false;
+        } catch(e) {
+            console.error(e);
+            dialogNotify("抽出できませんでした", "green");
+        }
 
         dialogNotify("抽出しました", "green");
     };
