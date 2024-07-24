@@ -18,66 +18,41 @@
     * @prop {Uint8Array} body
     */
 
-    /**
-    * @param {string} id
-    */
-    async function fileGet(id) {
+    document.getElementById("encode").onclick = async () => {
+        /** @type {HTMLImageElement} */
+        const image = document.getElementById("output_png");
         /** @type {DataEntry[]} */
-        const [file] = await fileList(document.getElementById(id));
+        const [file] = await fileList(document.getElementById("input_bin"));
 
         if(!file) {
             dialogNotify("ファイルを選択してください", "red");
-            throw new Error();
+            return;
         }
 
-        return file;
-    }
+        image.src = URL.createObjectURL(new Blob([await pngEncode(file.body)], {type: "image/png"}));
+        image.alt = `${file.name}.png`;
+        image.hidden = false;
 
-    /**
-    * @param {BlobPart} data
-    * @param {string} mime
-    */
-    function blobURL(data, mime) {
-        const blob = new Blob([data], {
-            type: mime
-        });
-
-        return URL.createObjectURL(blob);
-    }
-
-    document.getElementById("encode").onclick = async () => {
-        /** @type {HTMLImageElement} */
-        const element = document.getElementById("output_png");
-        const file = await fileGet("input_bin");
-
-        try {
-            element.src = blobURL(await pngEncode(file.body), "image/png");
-            element.alt = `${file.name}.png`;
-            element.hidden = false;
-
-            dialogNotify("PNGを生成しました", "green");
-        } catch(e) {
-            console.error(e);
-            dialogNotify("エラーが発生しました", "red");
-        }
+        dialogNotify("生成しました", "green");
     };
 
     document.getElementById("decode").onclick = async () => {
         /** @type {HTMLAnchorElement} */
-        const element = document.getElementById("output_bin");
-        const file = await fileGet("input_png");
+        const anchor = document.getElementById("output_bin");
+        /** @type {DataEntry[]} */
+        const [file] = await fileList(document.getElementById("input_png"));
 
-        try {
-            element.href = blobURL(await pngDecode(file.body), "application/octet-stream");
-            element.textContent = element.href;
-            element.download = `${file.name}.bin`;
-            element.hidden = false;
-
-            dialogNotify("データを抽出しました", "green");
-        } catch(e) {
-            console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+        if(!file) {
+            dialogNotify("ファイルを選択してください", "red");
+            return;
         }
+
+        anchor.href = URL.createObjectURL(new Blob([await pngDecode(file.body)], {type: "application/octet-stream"}));
+        anchor.textContent = anchor.href;
+        anchor.download = `${file.name}.bin`;
+        anchor.hidden = false;
+
+        dialogNotify("抽出しました", "green");
     };
 </script>
 
