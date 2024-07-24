@@ -11,8 +11,9 @@
 <script async type="module">
     import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v1.0.3/mod.ts?bundle&target=esnext";
     import {dialogNotify, fileList} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
+
     /**
-    * @typedef {object} DataMap
+    * @typedef {object} DataEntry
     * @prop {string} name
     * @prop {Uint8Array} body
     */
@@ -21,7 +22,7 @@
     * @param {string} id
     */
     async function fileGet(id) {
-        /** @type {DataMap[]} */
+        /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById(id));
 
         if(!file) {
