@@ -54,42 +54,37 @@
     }
 
     document.getElementById("convert").onclick = async () => {
-        try {
-            /** @type {string} */
-            const text = textGetReady(document.getElementById("input_cart").value);
+        /** @type {string} */
+        const text = textGetReady(document.getElementById("input_cart").value);
 
-            if(!text) {
-                dialogNotify("商品リストを貼り付けてください", "red");
-                return;
-            }
-
-            /** @type {AkizukiProduct[]} */
-            const products = [];
-
-            for(const record of text.match(/[1-9][0-9]{5}\t(.|\n)+?\n￥[1-9][0-9,]*\n[1-9][0-9]*/g) ?? []) {
-                const [, code, , , name, price, quantity] = record.match(/^([1-9][0-9]{5})(\t|(.|\n)+?)(.+?)\n・.+?\n￥([1-9][0-9,]*)\n([1-9][0-9]*)$/) ?? [];
-
-                products.push({
-                    code: Number(code),
-                    name: name.slice(name.length / 2),
-                    price: Number(price.replace(/,/g, "")),
-                    quantity: Number(quantity)
-                });
-            }
-
-            if(!products.length) {
-                dialogNotify("結果が存在しません", "red");
-                return;
-            }
-
-            localStorage.setItem(LS_KEY_PRODUCT, JSON.stringify(products));
-            outputDisplay(products);
-
-            dialogNotify("変換しました", "green");
-        } catch(e) {
-            console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+        if(!text) {
+            dialogNotify("商品リストを貼り付けてください", "red");
+            return;
         }
+
+        /** @type {AkizukiProduct[]} */
+        const products = [];
+
+        for(const record of text.match(/[1-9][0-9]{5}\t(.|\n)+?\n￥[1-9][0-9,]*\n[1-9][0-9]*/g) ?? []) {
+            const [, code, , , name, price, quantity] = record.match(/^([1-9][0-9]{5})(\t|(.|\n)+?)(.+?)\n・.+?\n￥([1-9][0-9,]*)\n([1-9][0-9]*)$/) ?? [];
+
+            products.push({
+                code: Number(code),
+                name: name.slice(name.length / 2),
+                price: Number(price.replace(/,/g, "")),
+                quantity: Number(quantity)
+            });
+        }
+
+        if(!products.length) {
+            dialogNotify("結果が存在しません", "red");
+            return;
+        }
+
+        localStorage.setItem(LS_KEY_PRODUCT, JSON.stringify(products));
+        outputDisplay(products);
+
+        dialogNotify("変換しました", "green");
     };
 
     document.getElementById("clear").onclick = () => {
