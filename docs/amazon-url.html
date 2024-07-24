@@ -16,29 +16,31 @@
         /** @type {string} */
         const text = textGetReady(document.getElementById("input_url").value);
 
-        try {
-            const {origin, hostname, pathname} = new URL(text);
-
-            if(!/^www\.amazon\./i.test(hostname)) {
-                throw new Error("AmazonのURLではありません");
-            }
-
-            const [, asin] = pathname.match(/\/dp\/([0-9a-zA-Z]+)/) ?? [];
-            const [, pn] = pathname.match(/\/([^/]+)\/dp\/[0-9a-zA-Z]+/) ?? [];
-
-            if(!asin) {
-                throw new Error("商品URLではありません");
-            }
-
-            document.getElementById("output_url").value = `${origin}/dp/${asin}`;
-            document.getElementById("output_asin").value = asin;
-            document.getElementById("output_pn").value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
-
-            dialogNotify("変換しました", "green");
-        } catch(e) {
-            console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+        if(!URL.canParse(text)) {
+            dialogNotify("URLではありません", "red");
+            return;
         }
+
+        const {hostname, pathname} = new URL(text);
+
+        if(!/^www\.amazon\./i.test(hostname)) {
+            dialogNotify("AmazonのURLではありません", "red");
+            return;
+        }
+
+        const [, asin] = pathname.match(/\/dp\/([0-9a-zA-Z]+)/) ?? [];
+        const [, pn] = pathname.match(/\/([^/]+)\/dp\/[0-9a-zA-Z]+/) ?? [];
+
+        if(!asin) {
+            dialogNotify("結果が存在しません", "red");
+            return;
+        }
+
+        document.getElementById("output_url").value = `https://${hostname}/dp/${asin}`;
+        document.getElementById("output_asin").value = asin;
+        document.getElementById("output_pn").value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
+
+        dialogNotify("変換しました", "green");
     };
 </script>
 
@@ -164,7 +166,7 @@
         <h2>リンク短縮</h2>
 
         <dl>
-            <dd><input type="url" placeholder="ここにAmazonリンクを貼付" id="input_url"></dd>
+            <dd><input type="url" placeholder="ここに商品リンクを貼付" id="input_url"></dd>
             <dd><button type="button" id="convert">リンク短縮</button></dd>
         </dl>
     </section>
@@ -174,7 +176,7 @@
 
         <dl>
             <dd><input readonly type="url" placeholder="URL" id="output_url"></dd>
-            <dd><input readonly type="text" placeholder="ASIN(商品コード)" id="output_asin"></dd>
+            <dd><input readonly type="text" placeholder="ASIN" id="output_asin"></dd>
             <dd><input readonly type="text" placeholder="商品名" id="output_pn"></dd>
         </dl>
     </section>
