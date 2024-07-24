@@ -20,7 +20,7 @@
     * @prop {number} quantity
     */
 
-    const LS_KEY_PRODUCTS = "products";
+    const LS_KEY_PRODUCT = "product";
 
     /**
     * @param {AkizukiProduct[]=} products
@@ -44,10 +44,10 @@
         } catch {};
     }
 
-    const products = parseProduct(localStorage.getItem(LS_KEY_PRODUCTS) ?? "");
-    outputDisplay(products);
+    const previous = parseProduct(localStorage.getItem(LS_KEY_PRODUCT) ?? "");
+    outputDisplay(previous);
 
-    if(products) {
+    if(previous) {
         dialogNotify("前回の結果を復元しました", "green");
     } else {
         localStorage.clear();
@@ -82,7 +82,7 @@
                 return;
             }
 
-            localStorage.setItem(LS_KEY_PRODUCTS, JSON.stringify(products));
+            localStorage.setItem(LS_KEY_PRODUCT, JSON.stringify(products));
             outputDisplay(products);
 
             dialogNotify("変換しました", "green");
