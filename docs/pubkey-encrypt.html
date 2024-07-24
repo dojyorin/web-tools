@@ -9,17 +9,29 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🔐</text></svg>">
 
 <script async type="module">
-    import {cryptoGenerateEncryptKey, cryptoGenerateSignKey, cryptoEncrypt, cryptoDecrypt, cryptoSign, cryptoVerify, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.1.0/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify, fsWrite, fileList} from "https://esm.sh/gh/dojyorin/dom_api_shorthand@v1.3.0/mod.ts?bundle&target=esnext";
+    import {cryptoGenerateEncryptKey, cryptoGenerateSignKey, cryptoEncrypt, cryptoDecrypt, cryptoSign, cryptoVerify, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.1/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify, fileList, fsWrite} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
 
-    for(const select of document.getElementsByName("tab_select")){
-        select.onchange = ({target})=>{
-            for(const tab of document.getElementsByTagName("main")){
+    /**
+    * @typedef {object} DataEntry
+    * @prop {string} name
+    * @prop {Uint8Array} body
+    */
+
+    /**
+    * @typedef {object} PubKey
+    * @prop {Uint8Array} pub
+    * @prop {Uint8Array} key
+    */
+
+    for(const select of document.getElementsByName("tab_select")) {
+        select.onchange = ({target}) => {
+            for(const tab of document.getElementsByTagName("main")) {
                 tab.setAttribute("hidden", "");
             }
 
-            for(const input of document.getElementsByTagName("input")){
-                if(target.name === input.name){
+            for(const input of document.getElementsByTagName("input")) {
+                if(target.name === input.name) {
                     continue;
                 }
 
@@ -27,130 +39,116 @@
                 input.checked = false;
             }
 
-            if(target.checked){
+            if(target.checked) {
                 document.getElementById(target.id.replace(/_select/, "")).removeAttribute("hidden");
             }
         };
     }
 
-    document.getElementById("encrypt").onclick = async()=>{
+    document.getElementById("encrypt").onclick = async () => {
+        /** @type {DataEntry[]} */
         const files = await fileList(document.getElementById("encrypt_files"));
+        /** @type {DataEntry[]} */
         const [pub] = await fileList(document.getElementById("encrypt_pub"));
+        /** @type {DataEntry[]} */
         const [key] = await fileList(document.getElementById("encrypt_key"));
 
-        try{
-            const minipack = await minipackEncode(files);
-            const deflate = await deflateEncode(minipack);
-
-            const encrypt = await cryptoEncrypt(deflate, {
-                publicKey: pub.body,
-                privateKey: key.body
-            });
-
-            fsWrite(`${crypto.randomUUID()}.bin`, encrypt);
-
-            dialogNotify("暗号化が完了しました", "green");
-        }
-        catch(e){
+        try {
+            fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(await deflateEncode(await minipackEncode(files)), pub.body, key.body));
+        } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("暗号化できませんでした", "red");
         }
+
+        dialogNotify("暗号化しました", "green");
     };
 
-    document.getElementById("decrypt").onclick = async()=>{
-        const [file] = await fileList(document.getElementById("decrypt_file"));
+    document.getElementById("decrypt").onclick = async () => {
+        /** @type {DataEntry[]} */
+        const [enc] = await fileList(document.getElementById("decrypt_enc"));
+        /** @type {DataEntry[]} */
         const [pub] = await fileList(document.getElementById("decrypt_pub"));
+        /** @type {DataEntry[]} */
         const [key] = await fileList(document.getElementById("decrypt_key"));
 
-        try{
-            const deflate = await cryptoDecrypt(file.body, {
-                publicKey: pub.body,
-                privateKey: key.body,
-            });
-
-            const minipack = await deflateDecode(deflate);
-            const files = await minipackDecode(minipack);
-
-            for(const {name, body} of files){
+        try {
+            for(const {name, body} of await minipackDecode(await deflateDecode(await cryptoDecrypt(enc.body, pub.body, key.body)))) {
                 fsWrite(name, body);
             }
-
-            dialogNotify("復号が完了しました", "green");
-        }
-        catch(e){
+        } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("復号できませんでした", "red");
         }
+
+        dialogNotify("復号しました", "green");
     };
 
-    document.getElementById("sign").onclick = async()=>{
+    document.getElementById("sign").onclick = async () => {
+        /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("sign_file"));
+        /** @type {DataEntry[]} */
         const [key] = await fileList(document.getElementById("sign_key"));
 
-        try{
-            const sign = await cryptoSign(file.body, key.body);
-
-            fsWrite(`${file.name}.sig`, sign);
-
-            dialogNotify("署名が完了しました", "green");
-        }
-        catch(e){
+        try {
+            fsWrite(`${file.name}.sig`, await cryptoSign(file.body, key.body));
+        } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("署名できませんでした", "red");
         }
+
+        dialogNotify("署名を生成しました", "green");
     };
 
-    document.getElementById("verify").onclick = async()=>{
+    document.getElementById("verify").onclick = async () => {
+        /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("verify_file"));
+        /** @type {DataEntry[]} */
         const [pub] = await fileList(document.getElementById("verify_pub"));
-        const [sign] = await fileList(document.getElementById("verify_sig"));
+        /** @type {DataEntry[]} */
+        const [sig] = await fileList(document.getElementById("verify_sig"));
 
-        try{
-            const ok = await cryptoVerify(file.body, pub.body, sign.body);
-
-            if(ok){
-                dialogNotify("正当な署名です", "green");
+        try {
+            if(!await cryptoVerify(file.body, pub.body, sig.body)) {
+                dialogNotify("署名が一致しません", "red");
             }
-            else{
-                dialogNotify("無効な署名です", "green");
-            }
-        }
-        catch(e){
+        } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("検証できませんでした", "red");
         }
+
+        dialogNotify("正当な署名です", "green");
     };
 
-    document.getElementById("keygen_encrypt").onclick = async()=>{
-        try{
-            const {publicKey, privateKey} = await cryptoGenerateEncryptKey();
+    document.getElementById("keygen_encrypt").onclick = async () => {
+        try {
+            /** @type {PubKey} */
+            const {pub, key} = await cryptoGenerateEncryptKey();
             const uuid = crypto.randomUUID();
 
-            fsWrite(`${uuid}.enc.pub`, publicKey);
-            fsWrite(`${uuid}.enc.key`, privateKey);
-
-            dialogNotify("鍵生成が完了しました", "green");
-        }
-        catch(e){
+            fsWrite(`${uuid}.enc.pub`, pub);
+            fsWrite(`${uuid}.enc.key`, key);
+        } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("生成できませんでした", "red");
         }
+
+        dialogNotify("暗号化鍵を生成しました", "green");
     };
 
-    document.getElementById("keygen_sign").onclick = async()=>{
-        try{
-            const {publicKey, privateKey} = await cryptoGenerateSignKey();
+    document.getElementById("keygen_sign").onclick = async () => {
+        try {
+            /** @type {PubKey} */
+            const {pub, key} = await cryptoGenerateSignKey();
             const uuid = crypto.randomUUID();
 
-            fsWrite(`${uuid}.sig.pub`, publicKey);
-            fsWrite(`${uuid}.sig.key`, privateKey);
-
-            dialogNotify("鍵生成が完了しました", "green");
-        }
-        catch(e){
+            fsWrite(`${uuid}.sig.pub`, pub);
+            fsWrite(`${uuid}.sig.key`, key);
+        } catch(e) {
             console.error(e);
-            dialogNotify("エラーが発生しました", "red");
+            dialogNotify("生成できませんでした", "red");
         }
+
+        dialogNotify("署名鍵を生成しました", "green");
     };
 </script>
 
@@ -364,7 +362,7 @@
 
         <dl>
             <dd>暗号化されたファイル</dd>
-            <dd><input type="file" id="decrypt_file"></dd>
+            <dd><input type="file" id="decrypt_enc"></dd>
             <dd>公開鍵</dd>
             <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
             <dd>秘密鍵</dd>
@@ -421,6 +419,42 @@
     <section>
         <h2>使用方法</h2>
 
+        <details>
+            <summary>暗号化</summary>
+
+            <ol>
+                <li>鍵生成ボタンを押し、暗号化鍵を生成します。</li>
+                <ul>
+                    <li><code>{乱数}.enc.pub</code> (公開鍵) ... 公開しても問題ない</li>
+                    <li><code>{乱数}.enc.key</code> (秘密鍵) ... 絶対に公開してはいけない</li>
+                </ul>
+                <li>相手に <code>{乱数}.enc.pub</code> を送ります。</li>
+                <li>相手から <code>{乱数}.enc.pub</code> を受け取ります。</li>
+                <li>ツールの各フォームへファイルを入力します。</li>
+                <ul>
+                    <li>暗号化するファイル (複数指定可能)</li>
+                    <li>公開鍵 ... <code>{乱数}.enc.pub</code> (相手から受け取ったもの)</li>
+                    <li>秘密鍵 ... <code>{乱数}.enc.key</code> (自身で生成したもの)</li>
+                </ul>
+                <li>暗号化ボタンを押し、暗号化を開始します。</li>
+            </ol>
+        </details>
+
+        <details>
+            <summary>復号</summary>
+            WIP
+        </details>
+
+        <details>
+            <summary>署名</summary>
+            WIP
+        </details>
+
+        <details>
+            <summary>検証</summary>
+            WIP
+        </details>
+
         <h3>STEP0: 署名鍵を生成する (任意) (操作: 送信者)</h3>
 
         <ol>
@@ -436,30 +470,6 @@
                 <li>署名鍵は、秘密鍵の紛失や漏洩が無い限り再利用を推奨します。</li>
                 <li>送信方法は、後述の暗号化ファイルの送信で使用する方法とは別の方法を推奨します。</li>
             </ul>
-        </ol>
-    </section>
-
-    <section>
-        <h3>STEP1: 暗号化鍵を生成する (操作: 送信者/受信者)</h3>
-
-        <ol>
-            <li>送信者と受信者は、それぞれ <a href="#encrypt-generate">暗号化鍵生成ボタン</a> を押し、処理を開始します。</li>
-            <li>処理が完了すると、2個のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
-            <ul>
-                <li><code>{乱数}.encrypt.pub</code> : 公開鍵 (公開しても問題ない)</li>
-                <li><code>{乱数}.encrypt.sec</code> : 秘密鍵 (絶対に公開してはいけない)</li>
-            </ul>
-            <li>送信者と受信者は、それぞれ生成した <code>{乱数}.encrypt.pub</code> を、電子メールなどで相互に交換します。</li>
-            <ul>
-                <li>暗号化鍵は、再利用せず都度生成を推奨します。</li>
-            </ul>
-        </ol>
-    </section>
-
-    <section>
-        <h3>STEP2: 暗号化を行う (操作: 送信者)</h3>
-
-        <ol>
             <li>送信者は、ツールの各フォームへファイルを入力します。</li>
             <ul>
                 <li><a href="#encrypt_files">データ</a> : 暗号化したいファイル (複数指定可能)</li>
@@ -482,7 +492,7 @@
         <ol>
             <li>受信者は、ツールの各フォームへファイルを入力します。</li>
             <ul>
-                <li><a href="#decrypt_file">データ</a> : <code>{乱数}.cipher.bin</code> (送信者から受け取ったもの)</li>
+                <li><a href="#decrypt_enc">データ</a> : <code>{乱数}.cipher.bin</code> (送信者から受け取ったもの)</li>
                 <li><a href="#decrypt_public">公開鍵(復号)</a> : <code>{乱数}.encrypt.pub</code> (送信者から受け取ったもの)</li>
                 <li><a href="#decrypt-secret">秘密鍵</a> : <code>{乱数}.encrypt.sec</code> (自身で生成したもの)</li>
                 <li><a href="#verify_public">公開鍵(検証/任意)</a> : <code>{乱数}.sign.pub</code> (送信者から受け取ったもの)</li>
