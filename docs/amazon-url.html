@@ -14,7 +14,7 @@
 
     document.getElementById("button_shorten").onclick = () => {
         /** @type {string} */
-        const text = textGetReady(document.getElementById("input_longurl").value);
+        const text = textGetReady(document.getElementById("input_url").value);
 
         if(!URL.canParse(text)) {
             dialogNotify("URLではありません", "red");
@@ -36,9 +36,9 @@
             throw new ReferenceError("Result not exist.");
         }
 
-        document.getElementById("input_shorturl").value = `https://${hostname}/dp/${asin}`;
-        document.getElementById("input_asin").value = asin;
-        document.getElementById("input_name").value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
+        document.getElementById("output_url").value = `https://${hostname}/dp/${asin}`;
+        document.getElementById("output_asin").value = asin;
+        document.getElementById("output_name").value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
 
         dialogNotify("変換しました", "green");
     };
@@ -166,7 +166,7 @@
         <h2>リンク短縮</h2>
 
         <dl>
-            <dd><input type="url" placeholder="ここに商品リンクを貼付" id="input_longurl"></dd>
+            <dd><input type="url" placeholder="ここに商品リンクを貼付" id="input_url"></dd>
             <dd><button type="button" id="button_shorten">リンク短縮</button></dd>
         </dl>
     </section>
@@ -175,9 +175,9 @@
         <h2>処理結果</h2>
 
         <dl>
-            <dd><input readonly type="url" placeholder="URL" id="input_shorturl"></dd>
-            <dd><input readonly type="text" placeholder="ASIN" id="input_asin"></dd>
-            <dd><input readonly type="text" placeholder="商品名" id="input_name"></dd>
+            <dd><input readonly type="url" placeholder="URL" id="output_url"></dd>
+            <dd><input readonly type="text" placeholder="ASIN" id="output_asin"></dd>
+            <dd><input readonly type="text" placeholder="商品名" id="output_name"></dd>
         </dl>
     </section>
 

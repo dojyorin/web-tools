@@ -24,8 +24,8 @@
     * @param {AkizukiProduct[]=} products
     */
     function outputDisplay(products) {
-        document.getElementById("textarea_cart").value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
-        document.getElementById("textarea_json").value = products?.length ? JSON.stringify(products, undefined, 4) : "";
+        document.getElementById("output_cart").value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
+        document.getElementById("output_json").value = products?.length ? JSON.stringify(products, undefined, 4) : "";
     }
 
     const LS_PRODUCTS = "products";
@@ -218,8 +218,8 @@
         <h2>処理結果</h2>
 
         <dl>
-            <dd><textarea readonly placeholder="一括入力形式" id="textarea_cart"></textarea></dd>
-            <dd><textarea readonly placeholder="JSON" id="textarea_json"></textarea></dd>
+            <dd><textarea readonly placeholder="一括入力形式" id="output_cart"></textarea></dd>
+            <dd><textarea readonly placeholder="JSON" id="output_json"></textarea></dd>
             <dd><button type="button" id="button_clear">クリア</button></dd>
         </dl>
     </section>
