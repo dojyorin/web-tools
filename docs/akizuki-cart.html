@@ -24,18 +24,11 @@
     * @param {AkizukiProduct[]=} products
     */
     function outputDisplay(products) {
-        dom_textarea_cart.value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
-        dom_textarea_json.value = products?.length ? JSON.stringify(products, undefined, 4) : "";
+        document.getElementById("textarea_cart").value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
+        document.getElementById("textarea_json").value = products?.length ? JSON.stringify(products, undefined, 4) : "";
     }
 
     const LS_PRODUCTS = "products";
-
-    /** @type {HTMLInputElement} */
-    const dom_input_cart = document.getElementById("input_cart");
-    /** @type {HTMLTextAreaElement} */
-    const dom_textarea_cart = document.getElementById("textarea_cart");
-    /** @type {HTMLTextAreaElement} */
-    const dom_textarea_json = document.getElementById("textarea_json");
 
     try {
         const products = JSON.parse(localStorage.getItem(LS_PRODUCTS) ?? "");
@@ -54,7 +47,7 @@
 
     document.getElementById("button_extract").onclick = () => {
         /** @type {string} */
-        const text = textGetReady(dom_input_cart.value);
+        const text = textGetReady(document.getElementById("input_cart").value);
 
         if(!text) {
             dialogNotify("商品リストが存在しません", "red");

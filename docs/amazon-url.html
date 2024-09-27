@@ -12,18 +12,9 @@
     import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
     import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
-    /** @type {HTMLInputElement} */
-    const dom_input_longurl = document.getElementById("input_longurl");
-    /** @type {HTMLInputElement} */
-    const dom_input_shorturl = document.getElementById("input_shorturl");
-    /** @type {HTMLInputElement} */
-    const dom_input_asin = document.getElementById("input_asin");
-    /** @type {HTMLInputElement} */
-    const dom_input_name = document.getElementById("input_name");
-
     document.getElementById("button_shorten").onclick = () => {
         /** @type {string} */
-        const text = textGetReady(dom_input_longurl.value);
+        const text = textGetReady(document.getElementById("input_longurl").value);
 
         if(!URL.canParse(text)) {
             dialogNotify("URLではありません", "red");
@@ -45,9 +36,9 @@
             throw new ReferenceError("Result not exist.");
         }
 
-        dom_input_shorturl.value = `https://${hostname}/dp/${asin}`;
-        dom_input_asin.value = asin;
-        dom_input_name.value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
+        document.getElementById("input_shorturl").value = `https://${hostname}/dp/${asin}`;
+        document.getElementById("input_asin").value = asin;
+        document.getElementById("input_name").value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
 
         dialogNotify("変換しました", "green");
     };

@@ -9,8 +9,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🔐</text></svg>">
 
 <script async type="module">
-    import {cryptoGenerateEncryptKey, cryptoGenerateSignKey, cryptoEncrypt, cryptoDecrypt, cryptoSign, cryptoVerify, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.1/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify, fileList, fsWrite} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
+    import {cryptoGenerateEncryptKey, cryptoGenerateSignKey, cryptoEncrypt, cryptoDecrypt, cryptoSign, cryptoVerify, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify, fileList, fsWrite} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} DataEntry
@@ -419,24 +419,23 @@
     <section>
         <h2>使用方法</h2>
 
-        <ul>
-            <li>暗号化を行う前に、送信者と受信者はそれぞれ暗号鍵を生成しておく必要があります。</li>
-            <li>暗号化に使用する暗号鍵は、一度使用したら使い回さず暗号化を行う度に新しく生成してください。</li>
-            <li>検証に使用する暗号鍵は、秘密鍵が漏洩しない限り使い回してください。</li>
-        </ul>
-
         <details>
             <summary>暗号化</summary>
 
+            <ul>
+                <li>暗号化を行う前に、送信者と受信者はそれぞれ暗号鍵を生成しておく必要があります。</li>
+                <li>暗号鍵は、一度使用したら使い回さず暗号化を行う度に新しく生成してください。</li>
+            </ul>
+
             <ol>
-                <li>鍵生成ボタンを押し、暗号化鍵を生成します。</li>
+                <li><b>鍵生成</b> タブの <b>暗号化鍵 鍵生成</b> ボタンを押し、暗号鍵を生成します。</li>
                 <ul>
                     <li><code>{乱数}.enc.pub</code> (公開鍵) ... 公開しても問題ない</li>
                     <li><code>{乱数}.enc.key</code> (秘密鍵) ... 絶対に公開してはいけない</li>
                 </ul>
                 <li>相手に <code>{乱数}.enc.pub</code> を送ります。</li>
                 <li>相手から <code>{乱数}.enc.pub</code> を受け取ります。</li>
-                <li>ツールの各フォームへファイルを入力します。</li>
+                <li><b>暗号化</b> タブのツールの各フォームへファイルを入力します。</li>
                 <ul>
                     <li>暗号化するファイル (複数指定可能)</li>
                     <li>公開鍵 ... <code>{乱数}.enc.pub</code> (相手から受け取ったもの)</li>
@@ -453,7 +452,10 @@
 
         <details>
             <summary>署名</summary>
-            WIP
+
+            <ul>
+                <li>署名に使用する暗号鍵は、秘密鍵が漏洩しない限り使い回してください。</li>
+            </ul>
         </details>
 
         <details>

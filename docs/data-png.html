@@ -18,18 +18,9 @@
     * @prop {Uint8Array} body
     */
 
-    /** @type {HTMLInputElement} */
-    const dom_input_bin = document.getElementById("input_bin");
-    /** @type {HTMLInputElement} */
-    const dom_input_png = document.getElementById("input_png");
-    /** @type {HTMLImageElement} */
-    const dom_img_png = document.getElementById("img_png");
-    /** @type {HTMLAnchorElement} */
-    const dom_a_bin = document.getElementById("a_bin");
-
     document.getElementById("button_encode").onclick = async () => {
         /** @type {DataEntry[]} */
-        const [file] = await fileList(dom_input_bin);
+        const [file] = await fileList(document.getElementById("input_bin"));
 
         if(!file) {
             dialogNotify("ファイルが選択されていません", "red");
@@ -37,9 +28,10 @@
         }
 
         try {
-            dom_img_png.src = URL.createObjectURL(new Blob([await pngEncode(file.body)], {type: "image/png"}));
-            dom_img_png.alt = `${file.name}.png`;
-            dom_img_png.hidden = false;
+            const image = document.getElementById("img_png");
+            image.src = URL.createObjectURL(new Blob([await pngEncode(file.body)], {type: "image/png"}));
+            image.alt = `${file.name}.png`;
+            image.hidden = false;
 
             dialogNotify("生成しました", "green");
         } catch(e) {
@@ -50,7 +42,7 @@
 
     document.getElementById("button_decode").onclick = async () => {
         /** @type {DataEntry[]} */
-        const [file] = await fileList(dom_input_png);
+        const [file] = await fileList(document.getElementById("input_png"));
 
         if(!file) {
             dialogNotify("ファイルが選択されていません", "red");
@@ -58,10 +50,11 @@
         }
 
         try {
-            dom_a_bin.href = URL.createObjectURL(new Blob([await pngDecode(file.body)], {type: "application/octet-stream"}));
-            dom_a_bin.textContent = dom_a_bin.href;
-            dom_a_bin.download = `${file.name}.bin`;
-            dom_a_bin.hidden = false;
+            const anchor = document.getElementById("a_bin")
+            anchor.href = URL.createObjectURL(new Blob([await pngDecode(file.body)], {type: "application/octet-stream"}));
+            anchor.textContent = anchor.href;
+            anchor.download = `${file.name}.bin`;
+            anchor.hidden = false;
 
             dialogNotify("抽出しました", "green");
         } catch(e) {
