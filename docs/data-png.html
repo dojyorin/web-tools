@@ -18,7 +18,7 @@
     * @prop {Uint8Array} body
     */
 
-    document.getElementById("button_encode").onclick = async () => {
+    document.getElementById("exec_encode").onclick = async () => {
         /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("input_bin"));
 
@@ -40,7 +40,7 @@
         }
     };
 
-    document.getElementById("button_decode").onclick = async () => {
+    document.getElementById("exec_decode").onclick = async () => {
         /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("input_png"));
 
@@ -209,7 +209,7 @@
 
         <dl>
             <dd><input type="file" id="input_bin"></dd>
-            <dd><button type="button" id="button_encode">PNG生成</button></dd>
+            <dd><button type="button" id="exec_encode">PNG生成</button></dd>
             <dd><img hidden id="output_png"></dd>
         </dl>
     </section>
@@ -219,7 +219,7 @@
 
         <dl>
             <dd><input type="file" accept="*.png,image/png" id="input_png"></dd>
-            <dd><button type="button" id="button_decode">データ抽出</button></dd>
+            <dd><button type="button" id="exec_decode">データ抽出</button></dd>
             <dd><a hidden id="output_bin"></a></dd>
         </dl>
     </section>

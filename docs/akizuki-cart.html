@@ -45,7 +45,7 @@
         outputDisplay();
     }
 
-    document.getElementById("button_extract").onclick = () => {
+    document.getElementById("exec_extract").onclick = () => {
         /** @type {string} */
         const text = textGetReady(document.getElementById("input_cart").value);
 
@@ -79,7 +79,7 @@
         dialogNotify("変換しました", "green");
     };
 
-    document.getElementById("button_clear").onclick = () => {
+    document.getElementById("exec_clear").onclick = () => {
         localStorage.clear();
         outputDisplay();
         dialogNotify("結果を削除しました", "green");
@@ -210,7 +210,7 @@
 
         <dl>
             <dd><textarea placeholder="ここに商品リストを貼付" id="input_cart"></textarea></dd>
-            <dd><button type="button" id="button_extract">カート抽出</button></dd>
+            <dd><button type="button" id="exec_extract">カート抽出</button></dd>
         </dl>
     </section>
 
@@ -220,7 +220,7 @@
         <dl>
             <dd><textarea readonly placeholder="一括入力形式" id="output_cart"></textarea></dd>
             <dd><textarea readonly placeholder="JSON" id="output_json"></textarea></dd>
-            <dd><button type="button" id="button_clear">クリア</button></dd>
+            <dd><button type="button" id="exec_clear">クリア</button></dd>
         </dl>
     </section>
 

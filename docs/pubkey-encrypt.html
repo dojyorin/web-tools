@@ -45,7 +45,7 @@
         };
     }
 
-    document.getElementById("encrypt").onclick = async () => {
+    document.getElementById("exec_encrypt").onclick = async () => {
         /** @type {DataEntry[]} */
         const files = await fileList(document.getElementById("encrypt_files"));
         /** @type {DataEntry[]} */
@@ -55,15 +55,15 @@
 
         try {
             fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(await deflateEncode(await minipackEncode(files)), pub.body, key.body));
+
+            dialogNotify("暗号化しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("暗号化できませんでした", "red");
         }
-
-        dialogNotify("暗号化しました", "green");
     };
 
-    document.getElementById("decrypt").onclick = async () => {
+    document.getElementById("exec_decrypt").onclick = async () => {
         /** @type {DataEntry[]} */
         const [enc] = await fileList(document.getElementById("decrypt_enc"));
         /** @type {DataEntry[]} */
@@ -75,15 +75,15 @@
             for(const {name, body} of await minipackDecode(await deflateDecode(await cryptoDecrypt(enc.body, pub.body, key.body)))) {
                 fsWrite(name, body);
             }
+
+            dialogNotify("復号しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("復号できませんでした", "red");
         }
-
-        dialogNotify("復号しました", "green");
     };
 
-    document.getElementById("sign").onclick = async () => {
+    document.getElementById("exec_sign").onclick = async () => {
         /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("sign_file"));
         /** @type {DataEntry[]} */
@@ -91,15 +91,15 @@
 
         try {
             fsWrite(`${file.name}.sig`, await cryptoSign(file.body, key.body));
+
+            dialogNotify("署名を生成しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("署名できませんでした", "red");
         }
-
-        dialogNotify("署名を生成しました", "green");
     };
 
-    document.getElementById("verify").onclick = async () => {
+    document.getElementById("exec_verify").onclick = async () => {
         /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("verify_file"));
         /** @type {DataEntry[]} */
@@ -108,18 +108,19 @@
         const [sig] = await fileList(document.getElementById("verify_sig"));
 
         try {
-            if(!await cryptoVerify(file.body, pub.body, sig.body)) {
+            if(await cryptoVerify(file.body, pub.body, sig.body)) {
+                dialogNotify("正当な署名です", "green");
+
+            } else {
                 dialogNotify("署名が一致しません", "red");
             }
         } catch(e) {
             console.error(e);
             dialogNotify("検証できませんでした", "red");
         }
-
-        dialogNotify("正当な署名です", "green");
     };
 
-    document.getElementById("keygen_encrypt").onclick = async () => {
+    document.getElementById("exec_keygen_encrypt").onclick = async () => {
         try {
             /** @type {PubKey} */
             const {pub, key} = await cryptoGenerateEncryptKey();
@@ -127,15 +128,15 @@
 
             fsWrite(`${uuid}.enc.pub`, pub);
             fsWrite(`${uuid}.enc.key`, key);
+
+            dialogNotify("暗号化鍵を生成しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("生成できませんでした", "red");
         }
-
-        dialogNotify("暗号化鍵を生成しました", "green");
     };
 
-    document.getElementById("keygen_sign").onclick = async () => {
+    document.getElementById("exec_keygen_sign").onclick = async () => {
         try {
             /** @type {PubKey} */
             const {pub, key} = await cryptoGenerateSignKey();
@@ -143,12 +144,12 @@
 
             fsWrite(`${uuid}.sig.pub`, pub);
             fsWrite(`${uuid}.sig.key`, key);
+
+            dialogNotify("署名鍵を生成しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("生成できませんでした", "red");
         }
-
-        dialogNotify("署名鍵を生成しました", "green");
     };
 </script>
 
@@ -351,7 +352,7 @@
             <dd><input type="file" accept=".pub" id="encrypt_pub"></dd>
             <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="encrypt_key"></dd>
-            <dd><button type="button" id="encrypt">🔒暗号化</button></dd>
+            <dd><button type="button" id="exec_encrypt">🔒暗号化</button></dd>
         </dl>
     </section>
 </main>
@@ -367,7 +368,7 @@
             <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
             <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="decrypt_key"></dd>
-            <dd><button type="button" id="decrypt">🔓復号</button></dd>
+            <dd><button type="button" id="exec_decrypt">🔓復号</button></dd>
         </dl>
     </section>
 </main>
@@ -381,7 +382,7 @@
             <dd><input type="file" id="sign_file"></dd>
             <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="sign_key"></dd>
-            <dd><button type="button" id="sign">🔏署名</button></dd>
+            <dd><button type="button" id="exec_sign">🔏署名</button></dd>
         </dl>
     </section>
 </main>
@@ -397,7 +398,7 @@
             <dd><input type="file" accept=".pub" id="verify_pub"></dd>
             <dd>署名ファイル</dd>
             <dd><input type="file" accept=".sig" id="verify_sig"></dd>
-            <dd><button type="button" id="verify">✅検証</button></dd>
+            <dd><button type="button" id="exec_verify">✅検証</button></dd>
         </dl>
     </section>
 </main>
@@ -408,9 +409,9 @@
 
         <dl>
             <dd>暗号化鍵</dd>
-            <dd><button type="button" id="keygen_encrypt">🔑鍵生成</button></dd>
+            <dd><button type="button" id="exec_keygen_encrypt">🔑鍵生成</button></dd>
             <dd>署名鍵</dd>
-            <dd><button type="button" id="keygen_sign">🔑鍵生成</button></dd>
+            <dd><button type="button" id="exec_keygen_sign">🔑鍵生成</button></dd>
         </dl>
     </section>
 </main>

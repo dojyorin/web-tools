@@ -12,7 +12,7 @@
     import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
     import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
-    document.getElementById("button_shorten").onclick = () => {
+    document.getElementById("exec_shorten").onclick = () => {
         /** @type {string} */
         const text = textGetReady(document.getElementById("input_url").value);
 
@@ -167,7 +167,7 @@
 
         <dl>
             <dd><input type="url" placeholder="ここに商品リンクを貼付" id="input_url"></dd>
-            <dd><button type="button" id="button_shorten">リンク短縮</button></dd>
+            <dd><button type="button" id="exec_shorten">リンク短縮</button></dd>
         </dl>
     </section>
 
