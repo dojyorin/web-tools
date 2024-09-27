@@ -9,23 +9,70 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
 <script async type="module">
-    import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.1/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
+    import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
-    document.getElementById("convert").onclick = async () => {
+    const domValue = {
         /** @type {string} */
-        const text = textGetReady(document.getElementById("input_url").value);
+        get input_longurl() {
+            return document.getElementById("input_longurl")?.value ?? "";
+        },
+        set input_longurl(v) {
+            const element = document.getElementById("input_longurl");
+
+            if(element) {
+                element.value = v;
+            }
+        },
+        /** @type {string} */
+        get input_shorturl() {
+            return document.getElementById("input_shorturl")?.value ?? "";
+        },
+        set input_shorturl(v) {
+            const element = document.getElementById("input_shorturl");
+
+            if(element) {
+                element.value = v;
+            }
+        },
+        /** @type {string} */
+        get input_asin() {
+            return document.getElementById("input_asin")?.value ?? "";
+        },
+        set input_asin(v) {
+            const element = document.getElementById("input_asin");
+
+            if(element) {
+                element.value = v;
+            }
+        },
+        /** @type {string} */
+        get input_name() {
+            return document.getElementById("input_name")?.value ?? "";
+        },
+        set input_name(v) {
+            const element = document.getElementById("input_name");
+
+            if(element) {
+                element.value = v;
+            }
+        }
+    };
+
+    document.getElementById("button_shorten").onclick = () => {
+        /** @type {string} */
+        const text = textGetReady(domValue.input_longurl);
 
         if(!URL.canParse(text)) {
             dialogNotify("URLではありません", "red");
-            return;
+            throw new ReferenceError("Not URL.");
         }
 
         const {hostname, pathname} = new URL(text);
 
-        if(!/^www\.amazon\./i.test(hostname)) {
+        if(!hostname.startsWith("www.amazon.")) {
             dialogNotify("AmazonのURLではありません", "red");
-            return;
+            throw new ReferenceError("Not Amazon URL.");
         }
 
         const [, asin] = pathname.match(/\/dp\/([0-9a-zA-Z]+)/) ?? [];
@@ -33,12 +80,12 @@
 
         if(!asin) {
             dialogNotify("結果が存在しません", "red");
-            return;
+            throw new ReferenceError("Result not exist.");
         }
 
-        document.getElementById("output_url").value = `https://${hostname}/dp/${asin}`;
-        document.getElementById("output_asin").value = asin;
-        document.getElementById("output_pn").value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
+        domValue.input_shorturl = `https://${hostname}/dp/${asin}`;
+        domValue.input_asin = asin;
+        domValue.input_name = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
 
         dialogNotify("変換しました", "green");
     };
@@ -166,8 +213,8 @@
         <h2>リンク短縮</h2>
 
         <dl>
-            <dd><input type="url" placeholder="ここに商品リンクを貼付" id="input_url"></dd>
-            <dd><button type="button" id="convert">リンク短縮</button></dd>
+            <dd><input type="url" placeholder="ここに商品リンクを貼付" id="input_longurl"></dd>
+            <dd><button type="button" id="button_shorten">リンク短縮</button></dd>
         </dl>
     </section>
 
@@ -175,9 +222,9 @@
         <h2>処理結果</h2>
 
         <dl>
-            <dd><input readonly type="url" placeholder="URL" id="output_url"></dd>
-            <dd><input readonly type="text" placeholder="ASIN" id="output_asin"></dd>
-            <dd><input readonly type="text" placeholder="商品名" id="output_pn"></dd>
+            <dd><input readonly type="url" placeholder="URL" id="input_shorturl"></dd>
+            <dd><input readonly type="text" placeholder="ASIN" id="input_asin"></dd>
+            <dd><input readonly type="text" placeholder="商品名" id="input_name"></dd>
         </dl>
     </section>
 

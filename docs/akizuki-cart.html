@@ -9,8 +9,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
 <script async type="module">
-    import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.1/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
+    import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} AkizukiProduct
@@ -20,21 +20,57 @@
     * @prop {number} quantity
     */
 
-    const LS_KEY_PREVIOUS = "previous";
-
     /**
     * @param {AkizukiProduct[]=} products
     */
     function outputDisplay(products) {
-        document.getElementById("output_cart").value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
-        document.getElementById("output_json").value = products?.length ? JSON.stringify(products, undefined, 4) : "";
+        domValue.textarea_cart = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
+        domValue.textarea_json = products?.length ? JSON.stringify(products, undefined, 4) : "";
     }
 
-    try {
-        const previous = JSON.parse(localStorage.getItem(LS_KEY_PREVIOUS) ?? "");
+    const LS_PRODUCTS = "products";
 
-        if(previous instanceof Array && previous.length && previous.every(v => [["code", 0], ["name", ""], ["price", 0], ["quantity", 0]].every(([k, t]) => typeof v[k] === typeof t))) {
-            outputDisplay(previous);
+    const domValue = {
+        /** @type {string} */
+        get input_cart() {
+            return document.getElementById("input_cart")?.value ?? "";
+        },
+        set input_cart(v) {
+            const element = document.getElementById("input_cart");
+
+            if(element) {
+                element.value = v;
+            }
+        },
+        /** @type {string} */
+        get textarea_cart() {
+            return document.getElementById("textarea_cart")?.value ?? "";
+        },
+        set textarea_cart(v) {
+            const element = document.getElementById("textarea_cart");
+
+            if(element) {
+                element.value = v;
+            }
+        },
+        /** @type {string} */
+        get textarea_json() {
+            return document.getElementById("textarea_json")?.value ?? "";
+        },
+        set textarea_json(v) {
+            const element = document.getElementById("textarea_json");
+
+            if(element) {
+                element.value = v;
+            }
+        }
+    };
+
+    try {
+        const products = JSON.parse(localStorage.getItem(LS_PRODUCTS) ?? "");
+
+        if(products instanceof Array && products.length) {
+            outputDisplay(products);
             dialogNotify("前回の結果を復元しました", "green");
         } else {
             localStorage.clear();
@@ -45,13 +81,13 @@
         outputDisplay();
     }
 
-    document.getElementById("convert").onclick = async () => {
+    document.getElementById("button_extract").onclick = () => {
         /** @type {string} */
-        const text = textGetReady(document.getElementById("input_cart").value);
+        const text = textGetReady(domValue.input_cart);
 
         if(!text) {
-            dialogNotify("商品リストを貼り付けてください", "red");
-            return;
+            dialogNotify("商品リストが存在しません", "red");
+            throw new ReferenceError("Product not exist.");
         }
 
         /** @type {AkizukiProduct[]} */
@@ -63,23 +99,23 @@
             products.push({
                 code: Number(code),
                 name: name.slice(name.length / 2),
-                price: Number(price.replace(/,/g, "")),
+                price: Number(price.replaceAll(",", "")),
                 quantity: Number(quantity)
             });
         }
 
         if(!products.length) {
             dialogNotify("結果が存在しません", "red");
-            return;
+            throw new ReferenceError("Result not exist.");
         }
 
-        localStorage.setItem(LS_KEY_PREVIOUS, JSON.stringify(products));
+        localStorage.setItem(LS_PRODUCTS, JSON.stringify(products));
         outputDisplay(products);
 
         dialogNotify("変換しました", "green");
     };
 
-    document.getElementById("clear").onclick = () => {
+    document.getElementById("button_clear").onclick = () => {
         localStorage.clear();
         outputDisplay();
         dialogNotify("結果を削除しました", "green");
@@ -210,7 +246,7 @@
 
         <dl>
             <dd><textarea placeholder="ここに商品リストを貼付" id="input_cart"></textarea></dd>
-            <dd><button type="button" id="convert">カート抽出</button></dd>
+            <dd><button type="button" id="button_extract">カート抽出</button></dd>
         </dl>
     </section>
 
@@ -218,9 +254,9 @@
         <h2>処理結果</h2>
 
         <dl>
-            <dd><textarea readonly placeholder="一括入力形式" id="output_cart"></textarea></dd>
-            <dd><textarea readonly placeholder="JSON" id="output_json"></textarea></dd>
-            <dd><button type="button" id="clear">クリア</button></dd>
+            <dd><textarea readonly placeholder="一括入力形式" id="textarea_cart"></textarea></dd>
+            <dd><textarea readonly placeholder="JSON" id="textarea_json"></textarea></dd>
+            <dd><button type="button" id="button_clear">クリア</button></dd>
         </dl>
     </section>
 
