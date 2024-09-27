@@ -9,8 +9,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🖼️</text></svg>">
 
 <script async type="module">
-    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v1.0.3/mod.ts?bundle&target=esnext";
-    import {dialogNotify, fileList} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
+    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v1.0.4/mod.ts?bundle&target=esnext";
+    import {dialogNotify, fileList} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} DataEntry
@@ -18,51 +18,56 @@
     * @prop {Uint8Array} body
     */
 
-    document.getElementById("encode").onclick = async () => {
-        /** @type {HTMLImageElement} */
-        const image = document.getElementById("output_png");
+    /** @type {HTMLInputElement} */
+    const dom_input_bin = document.getElementById("input_bin");
+    /** @type {HTMLInputElement} */
+    const dom_input_png = document.getElementById("input_png");
+    /** @type {HTMLImageElement} */
+    const dom_img_png = document.getElementById("img_png");
+    /** @type {HTMLAnchorElement} */
+    const dom_a_bin = document.getElementById("a_bin");
+
+    document.getElementById("button_encode").onclick = async () => {
         /** @type {DataEntry[]} */
-        const [file] = await fileList(document.getElementById("input_bin"));
+        const [file] = await fileList(dom_input_bin);
 
         if(!file) {
-            dialogNotify("ファイルを選択してください", "red");
-            return;
+            dialogNotify("ファイルが選択されていません", "red");
+            throw new ReferenceError("File not selected.");
         }
 
         try {
-            image.src = URL.createObjectURL(new Blob([await pngEncode(file.body)], {type: "image/png"}));
-            image.alt = `${file.name}.png`;
-            image.hidden = false;
+            dom_img_png.src = URL.createObjectURL(new Blob([await pngEncode(file.body)], {type: "image/png"}));
+            dom_img_png.alt = `${file.name}.png`;
+            dom_img_png.hidden = false;
+
+            dialogNotify("生成しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("生成できませんでした", "green");
         }
-
-        dialogNotify("生成しました", "green");
     };
 
-    document.getElementById("decode").onclick = async () => {
-        /** @type {HTMLAnchorElement} */
-        const anchor = document.getElementById("output_bin");
+    document.getElementById("button_decode").onclick = async () => {
         /** @type {DataEntry[]} */
-        const [file] = await fileList(document.getElementById("input_png"));
+        const [file] = await fileList(dom_input_png);
 
         if(!file) {
-            dialogNotify("ファイルを選択してください", "red");
-            return;
+            dialogNotify("ファイルが選択されていません", "red");
+            throw new ReferenceError("File not selected.");
         }
 
         try {
-            anchor.href = URL.createObjectURL(new Blob([await pngDecode(file.body)], {type: "application/octet-stream"}));
-            anchor.textContent = anchor.href;
-            anchor.download = `${file.name}.bin`;
-            anchor.hidden = false;
+            dom_a_bin.href = URL.createObjectURL(new Blob([await pngDecode(file.body)], {type: "application/octet-stream"}));
+            dom_a_bin.textContent = dom_a_bin.href;
+            dom_a_bin.download = `${file.name}.bin`;
+            dom_a_bin.hidden = false;
+
+            dialogNotify("抽出しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("抽出できませんでした", "green");
         }
-
-        dialogNotify("抽出しました", "green");
     };
 </script>
 
@@ -194,7 +199,7 @@
         }
     }
 
-    #output_png {
+    #img_png {
         width: 300px;
     }
 </style>
@@ -211,8 +216,8 @@
 
         <dl>
             <dd><input type="file" id="input_bin"></dd>
-            <dd><button type="button" id="encode">PNG生成</button></dd>
-            <dd><img hidden id="output_png"></dd>
+            <dd><button type="button" id="button_encode">PNG生成</button></dd>
+            <dd><img hidden id="img_png"></dd>
         </dl>
     </section>
 
@@ -221,8 +226,8 @@
 
         <dl>
             <dd><input type="file" accept="*.png,image/png" id="input_png"></dd>
-            <dd><button type="button" id="decode">データ抽出</button></dd>
-            <dd><a hidden id="output_bin"></a></dd>
+            <dd><button type="button" id="button_decode">データ抽出</button></dd>
+            <dd><a hidden id="a_bin"></a></dd>
         </dl>
     </section>
 

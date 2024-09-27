@@ -12,56 +12,18 @@
     import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
     import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
-    const domValue = {
-        /** @type {string} */
-        get input_longurl() {
-            return document.getElementById("input_longurl")?.value ?? "";
-        },
-        set input_longurl(v) {
-            const element = document.getElementById("input_longurl");
-
-            if(element) {
-                element.value = v;
-            }
-        },
-        /** @type {string} */
-        get input_shorturl() {
-            return document.getElementById("input_shorturl")?.value ?? "";
-        },
-        set input_shorturl(v) {
-            const element = document.getElementById("input_shorturl");
-
-            if(element) {
-                element.value = v;
-            }
-        },
-        /** @type {string} */
-        get input_asin() {
-            return document.getElementById("input_asin")?.value ?? "";
-        },
-        set input_asin(v) {
-            const element = document.getElementById("input_asin");
-
-            if(element) {
-                element.value = v;
-            }
-        },
-        /** @type {string} */
-        get input_name() {
-            return document.getElementById("input_name")?.value ?? "";
-        },
-        set input_name(v) {
-            const element = document.getElementById("input_name");
-
-            if(element) {
-                element.value = v;
-            }
-        }
-    };
+    /** @type {HTMLInputElement} */
+    const dom_input_longurl = document.getElementById("input_longurl");
+    /** @type {HTMLInputElement} */
+    const dom_input_shorturl = document.getElementById("input_shorturl");
+    /** @type {HTMLInputElement} */
+    const dom_input_asin = document.getElementById("input_asin");
+    /** @type {HTMLInputElement} */
+    const dom_input_name = document.getElementById("input_name");
 
     document.getElementById("button_shorten").onclick = () => {
         /** @type {string} */
-        const text = textGetReady(domValue.input_longurl);
+        const text = textGetReady(dom_input_longurl.value);
 
         if(!URL.canParse(text)) {
             dialogNotify("URLではありません", "red");
@@ -83,9 +45,9 @@
             throw new ReferenceError("Result not exist.");
         }
 
-        domValue.input_shorturl = `https://${hostname}/dp/${asin}`;
-        domValue.input_asin = asin;
-        domValue.input_name = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
+        dom_input_shorturl.value = `https://${hostname}/dp/${asin}`;
+        dom_input_asin.value = asin;
+        dom_input_name.value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
 
         dialogNotify("変換しました", "green");
     };

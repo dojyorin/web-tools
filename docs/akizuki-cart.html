@@ -24,47 +24,18 @@
     * @param {AkizukiProduct[]=} products
     */
     function outputDisplay(products) {
-        domValue.textarea_cart = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
-        domValue.textarea_json = products?.length ? JSON.stringify(products, undefined, 4) : "";
+        dom_textarea_cart.value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
+        dom_textarea_json.value = products?.length ? JSON.stringify(products, undefined, 4) : "";
     }
 
     const LS_PRODUCTS = "products";
 
-    const domValue = {
-        /** @type {string} */
-        get input_cart() {
-            return document.getElementById("input_cart")?.value ?? "";
-        },
-        set input_cart(v) {
-            const element = document.getElementById("input_cart");
-
-            if(element) {
-                element.value = v;
-            }
-        },
-        /** @type {string} */
-        get textarea_cart() {
-            return document.getElementById("textarea_cart")?.value ?? "";
-        },
-        set textarea_cart(v) {
-            const element = document.getElementById("textarea_cart");
-
-            if(element) {
-                element.value = v;
-            }
-        },
-        /** @type {string} */
-        get textarea_json() {
-            return document.getElementById("textarea_json")?.value ?? "";
-        },
-        set textarea_json(v) {
-            const element = document.getElementById("textarea_json");
-
-            if(element) {
-                element.value = v;
-            }
-        }
-    };
+    /** @type {HTMLInputElement} */
+    const dom_input_cart = document.getElementById("input_cart");
+    /** @type {HTMLTextAreaElement} */
+    const dom_textarea_cart = document.getElementById("textarea_cart");
+    /** @type {HTMLTextAreaElement} */
+    const dom_textarea_json = document.getElementById("textarea_json");
 
     try {
         const products = JSON.parse(localStorage.getItem(LS_PRODUCTS) ?? "");
@@ -83,7 +54,7 @@
 
     document.getElementById("button_extract").onclick = () => {
         /** @type {string} */
-        const text = textGetReady(domValue.input_cart);
+        const text = textGetReady(dom_input_cart.value);
 
         if(!text) {
             dialogNotify("商品リストが存在しません", "red");
