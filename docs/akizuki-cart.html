@@ -22,6 +22,7 @@
 
     /**
     * @param {AkizukiProduct[]=} products
+    * @return {void}
     */
     function outputDisplay(products) {
         document.getElementById("output_cart").value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
