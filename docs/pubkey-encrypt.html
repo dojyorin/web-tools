@@ -24,11 +24,23 @@
     * @prop {Uint8Array} key
     */
 
-    for(const select of document.getElementsByName("tab_select")) {
-        select.onchange = ({target}) => {
+    for(const main of document.getElementsByTagName("main")) {
+        const suffix = "_switch";
+
+        const input = document.createElement("input");
+        input.id = `${main.id}${suffix}`;
+        input.type = "radio";
+        input.name = "tab_select";
+        input.checked = !main.hidden;
+
+        input.setAttribute("data-label", main.getAttribute("data-label") ?? "-");
+
+        input.onchange = ({target}) => {
             for(const tab of document.getElementsByTagName("main")) {
-                tab.setAttribute("hidden", "");
+                tab.hidden = true;
             }
+
+            document.getElementById(target.id.replace(suffix, "")).hidden = false;
 
             for(const input of document.getElementsByTagName("input")) {
                 if(target.name === input.name) {
@@ -38,11 +50,9 @@
                 input.value = "";
                 input.checked = false;
             }
-
-            if(target.checked) {
-                document.getElementById(target.id.replace(/_select/, "")).removeAttribute("hidden");
-            }
         };
+
+        document.getElementById("tabs").appendChild(input);
     }
 
     document.getElementById("exec_encrypt").onclick = async () => {
@@ -191,19 +201,17 @@
                 align-items: center;
                 height: var(--nav-height);
 
-                & > label, & > input {
-                    height: 100%;
-                    width: calc(100dvw / 4);
-                    max-width: 200px;
-                }
-
-                & > label {
+                & > input[type="radio"] {
+                    appearance: none;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     cursor: pointer;
-                    font-size: 16px;
                     height: 100%;
+                    width: calc(100dvw / 4);
+                    max-width: 200px;
+                    margin: 0;
+                    font-size: 16px;
 
                     &:hover {
                         background-color: #8639FF;
@@ -212,10 +220,14 @@
                     &:active {
                         background-color: #9856F8;
                     }
-                }
 
-                & > input:checked + label {
-                    background-color: #904EFD;
+                    &:checked {
+                        background-color: #904EFD;
+                    }
+
+                    &::before {
+                        content: attr(data-label);
+                    }
                 }
             }
         }
@@ -326,24 +338,10 @@
 
 <header>
     <h1>公開鍵暗号化ツール</h1>
-
-    <nav>
-        <input hidden checked type="radio" name="tab_select" id="tab_select_1">
-        <label for="tab_select_1">暗号化</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_2">
-        <label for="tab_select_2">復号</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_3">
-        <label for="tab_select_3">署名</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_4">
-        <label for="tab_select_4">検証</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_5">
-        <label for="tab_select_5">鍵生成</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_6">
-        <label for="tab_select_6">ヘルプ</label>
-    </nav>
+    <nav id="tabs"></nav>
 </header>
 
-<main id="tab_1">
+<main id="tab_1" data-label="暗号化">
     <section>
         <h2>ファイルを暗号化</h2>
 
@@ -359,7 +357,7 @@
     </section>
 </main>
 
-<main hidden id="tab_2">
+<main hidden id="tab_2" data-label="復号">
     <section>
         <h2>ファイルを復号</h2>
 
@@ -375,7 +373,7 @@
     </section>
 </main>
 
-<main hidden id="tab_3">
+<main hidden id="tab_3"data-label="署名">
     <section>
         <h2>ファイルに署名</h2>
 
@@ -389,7 +387,7 @@
     </section>
 </main>
 
-<main hidden id="tab_4">
+<main hidden id="tab_4" data-label="検証">
     <section>
         <h2>ファイルの署名を検証</h2>
 
@@ -405,7 +403,7 @@
     </section>
 </main>
 
-<main hidden id="tab_5">
+<main hidden id="tab_5" data-label="鍵生成">
     <section>
         <h2>鍵を生成</h2>
 
@@ -418,7 +416,7 @@
     </section>
 </main>
 
-<main hidden id="tab_6">
+<main hidden id="tab_6" data-label="ヘルプ">
     <section>
         <h2>使用方法</h2>
 
