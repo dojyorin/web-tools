@@ -1,19 +1,20 @@
 <!doctype html>
 <meta charset="utf-8">
+
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
-
-<meta name="color-scheme" content="dark">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🧰</text></svg>">
 
 <style>
-    :root {
-        --header-height: 48px;
-    }
-
     ::-webkit-scrollbar {
         display: none;
+    }
+
+    :root {
+        --header-height: 84px;
+
+        color-scheme: dark;
     }
 
     body {
@@ -40,11 +41,10 @@
 
         & > main {
             height: calc(100dvh - var(--header-height));
-            background-color: #202020;
             overflow: clip scroll;
 
             & > section {
-                max-width: 500px;
+                max-width: 800px;
                 margin: 0 auto 56px auto;
                 padding: 0 16px;
 
