@@ -399,7 +399,7 @@
             <dd><input type="file" id="verify_file"></dd>
             <dd>公開鍵</dd>
             <dd><input type="file" accept=".pub" id="verify_pub"></dd>
-            <dd>署名ファイル</dd>
+            <dd>電子署名</dd>
             <dd><input type="file" accept=".sig" id="verify_sig"></dd>
             <dd><button type="button" id="exec_verify">✅検証</button></dd>
         </dl>
@@ -426,82 +426,90 @@
         <details>
             <summary>暗号化/復号</summary>
 
+            <h3>備考</h3>
+
             <ul>
-                <li>暗号化を行う前に、送信者と受信者はそれぞれ暗号鍵を生成しておく必要があります。</li>
-                <li>暗号鍵は、一度使用したら使い回さず暗号化を行う度に新しく生成してください。</li>
+                <li>暗号化を行う前に、送信者と受信者はそれぞれ鍵を生成し、任意の手段で公開鍵を交換する必要があります。</li>
+                <li>鍵は一度使用したら使い回さず、暗号化を行う度に新しく生成してください。</li>
             </ul>
 
+            <h3>共通</h3>
+
             <ol>
-                <li><b>鍵生成</b> タブの <b>暗号化鍵 鍵生成</b> ボタンを押し、暗号鍵を生成します。</li>
+                <li><b>鍵生成</b> タブ ⇒ <b>暗号化鍵</b> 欄 ⇒ <b>鍵生成</b> ボタンを押し、鍵を生成します。</li>
                 <ul>
                     <li><code>{乱数}.enc.pub</code> (公開鍵) ... 公開しても問題ない</li>
                     <li><code>{乱数}.enc.key</code> (秘密鍵) ... 絶対に公開してはいけない</li>
                 </ul>
-                <li>相手に <code>{乱数}.enc.pub</code> を送ります。</li>
-                <li>相手から <code>{乱数}.enc.pub</code> を受け取ります。</li>
-                <li><b>暗号化</b> タブのツールの各フォームへファイルを入力します。</li>
+                <li>任意の手段で相手に <code>{乱数}.enc.pub</code> を送ります。</li>
+                <li>任意の手段で相手から <code>{乱数}.enc.pub</code> を受け取ります。</li>
+            </ol>
+
+            <h3>暗号化</h3>
+
+            <ol>
+                <li><b>暗号化</b> タブの各フォームへファイルを入力します。</li>
                 <ul>
                     <li>暗号化するファイル (複数指定可能)</li>
                     <li>公開鍵 ... <code>{乱数}.enc.pub</code> (相手から受け取ったもの)</li>
                     <li>秘密鍵 ... <code>{乱数}.enc.key</code> (自身で生成したもの)</li>
                 </ul>
-                <li>暗号化ボタンを押し、暗号化を開始します。</li>
+                <li><b>暗号化</b> ボタンを押し、暗号化を開始します。</li>
+            </ol>
+
+            <h3>復号</h3>
+
+            <ol>
+                <li><b>復号</b> タブの各フォームへファイルを入力します。</li>
+                <ul>
+                    <li>暗号化されたファイル (相手から受け取ったもの)</li>
+                    <li>公開鍵 ... <code>{乱数}.enc.pub</code> (相手から受け取ったもの)</li>
+                    <li>秘密鍵 ... <code>{乱数}.enc.key</code> (自身で生成したもの)</li>
+                </ul>
+                <li><b>復号</b> ボタンを押し、復号を開始します。</li>
+                <li>複数ファイルのダウンロード許可を要求された場合は許可します。</li>
             </ol>
         </details>
 
         <details>
             <summary>署名/検証</summary>
 
+            <h3>備考</h3>
+
             <ul>
-                <li>署名に使用する暗号鍵は、秘密鍵が漏洩しない限り使い回してください。</li>
+                <li>鍵は秘密鍵が漏洩しない限り使い回すのが望ましいです。</li>
             </ul>
+
+            <h3>署名</h3>
+
+            <ol>
+                <li><b>鍵生成</b> タブ ⇒ <b>署名鍵</b> 欄 ⇒ <b>鍵生成</b> ボタンを押し、鍵を生成します。以前に鍵を生成しており秘密鍵が漏洩していなければ、この手順はスキップ可能です。</li>
+                <ul>
+                    <li><code>{乱数}.sig.pub</code> (公開鍵) ... 公開しても問題ない</li>
+                    <li><code>{乱数}.sig.key</code> (秘密鍵) ... 絶対に公開してはいけない</li>
+                </ul>
+                <li><b>署名</b> タブの各フォームへファイルを入力します。</li>
+                <ul>
+                    <li>署名するファイル (任意のファイル)</li>
+                    <li>秘密鍵 ... <code>{乱数}.sig.key</code> (自身で生成したもの)</li>
+                </ul>
+                <li><b>署名</b> ボタンを押し、署名を開始します。</li>
+                <li>任意の手段で相手に <code>{乱数}.sig.pub</code> と <code>{ファイル名}.sig</code> を送ります。</li>
+            </ol>
+
+            <h3>検証</h3>
+
+            <ol>
+                <li>任意の手段で相手から <code>{乱数}.sig.pub</code> と <code>{ファイル名}.sig</code> を受け取ります。</li>
+                <li><b>検証</b> タブの各フォームへファイルを入力します。</li>
+                <ul>
+                    <li>署名対象のファイル (任意のファイル)</li>
+                    <li>公開鍵 ... <code>{乱数}.sig.pub</code> (相手から受け取ったもの)</li>
+                    <li>電子署名 ... <code>{ファイル名}.sig</code> (相手から受け取ったもの)</li>
+                </ul>
+                <li><b>検証</b> ボタンを押し、検証を開始します。</li>
+            </ol>
         </details>
-
-        <h3>STEP0: 署名鍵を生成する (任意) (操作: 送信者)</h3>
-
-        <ol>
-            <li>署名が不要な場合は、本手順をスキップし次の手順へ進みます。</li>
-            <li>送信者は、最初に <a href="#sign-generate">署名鍵生成ボタン</a> を押し、処理を開始します。</li>
-            <li>処理が完了すると、2個のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
-            <ul>
-                <li><code>{乱数}.sign.pub</code> : 公開鍵 (公開しても問題ない)</li>
-                <li><code>{乱数}.sign.sec</code> : 秘密鍵 (絶対に公開してはいけない)</li>
-            </ul>
-            <li>生成した <code>{乱数}.sign.pub</code> を任意の方法で受信者へ送信します。</li>
-            <ul>
-                <li>署名鍵は、秘密鍵の紛失や漏洩が無い限り再利用を推奨します。</li>
-                <li>送信方法は、後述の暗号化ファイルの送信で使用する方法とは別の方法を推奨します。</li>
-            </ul>
-            <li>送信者は、ツールの各フォームへファイルを入力します。</li>
-            <ul>
-                <li><a href="#encrypt_files">データ</a> : 暗号化したいファイル (複数指定可能)</li>
-                <li><a href="#encrypt_public">公開鍵</a> : <code>{乱数}.encrypt.pub</code> (受信者から受け取ったもの)</li>
-                <li><a href="#encrypt-secret">秘密鍵(暗号化)</a> : <code>{乱数}.encrypt.sec</code> (自身で生成したもの)</li>
-                <li><a href="#sign-secret">秘密鍵(署名/任意)</a> : <code>{乱数}.sign.sec</code> (自身で生成したもの)</li>
-            </ul>
-            <li><a href="#encrypt-execute">暗号化</a> ボタンを押し、処理を開始します。</li>
-            <li>処理が完了すると、1個のファイルがダウンロードされます。</li>
-            <ul>
-                <li><code>{乱数}.cipher.bin</code> : 暗号データ (公開しても問題ない)</li>
-            </ul>
-            <li>送信者は、暗号化された <code>{乱数}.cipher.bin</code> を、電子メールなど任意の方法で受信者へ送信します。</li>
-        </ol>
-    </section>
-
-    <section>
-        <h3>STEP3: 暗号データを復号する (操作: 受信者)</h3>
-
-        <ol>
-            <li>受信者は、ツールの各フォームへファイルを入力します。</li>
-            <ul>
-                <li><a href="#decrypt_enc">データ</a> : <code>{乱数}.cipher.bin</code> (送信者から受け取ったもの)</li>
-                <li><a href="#decrypt_public">公開鍵(復号)</a> : <code>{乱数}.encrypt.pub</code> (送信者から受け取ったもの)</li>
-                <li><a href="#decrypt-secret">秘密鍵</a> : <code>{乱数}.encrypt.sec</code> (自身で生成したもの)</li>
-                <li><a href="#verify_public">公開鍵(検証/任意)</a> : <code>{乱数}.sign.pub</code> (送信者から受け取ったもの)</li>
-            </ul>
-            <li><a href="#decrypt-execute">復号</a> ボタンを押し、処理を開始します。</li>
-            <li>処理が完了すると、元のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
-        </ol>
     </section>
 
     <section>
@@ -509,8 +517,11 @@
 
         <ul>
             <li>WebCrypto API</li>
-            <li>ECDH/ECDSA with P-256</li>
-            <li>AES-GCM with 128 bit Key/Tag/IV</li>
+            <ul>
+                <li>ECDH P-256</li>
+                <li>ECDSA P-256</li>
+                <li>AES-GCM-128</li>
+            </ul>
         </ul>
     </section>
 
