@@ -291,6 +291,30 @@
         background-color: #333333;
     }
 
+    details {
+        margin: 0 0 16px 0;
+
+        & > summary {
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 0 4px 12px;
+            border-radius: 4px;
+            background-color: #6611CC;
+
+            &:hover {
+                background-color: #8639FF;
+            }
+
+            &:active {
+                background-color: #9856F8;
+            }
+        }
+
+        &[open] > summary {
+            background-color: #904EFD;
+        }
+    }
+
     button[type="button"] {
         cursor: pointer;
         font-size: 24px;
@@ -423,7 +447,7 @@
     <section>
         <h2>使用方法</h2>
 
-        <details>
+        <details name="howtouse">
             <summary>暗号化/復号</summary>
 
             <h3>備考</h3>
@@ -471,7 +495,7 @@
             </ol>
         </details>
 
-        <details>
+        <details name="howtouse">
             <summary>署名/検証</summary>
 
             <h3>備考</h3>
