@@ -4,7 +4,6 @@
 <meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
 
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#6611CC">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🔐</text></svg>">
 
@@ -36,6 +35,10 @@
         input.setAttribute("data-label", main.getAttribute("data-label") ?? "-");
 
         input.onchange = ({target}) => {
+            if(!target) {
+                throw new ReferenceError("Target is null.");
+            }
+
             for(const tab of document.getElementsByTagName("main")) {
                 tab.hidden = true;
             }
@@ -234,11 +237,10 @@
 
         & > main {
             height: calc(100dvh - var(--header-height));
-            background-color: #202020;
             overflow: clip scroll;
 
             & > section {
-                max-width: 500px;
+                max-width: 800px;
                 margin: 0 auto 56px auto;
                 padding: 0 16px;
 
@@ -275,7 +277,7 @@
         }
     }
 
-    input, textarea, select, button, label {
+    input, textarea, select, button {
         outline: none;
         box-sizing: border-box;
         border: none;
@@ -421,7 +423,7 @@
         <h2>使用方法</h2>
 
         <details>
-            <summary>暗号化</summary>
+            <summary>暗号化/復号</summary>
 
             <ul>
                 <li>暗号化を行う前に、送信者と受信者はそれぞれ暗号鍵を生成しておく必要があります。</li>
@@ -447,21 +449,11 @@
         </details>
 
         <details>
-            <summary>復号</summary>
-            WIP
-        </details>
-
-        <details>
-            <summary>署名</summary>
+            <summary>署名/検証</summary>
 
             <ul>
                 <li>署名に使用する暗号鍵は、秘密鍵が漏洩しない限り使い回してください。</li>
             </ul>
-        </details>
-
-        <details>
-            <summary>検証</summary>
-            WIP
         </details>
 
         <h3>STEP0: 署名鍵を生成する (任意) (操作: 送信者)</h3>
