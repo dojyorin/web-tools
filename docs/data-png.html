@@ -1,16 +1,14 @@
 <!doctype html>
 <meta charset="utf-8">
+
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
-
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#6611CC">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🖼️</text></svg>">
 
 <script async type="module">
-    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v1.0.3/mod.ts?bundle&target=esnext";
-    import {dialogNotify, fileList} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
+    import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v1.0.4/mod.ts?bundle&target=esnext";
+    import {dialogNotify, fileList} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} DataEntry
@@ -18,61 +16,61 @@
     * @prop {Uint8Array} body
     */
 
-    document.getElementById("encode").onclick = async () => {
-        /** @type {HTMLImageElement} */
-        const image = document.getElementById("output_png");
+    document.getElementById("exec_encode").onclick = async () => {
         /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("input_bin"));
 
         if(!file) {
-            dialogNotify("ファイルを選択してください", "red");
-            return;
+            dialogNotify("ファイルが選択されていません", "red");
+            throw new ReferenceError("File not selected.");
         }
 
         try {
+            const image = document.getElementById("output_png");
             image.src = URL.createObjectURL(new Blob([await pngEncode(file.body)], {type: "image/png"}));
             image.alt = `${file.name}.png`;
             image.hidden = false;
+
+            dialogNotify("生成しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("生成できませんでした", "green");
         }
-
-        dialogNotify("生成しました", "green");
     };
 
-    document.getElementById("decode").onclick = async () => {
-        /** @type {HTMLAnchorElement} */
-        const anchor = document.getElementById("output_bin");
+    document.getElementById("exec_decode").onclick = async () => {
         /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("input_png"));
 
         if(!file) {
-            dialogNotify("ファイルを選択してください", "red");
-            return;
+            dialogNotify("ファイルが選択されていません", "red");
+            throw new ReferenceError("File not selected.");
         }
 
         try {
+            const anchor = document.getElementById("output_bin")
             anchor.href = URL.createObjectURL(new Blob([await pngDecode(file.body)], {type: "application/octet-stream"}));
             anchor.textContent = anchor.href;
             anchor.download = `${file.name}.bin`;
             anchor.hidden = false;
+
+            dialogNotify("抽出しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("抽出できませんでした", "green");
         }
-
-        dialogNotify("抽出しました", "green");
     };
 </script>
 
 <style>
-    :root {
-        --header-height: 48px;
-    }
-
     ::-webkit-scrollbar {
         display: none;
+    }
+
+    :root {
+        --header-height: 48px;
+
+        color-scheme: dark;
     }
 
     body {
@@ -81,44 +79,43 @@
         width: 100dvw;
         margin: 0;
         padding: 0;
-    }
 
-    header {
-        height: var(--header-height);
-        background-color: #6611CC;
+        & > header {
+            height: var(--header-height);
+            background-color: #6611CC;
 
-        & > h1 {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 48px;
-            margin: 0 12px;
-            font-size: 24px;
-            font-weight: unset;
+            & > h1 {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                height: var(--header-height);
+                margin: 0 12px;
+                font-size: 24px;
+                font-weight: unset;
+            }
         }
-    }
 
-    main {
-        height: calc(100dvh - var(--header-height));
-        background-color: #202020;
-        overflow: clip scroll;
+        & > main {
+            height: calc(100dvh - var(--header-height));
+            overflow: clip scroll;
 
-        & > section {
-            max-width: 500px;
-            margin: 0 auto 56px auto;
-            padding: 0 16px;
+            & > section {
+                max-width: 800px;
+                margin: 0 auto 56px auto;
+                padding: 0 16px;
 
-            &:first-of-type {
-                margin-top: 16px;
-            }
+                &:first-of-type {
+                    margin-top: 16px;
+                }
 
-            &:last-of-type {
-                margin-bottom: 16px;
-            }
+                &:last-of-type {
+                    margin-bottom: 16px;
+                }
 
-            & > h2 {
-                text-align: center;
-                margin: 0 0 16px 0;
+                & > h2 {
+                    text-align: center;
+                    margin: 0 0 16px 0;
+                }
             }
         }
     }
@@ -136,11 +133,11 @@
         }
     }
 
-    input, textarea, select, button, label {
+    input, textarea, select, button {
         outline: none;
         box-sizing: border-box;
         border: none;
-        -webkit-tap-highlight-color: #00000000;
+        -webkit-tap-highlight-color: transparent;
     }
 
     img {
@@ -175,14 +172,14 @@
         padding: 8px;
         border-radius: 4px;
         font-size: 16px;
-        background-color: #444444;
+        background-color: #333333;
 
         &:hover {
-            background-color: #555555;
+            background-color: #444444;
         }
 
         &:active {
-            background-color: #777777;
+            background-color: #666666;
         }
 
         &::file-selector-button {
@@ -211,7 +208,7 @@
 
         <dl>
             <dd><input type="file" id="input_bin"></dd>
-            <dd><button type="button" id="encode">PNG生成</button></dd>
+            <dd><button type="button" id="exec_encode">PNG生成</button></dd>
             <dd><img hidden id="output_png"></dd>
         </dl>
     </section>
@@ -221,7 +218,7 @@
 
         <dl>
             <dd><input type="file" accept="*.png,image/png" id="input_png"></dd>
-            <dd><button type="button" id="decode">データ抽出</button></dd>
+            <dd><button type="button" id="exec_decode">データ抽出</button></dd>
             <dd><a hidden id="output_bin"></a></dd>
         </dl>
     </section>

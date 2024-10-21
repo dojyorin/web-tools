@@ -1,16 +1,14 @@
 <!doctype html>
 <meta charset="utf-8">
+
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
-
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#6611CC">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
 <script async type="module">
-    import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.1/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
+    import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} AkizukiProduct
@@ -20,21 +18,22 @@
     * @prop {number} quantity
     */
 
-    const LS_KEY_PREVIOUS = "previous";
-
     /**
     * @param {AkizukiProduct[]=} products
+    * @return {void}
     */
     function outputDisplay(products) {
         document.getElementById("output_cart").value = products?.map(({code, quantity}) => `${code} ${quantity}`).join("\n") ?? "";
         document.getElementById("output_json").value = products?.length ? JSON.stringify(products, undefined, 4) : "";
     }
 
-    try {
-        const previous = JSON.parse(localStorage.getItem(LS_KEY_PREVIOUS) ?? "");
+    const LS_PRODUCTS = "products";
 
-        if(previous instanceof Array && previous.length && previous.every(v => [["code", 0], ["name", ""], ["price", 0], ["quantity", 0]].every(([k, t]) => typeof v[k] === typeof t))) {
-            outputDisplay(previous);
+    try {
+        const products = JSON.parse(localStorage.getItem(LS_PRODUCTS) ?? "");
+
+        if(products instanceof Array && products.length) {
+            outputDisplay(products);
             dialogNotify("前回の結果を復元しました", "green");
         } else {
             localStorage.clear();
@@ -45,13 +44,13 @@
         outputDisplay();
     }
 
-    document.getElementById("convert").onclick = async () => {
+    document.getElementById("exec_extract").onclick = () => {
         /** @type {string} */
         const text = textGetReady(document.getElementById("input_cart").value);
 
         if(!text) {
-            dialogNotify("商品リストを貼り付けてください", "red");
-            return;
+            dialogNotify("商品リストが存在しません", "red");
+            throw new ReferenceError("Product not exist.");
         }
 
         /** @type {AkizukiProduct[]} */
@@ -63,23 +62,23 @@
             products.push({
                 code: Number(code),
                 name: name.slice(name.length / 2),
-                price: Number(price.replace(/,/g, "")),
+                price: Number(price.replaceAll(",", "")),
                 quantity: Number(quantity)
             });
         }
 
         if(!products.length) {
             dialogNotify("結果が存在しません", "red");
-            return;
+            throw new ReferenceError("Result not exist.");
         }
 
-        localStorage.setItem(LS_KEY_PREVIOUS, JSON.stringify(products));
+        localStorage.setItem(LS_PRODUCTS, JSON.stringify(products));
         outputDisplay(products);
 
         dialogNotify("変換しました", "green");
     };
 
-    document.getElementById("clear").onclick = () => {
+    document.getElementById("exec_clear").onclick = () => {
         localStorage.clear();
         outputDisplay();
         dialogNotify("結果を削除しました", "green");
@@ -87,12 +86,14 @@
 </script>
 
 <style>
-    :root {
-        --header-height: 48px;
-    }
-
     ::-webkit-scrollbar {
         display: none;
+    }
+
+    :root {
+        --header-height: 48px;
+
+        color-scheme: dark;
     }
 
     body {
@@ -101,44 +102,43 @@
         width: 100dvw;
         margin: 0;
         padding: 0;
-    }
 
-    header {
-        height: var(--header-height);
-        background-color: #6611CC;
+        & > header {
+            height: var(--header-height);
+            background-color: #6611CC;
 
-        & > h1 {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 48px;
-            margin: 0 12px;
-            font-size: 24px;
-            font-weight: unset;
+            & > h1 {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                height: var(--header-height);
+                margin: 0 12px;
+                font-size: 24px;
+                font-weight: unset;
+            }
         }
-    }
 
-    main {
-        height: calc(100dvh - var(--header-height));
-        background-color: #202020;
-        overflow: clip scroll;
+        & > main {
+            height: calc(100dvh - var(--header-height));
+            overflow: clip scroll;
 
-        & > section {
-            max-width: 500px;
-            margin: 0 auto 56px auto;
-            padding: 0 16px;
+            & > section {
+                max-width: 800px;
+                margin: 0 auto 56px auto;
+                padding: 0 16px;
 
-            &:first-of-type {
-                margin-top: 16px;
-            }
+                &:first-of-type {
+                    margin-top: 16px;
+                }
 
-            &:last-of-type {
-                margin-bottom: 16px;
-            }
+                &:last-of-type {
+                    margin-bottom: 16px;
+                }
 
-            & > h2 {
-                text-align: center;
-                margin: 0 0 16px 0;
+                & > h2 {
+                    text-align: center;
+                    margin: 0 0 16px 0;
+                }
             }
         }
     }
@@ -156,11 +156,11 @@
         }
     }
 
-    input, textarea, select, button, label {
+    input, textarea, select, button {
         outline: none;
         box-sizing: border-box;
         border: none;
-        -webkit-tap-highlight-color: #00000000;
+        -webkit-tap-highlight-color: transparent;
     }
 
     button[type="button"] {
@@ -190,10 +190,10 @@
         padding: 8px;
         border-radius: 4px;
         font-size: 16px;
-        background-color: #444444;
+        background-color: #333333;
 
         &:hover, &:focus {
-            background-color: #555555;
+            background-color: #444444;
         }
     }
 </style>
@@ -210,7 +210,7 @@
 
         <dl>
             <dd><textarea placeholder="ここに商品リストを貼付" id="input_cart"></textarea></dd>
-            <dd><button type="button" id="convert">カート抽出</button></dd>
+            <dd><button type="button" id="exec_extract">カート抽出</button></dd>
         </dl>
     </section>
 
@@ -220,7 +220,7 @@
         <dl>
             <dd><textarea readonly placeholder="一括入力形式" id="output_cart"></textarea></dd>
             <dd><textarea readonly placeholder="JSON" id="output_json"></textarea></dd>
-            <dd><button type="button" id="clear">クリア</button></dd>
+            <dd><button type="button" id="exec_clear">クリア</button></dd>
         </dl>
     </section>
 

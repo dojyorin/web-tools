@@ -1,16 +1,14 @@
 <!doctype html>
 <meta charset="utf-8">
+
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="height=device-height,width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no">
-
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#6611CC">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🔐</text></svg>">
 
 <script async type="module">
-    import {cryptoGenerateEncryptKey, cryptoGenerateSignKey, cryptoEncrypt, cryptoDecrypt, cryptoSign, cryptoVerify, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.1/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify, fileList, fsWrite} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.3/mod.ts?bundle&target=esnext";
+    import {cryptoGenerateEncryptKey, cryptoGenerateSignKey, cryptoEncrypt, cryptoDecrypt, cryptoSign, cryptoVerify, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
+    import {dialogNotify, fileList, fsWrite} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} DataEntry
@@ -24,11 +22,27 @@
     * @prop {Uint8Array} key
     */
 
-    for(const select of document.getElementsByName("tab_select")) {
-        select.onchange = ({target}) => {
-            for(const tab of document.getElementsByTagName("main")) {
-                tab.setAttribute("hidden", "");
+    for(const main of document.getElementsByTagName("main")) {
+        const suffix = "_switch";
+
+        const input = document.createElement("input");
+        input.id = `${main.id}${suffix}`;
+        input.type = "radio";
+        input.name = "tab_select";
+        input.checked = !main.hidden;
+
+        input.setAttribute("data-label", main.getAttribute("data-label") ?? "-");
+
+        input.onchange = ({target}) => {
+            if(!target) {
+                throw new ReferenceError("Target is null.");
             }
+
+            for(const tab of document.getElementsByTagName("main")) {
+                tab.hidden = true;
+            }
+
+            document.getElementById(target.id.replace(suffix, "")).hidden = false;
 
             for(const input of document.getElementsByTagName("input")) {
                 if(target.name === input.name) {
@@ -38,14 +52,12 @@
                 input.value = "";
                 input.checked = false;
             }
-
-            if(target.checked) {
-                document.getElementById(target.id.replace(/_select/, "")).removeAttribute("hidden");
-            }
         };
+
+        document.getElementById("tabs").appendChild(input);
     }
 
-    document.getElementById("encrypt").onclick = async () => {
+    document.getElementById("exec_encrypt").onclick = async () => {
         /** @type {DataEntry[]} */
         const files = await fileList(document.getElementById("encrypt_files"));
         /** @type {DataEntry[]} */
@@ -55,15 +67,15 @@
 
         try {
             fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(await deflateEncode(await minipackEncode(files)), pub.body, key.body));
+
+            dialogNotify("暗号化しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("暗号化できませんでした", "red");
         }
-
-        dialogNotify("暗号化しました", "green");
     };
 
-    document.getElementById("decrypt").onclick = async () => {
+    document.getElementById("exec_decrypt").onclick = async () => {
         /** @type {DataEntry[]} */
         const [enc] = await fileList(document.getElementById("decrypt_enc"));
         /** @type {DataEntry[]} */
@@ -75,15 +87,15 @@
             for(const {name, body} of await minipackDecode(await deflateDecode(await cryptoDecrypt(enc.body, pub.body, key.body)))) {
                 fsWrite(name, body);
             }
+
+            dialogNotify("復号しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("復号できませんでした", "red");
         }
-
-        dialogNotify("復号しました", "green");
     };
 
-    document.getElementById("sign").onclick = async () => {
+    document.getElementById("exec_sign").onclick = async () => {
         /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("sign_file"));
         /** @type {DataEntry[]} */
@@ -91,15 +103,15 @@
 
         try {
             fsWrite(`${file.name}.sig`, await cryptoSign(file.body, key.body));
+
+            dialogNotify("署名を生成しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("署名できませんでした", "red");
         }
-
-        dialogNotify("署名を生成しました", "green");
     };
 
-    document.getElementById("verify").onclick = async () => {
+    document.getElementById("exec_verify").onclick = async () => {
         /** @type {DataEntry[]} */
         const [file] = await fileList(document.getElementById("verify_file"));
         /** @type {DataEntry[]} */
@@ -108,18 +120,19 @@
         const [sig] = await fileList(document.getElementById("verify_sig"));
 
         try {
-            if(!await cryptoVerify(file.body, pub.body, sig.body)) {
+            if(await cryptoVerify(file.body, pub.body, sig.body)) {
+                dialogNotify("正当な署名です", "green");
+
+            } else {
                 dialogNotify("署名が一致しません", "red");
             }
         } catch(e) {
             console.error(e);
             dialogNotify("検証できませんでした", "red");
         }
-
-        dialogNotify("正当な署名です", "green");
     };
 
-    document.getElementById("keygen_encrypt").onclick = async () => {
+    document.getElementById("exec_keygen_encrypt").onclick = async () => {
         try {
             /** @type {PubKey} */
             const {pub, key} = await cryptoGenerateEncryptKey();
@@ -127,15 +140,15 @@
 
             fsWrite(`${uuid}.enc.pub`, pub);
             fsWrite(`${uuid}.enc.key`, key);
+
+            dialogNotify("暗号化鍵を生成しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("生成できませんでした", "red");
         }
-
-        dialogNotify("暗号化鍵を生成しました", "green");
     };
 
-    document.getElementById("keygen_sign").onclick = async () => {
+    document.getElementById("exec_keygen_sign").onclick = async () => {
         try {
             /** @type {PubKey} */
             const {pub, key} = await cryptoGenerateSignKey();
@@ -143,22 +156,24 @@
 
             fsWrite(`${uuid}.sig.pub`, pub);
             fsWrite(`${uuid}.sig.key`, key);
+
+            dialogNotify("署名鍵を生成しました", "green");
         } catch(e) {
             console.error(e);
             dialogNotify("生成できませんでした", "red");
         }
-
-        dialogNotify("署名鍵を生成しました", "green");
     };
 </script>
 
 <style>
-    :root {
-        --header-height: 84px;
-    }
-
     ::-webkit-scrollbar {
         display: none;
+    }
+
+    :root {
+        --header-height: 84px;
+
+        color-scheme: dark;
     }
 
     body {
@@ -167,78 +182,81 @@
         width: 100dvw;
         margin: 0;
         padding: 0;
-    }
 
-    header {
-        height: var(--header-height);
-        background-color: #6611CC;
+        & > header {
+            --nav-height: 36px;
 
-        & > h1 {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 48px;
-            margin: 0 12px;
-            font-size: 24px;
-            font-weight: unset;
-        }
+            height: var(--header-height);
+            background-color: #6611CC;
 
-        & > nav {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 36px;
-
-            & > label, & > input {
-                height: 100%;
-                width: calc(100dvw / 4);
-                max-width: 200px;
-            }
-
-            & > label {
+            & > h1 {
                 display: flex;
-                align-items: center;
+                flex-direction: column;
                 justify-content: center;
-                cursor: pointer;
-                font-size: 16px;
-                height: 100%;
-
-                &:hover {
-                    background-color: #8639FF;
-                }
-
-                &:active {
-                    background-color: #9856F8;
-                }
+                height: calc(var(--header-height) - var(--nav-height));
+                margin: 0 12px;
+                font-size: 24px;
+                font-weight: unset;
             }
 
-            & > input:checked + label {
-                background-color: #904EFD;
+            & > nav {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: var(--nav-height);
+
+                & > input[type="radio"] {
+                    appearance: none;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    height: 100%;
+                    width: calc(100dvw / 4);
+                    max-width: 200px;
+                    margin: 0;
+                    font-size: 16px;
+
+                    &:hover {
+                        background-color: #8639FF;
+                    }
+
+                    &:active {
+                        background-color: #9856F8;
+                    }
+
+                    &:checked {
+                        background-color: #904EFD;
+                    }
+
+                    &::before {
+                        content: attr(data-label);
+                    }
+                }
             }
         }
-    }
 
-    main {
-        height: calc(100dvh - var(--header-height));
-        background-color: #202020;
-        overflow: clip scroll;
+        & > main {
+            height: calc(100dvh - var(--header-height));
+            overflow: clip scroll;
 
-        & > section {
-            max-width: 500px;
-            margin: 0 auto 56px auto;
-            padding: 0 16px;
+            & > section {
+                max-width: 800px;
+                margin: 0 auto 56px auto;
+                padding: 0 16px;
 
-            &:first-of-type {
-                margin-top: 16px;
-            }
+                &:first-of-type {
+                    margin-top: 16px;
+                }
 
-            &:last-of-type {
-                margin-bottom: 16px;
-            }
+                &:last-of-type {
+                    margin-bottom: 16px;
+                }
 
-            & > h2 {
-                text-align: center;
-                margin: 0 0 16px 0;
+                & > h2 {
+                    text-align: center;
+                    margin: 0 0 16px 0;
+                }
             }
         }
     }
@@ -260,17 +278,41 @@
         }
     }
 
-    input, textarea, select, button, label {
+    input, textarea, select, button {
         outline: none;
         box-sizing: border-box;
         border: none;
-        -webkit-tap-highlight-color: #00000000;
+        -webkit-tap-highlight-color: transparent;
     }
 
     code {
-        padding: 0 2px;
-        border-radius: 2px;
-        background-color: #505050;
+        padding: 0 4px;
+        border-radius: 4px;
+        background-color: #333333;
+    }
+
+    details {
+        margin: 0 0 16px 0;
+
+        & > summary {
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 0 4px 12px;
+            border-radius: 4px;
+            background-color: #6611CC;
+
+            &:hover {
+                background-color: #8639FF;
+            }
+
+            &:active {
+                background-color: #9856F8;
+            }
+        }
+
+        &[open] > summary {
+            background-color: #904EFD;
+        }
     }
 
     button[type="button"] {
@@ -299,14 +341,14 @@
         padding: 8px;
         border-radius: 4px;
         font-size: 16px;
-        background-color: #444444;
+        background-color: #333333;
 
         &:hover {
-            background-color: #555555;
+            background-color: #444444;
         }
 
         &:active {
-            background-color: #777777;
+            background-color: #666666;
         }
 
         &::file-selector-button {
@@ -323,24 +365,10 @@
 
 <header>
     <h1>公開鍵暗号化ツール</h1>
-
-    <nav>
-        <input hidden checked type="radio" name="tab_select" id="tab_select_1">
-        <label for="tab_select_1">暗号化</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_2">
-        <label for="tab_select_2">復号</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_3">
-        <label for="tab_select_3">署名</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_4">
-        <label for="tab_select_4">検証</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_5">
-        <label for="tab_select_5">鍵生成</label>
-        <input hidden type="radio" name="tab_select" id="tab_select_6">
-        <label for="tab_select_6">ヘルプ</label>
-    </nav>
+    <nav id="tabs"></nav>
 </header>
 
-<main id="tab_1">
+<main id="tab_1" data-label="暗号化">
     <section>
         <h2>ファイルを暗号化</h2>
 
@@ -351,12 +379,12 @@
             <dd><input type="file" accept=".pub" id="encrypt_pub"></dd>
             <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="encrypt_key"></dd>
-            <dd><button type="button" id="encrypt">🔒暗号化</button></dd>
+            <dd><button type="button" id="exec_encrypt">🔒暗号化</button></dd>
         </dl>
     </section>
 </main>
 
-<main hidden id="tab_2">
+<main hidden id="tab_2" data-label="復号">
     <section>
         <h2>ファイルを復号</h2>
 
@@ -367,12 +395,12 @@
             <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
             <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="decrypt_key"></dd>
-            <dd><button type="button" id="decrypt">🔓復号</button></dd>
+            <dd><button type="button" id="exec_decrypt">🔓復号</button></dd>
         </dl>
     </section>
 </main>
 
-<main hidden id="tab_3">
+<main hidden id="tab_3"data-label="署名">
     <section>
         <h2>ファイルに署名</h2>
 
@@ -381,12 +409,12 @@
             <dd><input type="file" id="sign_file"></dd>
             <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="sign_key"></dd>
-            <dd><button type="button" id="sign">🔏署名</button></dd>
+            <dd><button type="button" id="exec_sign">🔏署名</button></dd>
         </dl>
     </section>
 </main>
 
-<main hidden id="tab_4">
+<main hidden id="tab_4" data-label="検証">
     <section>
         <h2>ファイルの署名を検証</h2>
 
@@ -395,111 +423,117 @@
             <dd><input type="file" id="verify_file"></dd>
             <dd>公開鍵</dd>
             <dd><input type="file" accept=".pub" id="verify_pub"></dd>
-            <dd>署名ファイル</dd>
+            <dd>電子署名</dd>
             <dd><input type="file" accept=".sig" id="verify_sig"></dd>
-            <dd><button type="button" id="verify">✅検証</button></dd>
+            <dd><button type="button" id="exec_verify">✅検証</button></dd>
         </dl>
     </section>
 </main>
 
-<main hidden id="tab_5">
+<main hidden id="tab_5" data-label="鍵生成">
     <section>
         <h2>鍵を生成</h2>
 
         <dl>
             <dd>暗号化鍵</dd>
-            <dd><button type="button" id="keygen_encrypt">🔑鍵生成</button></dd>
+            <dd><button type="button" id="exec_keygen_encrypt">🔑鍵生成</button></dd>
             <dd>署名鍵</dd>
-            <dd><button type="button" id="keygen_sign">🔑鍵生成</button></dd>
+            <dd><button type="button" id="exec_keygen_sign">🔑鍵生成</button></dd>
         </dl>
     </section>
 </main>
 
-<main hidden id="tab_6">
+<main hidden id="tab_6" data-label="ヘルプ">
     <section>
         <h2>使用方法</h2>
 
-        <details>
-            <summary>暗号化</summary>
+        <details name="howtouse">
+            <summary>暗号化/復号</summary>
+
+            <h3>備考</h3>
+
+            <ul>
+                <li>暗号化を行う前に、送信者と受信者はそれぞれ鍵を生成し、任意の手段で公開鍵を交換する必要があります。</li>
+                <li>鍵は一度使用したら使い回さず、暗号化を行う度に新しく生成してください。</li>
+            </ul>
+
+            <h3>共通</h3>
 
             <ol>
-                <li>鍵生成ボタンを押し、暗号化鍵を生成します。</li>
+                <li><b>鍵生成</b> タブ ⇒ <b>暗号化鍵</b> 欄 ⇒ <b>鍵生成</b> ボタンを押し、鍵を生成します。</li>
                 <ul>
                     <li><code>{乱数}.enc.pub</code> (公開鍵) ... 公開しても問題ない</li>
                     <li><code>{乱数}.enc.key</code> (秘密鍵) ... 絶対に公開してはいけない</li>
                 </ul>
-                <li>相手に <code>{乱数}.enc.pub</code> を送ります。</li>
-                <li>相手から <code>{乱数}.enc.pub</code> を受け取ります。</li>
-                <li>ツールの各フォームへファイルを入力します。</li>
+                <li>任意の手段で相手に <code>{乱数}.enc.pub</code> を送ります。</li>
+                <li>任意の手段で相手から <code>{乱数}.enc.pub</code> を受け取ります。</li>
+            </ol>
+
+            <h3>暗号化</h3>
+
+            <ol>
+                <li><b>暗号化</b> タブの各フォームへファイルを入力します。</li>
                 <ul>
                     <li>暗号化するファイル (複数指定可能)</li>
                     <li>公開鍵 ... <code>{乱数}.enc.pub</code> (相手から受け取ったもの)</li>
                     <li>秘密鍵 ... <code>{乱数}.enc.key</code> (自身で生成したもの)</li>
                 </ul>
-                <li>暗号化ボタンを押し、暗号化を開始します。</li>
+                <li><b>暗号化</b> ボタンを押し、暗号化を開始します。</li>
+            </ol>
+
+            <h3>復号</h3>
+
+            <ol>
+                <li><b>復号</b> タブの各フォームへファイルを入力します。</li>
+                <ul>
+                    <li>暗号化されたファイル (相手から受け取ったもの)</li>
+                    <li>公開鍵 ... <code>{乱数}.enc.pub</code> (相手から受け取ったもの)</li>
+                    <li>秘密鍵 ... <code>{乱数}.enc.key</code> (自身で生成したもの)</li>
+                </ul>
+                <li><b>復号</b> ボタンを押し、復号を開始します。</li>
+                <li>複数ファイルのダウンロード許可を要求された場合は許可します。</li>
             </ol>
         </details>
 
-        <details>
-            <summary>復号</summary>
-            WIP
+        <details name="howtouse">
+            <summary>署名/検証</summary>
+
+            <h3>備考</h3>
+
+            <ul>
+                <li>鍵は秘密鍵が漏洩しない限り使い回すのが望ましいです。</li>
+            </ul>
+
+            <h3>署名</h3>
+
+            <ol>
+                <li><b>鍵生成</b> タブ ⇒ <b>署名鍵</b> 欄 ⇒ <b>鍵生成</b> ボタンを押し、鍵を生成します。以前に鍵を生成しており秘密鍵が漏洩していなければ、この手順はスキップ可能です。</li>
+                <ul>
+                    <li><code>{乱数}.sig.pub</code> (公開鍵) ... 公開しても問題ない</li>
+                    <li><code>{乱数}.sig.key</code> (秘密鍵) ... 絶対に公開してはいけない</li>
+                </ul>
+                <li><b>署名</b> タブの各フォームへファイルを入力します。</li>
+                <ul>
+                    <li>署名するファイル (任意のファイル)</li>
+                    <li>秘密鍵 ... <code>{乱数}.sig.key</code> (自身で生成したもの)</li>
+                </ul>
+                <li><b>署名</b> ボタンを押し、署名を開始します。</li>
+                <li>任意の手段で相手に <code>{乱数}.sig.pub</code> と <code>{ファイル名}.sig</code> を送ります。</li>
+            </ol>
+
+            <h3>検証</h3>
+
+            <ol>
+                <li>任意の手段で相手から <code>{乱数}.sig.pub</code> と <code>{ファイル名}.sig</code> を受け取ります。</li>
+                <li><b>検証</b> タブの各フォームへファイルを入力します。</li>
+                <ul>
+                    <li>署名対象のファイル (任意のファイル)</li>
+                    <li>公開鍵 ... <code>{乱数}.sig.pub</code> (相手から受け取ったもの)</li>
+                    <li>電子署名 ... <code>{ファイル名}.sig</code> (相手から受け取ったもの)</li>
+                </ul>
+                <li><b>検証</b> ボタンを押し、検証を開始します。</li>
+            </ol>
         </details>
-
-        <details>
-            <summary>署名</summary>
-            WIP
-        </details>
-
-        <details>
-            <summary>検証</summary>
-            WIP
-        </details>
-
-        <h3>STEP0: 署名鍵を生成する (任意) (操作: 送信者)</h3>
-
-        <ol>
-            <li>署名が不要な場合は、本手順をスキップし次の手順へ進みます。</li>
-            <li>送信者は、最初に <a href="#sign-generate">署名鍵生成ボタン</a> を押し、処理を開始します。</li>
-            <li>処理が完了すると、2個のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
-            <ul>
-                <li><code>{乱数}.sign.pub</code> : 公開鍵 (公開しても問題ない)</li>
-                <li><code>{乱数}.sign.sec</code> : 秘密鍵 (絶対に公開してはいけない)</li>
-            </ul>
-            <li>生成した <code>{乱数}.sign.pub</code> を任意の方法で受信者へ送信します。</li>
-            <ul>
-                <li>署名鍵は、秘密鍵の紛失や漏洩が無い限り再利用を推奨します。</li>
-                <li>送信方法は、後述の暗号化ファイルの送信で使用する方法とは別の方法を推奨します。</li>
-            </ul>
-            <li>送信者は、ツールの各フォームへファイルを入力します。</li>
-            <ul>
-                <li><a href="#encrypt_files">データ</a> : 暗号化したいファイル (複数指定可能)</li>
-                <li><a href="#encrypt_public">公開鍵</a> : <code>{乱数}.encrypt.pub</code> (受信者から受け取ったもの)</li>
-                <li><a href="#encrypt-secret">秘密鍵(暗号化)</a> : <code>{乱数}.encrypt.sec</code> (自身で生成したもの)</li>
-                <li><a href="#sign-secret">秘密鍵(署名/任意)</a> : <code>{乱数}.sign.sec</code> (自身で生成したもの)</li>
-            </ul>
-            <li><a href="#encrypt-execute">暗号化</a> ボタンを押し、処理を開始します。</li>
-            <li>処理が完了すると、1個のファイルがダウンロードされます。</li>
-            <ul>
-                <li><code>{乱数}.cipher.bin</code> : 暗号データ (公開しても問題ない)</li>
-            </ul>
-            <li>送信者は、暗号化された <code>{乱数}.cipher.bin</code> を、電子メールなど任意の方法で受信者へ送信します。</li>
-        </ol>
-    </section>
-
-    <section>
-        <h3>STEP3: 暗号データを復号する (操作: 受信者)</h3>
-
-        <ol>
-            <li>受信者は、ツールの各フォームへファイルを入力します。</li>
-            <ul>
-                <li><a href="#decrypt_enc">データ</a> : <code>{乱数}.cipher.bin</code> (送信者から受け取ったもの)</li>
-                <li><a href="#decrypt_public">公開鍵(復号)</a> : <code>{乱数}.encrypt.pub</code> (送信者から受け取ったもの)</li>
-                <li><a href="#decrypt-secret">秘密鍵</a> : <code>{乱数}.encrypt.sec</code> (自身で生成したもの)</li>
-                <li><a href="#verify_public">公開鍵(検証/任意)</a> : <code>{乱数}.sign.pub</code> (送信者から受け取ったもの)</li>
-            </ul>
-            <li><a href="#decrypt-execute">復号</a> ボタンを押し、処理を開始します。</li>
-            <li>処理が完了すると、元のファイルがダウンロードされます。(許可を要求された場合は許可します)</li>
-        </ol>
     </section>
 
     <section>
@@ -507,8 +541,11 @@
 
         <ul>
             <li>WebCrypto API</li>
-            <li>ECDH/ECDSA with P-256</li>
-            <li>AES-GCM with 128 bit Key/Tag/IV</li>
+            <ul>
+                <li>ECDH P-256</li>
+                <li>ECDSA P-256</li>
+                <li>AES-GCM-128</li>
+            </ul>
         </ul>
     </section>
 
