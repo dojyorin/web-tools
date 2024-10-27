@@ -147,7 +147,6 @@
     }
 
     button[type="button"] {
-        cursor: pointer;
         font-size: 24px;
         height: 48px;
         width: 100%;
@@ -155,12 +154,16 @@
         border-radius: 4px;
         background-color: #2299FF;
 
-        &:hover {
-            background-color: #39B3FF;
-        }
+        &:not(:disabled) {
+            cursor: pointer;
 
-        &:active {
-            background-color: #77CCFF;
+            &:hover {
+                background-color: #39B3FF;
+            }
+
+            &:active {
+                background-color: #77CCFF;
+            }
         }
     }
 
