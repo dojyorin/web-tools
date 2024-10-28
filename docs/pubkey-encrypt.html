@@ -212,10 +212,14 @@
                     justify-content: center;
                     cursor: pointer;
                     height: 100%;
-                    width: calc(100dvw / 4);
+                    width: 100%;
                     max-width: 200px;
                     margin: 0;
                     font-size: 16px;
+
+                    &::before {
+                        content: attr(data-label);
+                    }
 
                     &:hover {
                         background-color: #8639FF;
@@ -227,10 +231,6 @@
 
                     &:checked {
                         background-color: #904EFD;
-                    }
-
-                    &::before {
-                        content: attr(data-label);
                     }
                 }
             }
