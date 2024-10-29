@@ -8,21 +8,21 @@
 
 <script async type="module">
     import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
+    import {showNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.6/mod.ts?bundle&target=esnext";
 
     document.getElementById("exec_shorten").onclick = () => {
         /** @type {string} */
         const text = textGetReady(document.getElementById("input_url").value);
 
         if(!URL.canParse(text)) {
-            dialogNotify("URLではありません", "red");
+            showNotify("URLではありません", "red");
             throw new ReferenceError("Not URL.");
         }
 
         const {hostname, pathname} = new URL(text);
 
         if(!hostname.startsWith("www.amazon.")) {
-            dialogNotify("AmazonのURLではありません", "red");
+            showNotify("AmazonのURLではありません", "red");
             throw new ReferenceError("Not Amazon URL.");
         }
 
@@ -30,7 +30,7 @@
         const [, pn] = pathname.match(/\/([^/]+)\/dp\/[0-9a-zA-Z]+/) ?? [];
 
         if(!asin) {
-            dialogNotify("結果が存在しません", "red");
+            showNotify("結果が存在しません", "red");
             throw new ReferenceError("Result not exist.");
         }
 
@@ -38,7 +38,7 @@
         document.getElementById("output_asin").value = asin;
         document.getElementById("output_name").value = textGetReady(decodeURIComponent(pn ?? "")) || "(取得失敗)";
 
-        dialogNotify("変換しました", "green");
+        showNotify("変換しました", "green");
     };
 </script>
 

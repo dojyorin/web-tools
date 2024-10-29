@@ -8,7 +8,7 @@
 
 <script async type="module">
     import {cryptoGenerateEncryptKey, cryptoGenerateSignKey, cryptoEncrypt, cryptoDecrypt, cryptoSign, cryptoVerify, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify, fileList, fsWrite} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
+    import {showNotify, fsParse, fsWrite} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.6/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} DataEntry
@@ -59,76 +59,76 @@
 
     document.getElementById("exec_encrypt").onclick = async () => {
         /** @type {DataEntry[]} */
-        const files = await fileList(document.getElementById("encrypt_files"));
+        const files = await fsParse(document.getElementById("encrypt_files"));
         /** @type {DataEntry[]} */
-        const [pub] = await fileList(document.getElementById("encrypt_pub"));
+        const [pub] = await fsParse(document.getElementById("encrypt_pub"));
         /** @type {DataEntry[]} */
-        const [key] = await fileList(document.getElementById("encrypt_key"));
+        const [key] = await fsParse(document.getElementById("encrypt_key"));
 
         try {
             fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(await deflateEncode(await minipackEncode(files)), pub.body, key.body));
 
-            dialogNotify("暗号化しました", "green");
+            showNotify("暗号化しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("暗号化できませんでした", "red");
+            showNotify("暗号化できませんでした", "red");
         }
     };
 
     document.getElementById("exec_decrypt").onclick = async () => {
         /** @type {DataEntry[]} */
-        const [enc] = await fileList(document.getElementById("decrypt_enc"));
+        const [enc] = await fsParse(document.getElementById("decrypt_enc"));
         /** @type {DataEntry[]} */
-        const [pub] = await fileList(document.getElementById("decrypt_pub"));
+        const [pub] = await fsParse(document.getElementById("decrypt_pub"));
         /** @type {DataEntry[]} */
-        const [key] = await fileList(document.getElementById("decrypt_key"));
+        const [key] = await fsParse(document.getElementById("decrypt_key"));
 
         try {
             for(const {name, body} of await minipackDecode(await deflateDecode(await cryptoDecrypt(enc.body, pub.body, key.body)))) {
                 fsWrite(name, body);
             }
 
-            dialogNotify("復号しました", "green");
+            showNotify("復号しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("復号できませんでした", "red");
+            showNotify("復号できませんでした", "red");
         }
     };
 
     document.getElementById("exec_sign").onclick = async () => {
         /** @type {DataEntry[]} */
-        const [file] = await fileList(document.getElementById("sign_file"));
+        const [file] = await fsParse(document.getElementById("sign_file"));
         /** @type {DataEntry[]} */
-        const [key] = await fileList(document.getElementById("sign_key"));
+        const [key] = await fsParse(document.getElementById("sign_key"));
 
         try {
             fsWrite(`${file.name}.sig`, await cryptoSign(file.body, key.body));
 
-            dialogNotify("署名を生成しました", "green");
+            showNotify("署名を生成しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("署名できませんでした", "red");
+            showNotify("署名できませんでした", "red");
         }
     };
 
     document.getElementById("exec_verify").onclick = async () => {
         /** @type {DataEntry[]} */
-        const [file] = await fileList(document.getElementById("verify_file"));
+        const [file] = await fsParse(document.getElementById("verify_file"));
         /** @type {DataEntry[]} */
-        const [pub] = await fileList(document.getElementById("verify_pub"));
+        const [pub] = await fsParse(document.getElementById("verify_pub"));
         /** @type {DataEntry[]} */
-        const [sig] = await fileList(document.getElementById("verify_sig"));
+        const [sig] = await fsParse(document.getElementById("verify_sig"));
 
         try {
             if(await cryptoVerify(file.body, pub.body, sig.body)) {
-                dialogNotify("正当な署名です", "green");
+                showNotify("正当な署名です", "green");
 
             } else {
-                dialogNotify("署名が一致しません", "red");
+                showNotify("署名が一致しません", "red");
             }
         } catch(e) {
             console.error(e);
-            dialogNotify("検証できませんでした", "red");
+            showNotify("検証できませんでした", "red");
         }
     };
 
@@ -141,10 +141,10 @@
             fsWrite(`${uuid}.enc.pub`, pub);
             fsWrite(`${uuid}.enc.key`, key);
 
-            dialogNotify("暗号化鍵を生成しました", "green");
+            showNotify("暗号化鍵を生成しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("生成できませんでした", "red");
+            showNotify("生成できませんでした", "red");
         }
     };
 
@@ -157,10 +157,10 @@
             fsWrite(`${uuid}.sig.pub`, pub);
             fsWrite(`${uuid}.sig.key`, key);
 
-            dialogNotify("署名鍵を生成しました", "green");
+            showNotify("署名鍵を生成しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("生成できませんでした", "red");
+            showNotify("生成できませんでした", "red");
         }
     };
 </script>

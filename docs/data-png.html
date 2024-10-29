@@ -8,7 +8,7 @@
 
 <script async type="module">
     import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v1.0.4/mod.ts?bundle&target=esnext";
-    import {dialogNotify, fileList} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
+    import {showNotify, fsParse} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.6/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} DataEntry
@@ -18,10 +18,10 @@
 
     document.getElementById("exec_encode").onclick = async () => {
         /** @type {DataEntry[]} */
-        const [file] = await fileList(document.getElementById("input_bin"));
+        const [file] = await fsParse(document.getElementById("input_bin"));
 
         if(!file) {
-            dialogNotify("ファイルが選択されていません", "red");
+            showNotify("ファイルが選択されていません", "red");
             throw new ReferenceError("File not selected.");
         }
 
@@ -31,19 +31,19 @@
             image.alt = `${file.name}.png`;
             image.hidden = false;
 
-            dialogNotify("生成しました", "green");
+            showNotify("生成しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("生成できませんでした", "green");
+            showNotify("生成できませんでした", "green");
         }
     };
 
     document.getElementById("exec_decode").onclick = async () => {
         /** @type {DataEntry[]} */
-        const [file] = await fileList(document.getElementById("input_png"));
+        const [file] = await fsParse(document.getElementById("input_png"));
 
         if(!file) {
-            dialogNotify("ファイルが選択されていません", "red");
+            showNotify("ファイルが選択されていません", "red");
             throw new ReferenceError("File not selected.");
         }
 
@@ -54,10 +54,10 @@
             anchor.download = `${file.name}.bin`;
             anchor.hidden = false;
 
-            dialogNotify("抽出しました", "green");
+            showNotify("抽出しました", "green");
         } catch(e) {
             console.error(e);
-            dialogNotify("抽出できませんでした", "green");
+            showNotify("抽出できませんでした", "green");
         }
     };
 </script>
