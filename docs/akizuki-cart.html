@@ -8,7 +8,7 @@
 
 <script async type="module">
     import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
-    import {dialogNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.4/mod.ts?bundle&target=esnext";
+    import {showNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.6/mod.ts?bundle&target=esnext";
 
     /**
     * @typedef {object} AkizukiProduct
@@ -34,7 +34,7 @@
 
         if(products instanceof Array && products.length) {
             outputDisplay(products);
-            dialogNotify("前回の結果を復元しました", "green");
+            showNotify("前回の結果を復元しました", "green");
         } else {
             localStorage.clear();
             outputDisplay();
@@ -49,7 +49,7 @@
         const text = textGetReady(document.getElementById("input_cart").value);
 
         if(!text) {
-            dialogNotify("商品リストが存在しません", "red");
+            showNotify("商品リストが存在しません", "red");
             throw new ReferenceError("Product not exist.");
         }
 
@@ -68,20 +68,20 @@
         }
 
         if(!products.length) {
-            dialogNotify("結果が存在しません", "red");
+            showNotify("結果が存在しません", "red");
             throw new ReferenceError("Result not exist.");
         }
 
         localStorage.setItem(LS_PRODUCTS, JSON.stringify(products));
         outputDisplay(products);
 
-        dialogNotify("変換しました", "green");
+        showNotify("変換しました", "green");
     };
 
     document.getElementById("exec_clear").onclick = () => {
         localStorage.clear();
         outputDisplay();
-        dialogNotify("結果を削除しました", "green");
+        showNotify("結果を削除しました", "green");
     };
 </script>
 
