@@ -8,16 +8,16 @@
 
 <script async type="module">
     import {pngEncode, pngDecode} from "https://esm.sh/gh/dojyorin/png_mimic@v1.0.4/mod.ts?bundle&target=esnext";
-    import {showNotify, fsParse} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.7/mod.ts?bundle&target=esnext";
+    import {showNotify, fsParse} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.8/mod.ts?bundle&target=esnext";
 
     /**
-    * @typedef {object} DataEntry
+    * @typedef {object} Binary
     * @prop {string} name
     * @prop {Uint8Array} body
     */
 
     document.getElementById("exec_encode").onclick = async () => {
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [file] = await fsParse(document.getElementById("input_bin"));
 
         if(!file) {
@@ -39,7 +39,7 @@
     };
 
     document.getElementById("exec_decode").onclick = async () => {
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [file] = await fsParse(document.getElementById("input_png"));
 
         if(!file) {

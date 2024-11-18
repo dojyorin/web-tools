@@ -8,10 +8,10 @@
 
 <script async type="module">
     import {cryptoGenerateEncryptKey, cryptoGenerateSignKey, cryptoEncrypt, cryptoDecrypt, cryptoSign, cryptoVerify, minipackEncode, minipackDecode, deflateEncode, deflateDecode} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
-    import {showNotify, fsParse, fsWrite} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.7/mod.ts?bundle&target=esnext";
+    import {showNotify, fsParse, fsWrite} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.8/mod.ts?bundle&target=esnext";
 
     /**
-    * @typedef {object} DataEntry
+    * @typedef {object} Binary
     * @prop {string} name
     * @prop {Uint8Array} body
     */
@@ -58,11 +58,11 @@
     }
 
     document.getElementById("exec_encrypt").onclick = async () => {
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const files = await fsParse(document.getElementById("encrypt_files"));
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [pub] = await fsParse(document.getElementById("encrypt_pub"));
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [key] = await fsParse(document.getElementById("encrypt_key"));
 
         try {
@@ -76,11 +76,11 @@
     };
 
     document.getElementById("exec_decrypt").onclick = async () => {
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [enc] = await fsParse(document.getElementById("decrypt_enc"));
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [pub] = await fsParse(document.getElementById("decrypt_pub"));
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [key] = await fsParse(document.getElementById("decrypt_key"));
 
         try {
@@ -96,9 +96,9 @@
     };
 
     document.getElementById("exec_sign").onclick = async () => {
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [file] = await fsParse(document.getElementById("sign_file"));
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [key] = await fsParse(document.getElementById("sign_key"));
 
         try {
@@ -112,11 +112,11 @@
     };
 
     document.getElementById("exec_verify").onclick = async () => {
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [file] = await fsParse(document.getElementById("verify_file"));
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [pub] = await fsParse(document.getElementById("verify_pub"));
-        /** @type {DataEntry[]} */
+        /** @type {Binary[]} */
         const [sig] = await fsParse(document.getElementById("verify_sig"));
 
         try {
