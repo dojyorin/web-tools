@@ -19,6 +19,14 @@
     */
 
     /**
+    * @param {string} text
+    * @return {string}
+    */
+    function purgeBlank(text) {
+        return text.trim().replace(/\r/g, "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/\n+/g, "\n").replace(/^ /mg, "").replace(/ $/mg, "");
+    }
+
+    /**
     * @param {AkizukiProduct[]=} products
     * @return {void}
     */
