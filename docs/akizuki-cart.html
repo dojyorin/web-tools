@@ -7,7 +7,6 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🛒</text></svg>">
 
 <script async type="module">
-    import {textGetReady} from "https://esm.sh/gh/dojyorin/deno_simple_utility@v2.3.2/mod.pure.ts?bundle&target=esnext";
     import {showNotify} from "https://esm.sh/gh/dojyorin/browser_simple_utility@v1.3.8/mod.ts?bundle&target=esnext";
 
     /**
@@ -23,7 +22,7 @@
     * @return {string}
     */
     function purgeBlank(text) {
-        return text.trim().replace(/\r/g, "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/\n+/g, "\n").replace(/^ /mg, "").replace(/ $/mg, "");
+        return text.trim().replaceAll("\r", "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/\n+/g, "\n").replace(/^ /mg, "").replace(/ $/mg, "");
     }
 
     /**
@@ -89,8 +88,7 @@
     }
 
     document.getElementById("exec_extract").onclick = () => {
-        /** @type {string} */
-        const text = textGetReady(document.getElementById("input_cart").value);
+        const text = purgeBlank(fixWidth(document.getElementById("input_cart").value));
 
         if(!text) {
             showNotify("商品リストが存在しません", "red");
