@@ -62,8 +62,8 @@
             throw new ReferenceError("Not Amazon URL.");
         }
 
-        const [, asin] = pathname.match(/\/dp\/([0-9A-Z]{10})/) ?? [];
-        const [, name] = pathname.match(/\/([^/]+)\/dp\/[0-9A-Z]{10}/) ?? [];
+        const [, asin] = pathname.match(/\/dp\/([A-Z0-9]{10})/) ?? [];
+        const [, name] = pathname.match(/\/([^/]+)\/dp\/[A-Z0-9]{10}/) ?? [];
 
         if(!asin) {
             showNotify("結果が存在しません", "red");
