@@ -21,14 +21,6 @@
     * @param {string} text
     * @return {string}
     */
-    function purgeBlank(text) {
-        return text.trim().replaceAll("\r", "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/\n+/g, "\n").replace(/^ /mg, "").replace(/ $/mg, "");
-    }
-
-    /**
-    * @param {string} text
-    * @return {string}
-    */
     function fixWidth(text) {
         return Object.entries({
             "ｳﾞ": "ヴ",
@@ -88,7 +80,7 @@
     }
 
     document.getElementById("exec_extract").onclick = () => {
-        const text = purgeBlank(fixWidth(document.getElementById("input_cart").value));
+        const text = fixWidth(document.getElementById("input_cart").value.trim().replaceAll("\r", "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/\n+/g, "\n").replace(/^ /mg, "").replace(/ $/mg, ""));
 
         if(!text) {
             showNotify("商品リストが存在しません", "red");
