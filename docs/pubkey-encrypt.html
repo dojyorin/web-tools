@@ -171,12 +171,13 @@
     }
 
     :root {
-        --header-height: 84px;
-
         color-scheme: dark;
     }
 
     body {
+        --header-height: 48px;
+        --header-extend-height: 36px;
+
         user-select: none;
         height: 100dvh;
         width: 100dvw;
@@ -184,32 +185,30 @@
         padding: 0;
 
         > header {
-            --nav-height: 36px;
+            display: flex;
+            align-items: center;
+            background-color: light-dark(#DDDDDD, #6611CC);
 
-            height: var(--header-height);
-            background-color: #6611CC;
+            &:nth-of-type(1) {
+                justify-content: start;
+                height: var(--header-height);
 
-            > h1 {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                height: calc(var(--header-height) - var(--nav-height));
-                margin: 0 12px;
-                font-size: 24px;
-                font-weight: unset;
+                > h1 {
+                    margin: 0 12px;
+                    font-size: 24px;
+                    font-weight: unset;
+                }
             }
 
-            > nav {
-                display: flex;
+            &:nth-of-type(2) {
                 justify-content: center;
-                align-items: center;
-                height: var(--nav-height);
+                height: var(--header-extend-height);
 
                 > input[type="radio"] {
                     appearance: none;
                     display: flex;
-                    align-items: center;
                     justify-content: center;
+                    align-items: center;
                     cursor: pointer;
                     height: 100%;
                     width: 100%;
@@ -222,22 +221,22 @@
                     }
 
                     &:hover {
-                        background-color: #8639FF;
+                        background-color: light-dark(#CCCCCC, #8639FF);
                     }
 
                     &:active {
-                        background-color: #9856F8;
+                        background-color: light-dark(#BBBBBB, #9856F8);
                     }
 
                     &:checked {
-                        background-color: #904EFD;
+                        background-color: light-dark(#AAAAAA, #904EFD);
                     }
                 }
             }
         }
 
         > main {
-            height: calc(100dvh - var(--header-height));
+            height: calc(100dvh - var(--header-height) - var(--header-extend-height));
             overflow: clip scroll;
 
             > section {
@@ -288,7 +287,7 @@
     code {
         padding: 0 4px;
         border-radius: 4px;
-        background-color: #333333;
+        background-color: light-dark(#CCCCCC, #333333);
     }
 
     details {
@@ -322,7 +321,7 @@
         width: 100%;
         max-width: 200px;
         border-radius: 4px;
-        background-color: #2299FF;
+        background-color: #3399FF;
 
         &:not(:disabled) {
             cursor: pointer;
@@ -345,14 +344,14 @@
         padding: 8px;
         border-radius: 4px;
         font-size: 16px;
-        background-color: #333333;
+        background-color: light-dark(#AAAAAA, #333333);
 
         &:hover {
-            background-color: #444444;
+            background-color: light-dark(#BBBBBB, #444444);
         }
 
         &:active {
-            background-color: #666666;
+            background-color: light-dark(#CCCCCC, #555555);
         }
 
         &::file-selector-button {
@@ -369,8 +368,9 @@
 
 <header>
     <h1>公開鍵暗号化ツール</h1>
-    <nav id="tabs"></nav>
 </header>
+
+<header id="tabs"></header>
 
 <main id="tab_1" data-label="暗号化">
     <section>
