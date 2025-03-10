@@ -305,24 +305,35 @@
         margin: 0 0 16px 0;
 
         > summary {
+            position: relative;
             cursor: pointer;
             padding: 4px 0 4px 12px;
             border-radius: 4px;
             font-size: 18px;
-            background-color: #6611CC;
+            background-color: light-dark(#DDDDDD, #6611CC);
             -webkit-tap-highlight-color: transparent;
 
-            &:hover {
-                background-color: #8639FF;
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                border-radius: inherit;
             }
 
-            &:active {
-                background-color: #9856F8;
+            &:hover::after {
+                background-color: #FFFFFF40;
+            }
+
+            &:active::after {
+                background-color: #FFFFFF90;
             }
         }
 
-        &[open] > summary {
-            background-color: #904EFD;
+        &[open] > summary::after {
+            background-color: #FFFFFF70;
         }
     }
 
