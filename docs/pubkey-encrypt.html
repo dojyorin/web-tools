@@ -22,6 +22,13 @@
     * @prop {Uint8Array} key
     */
 
+    document.getElementById("theme").onclick = ({target}) => {
+        const dark = getComputedStyle(document.documentElement).colorScheme === "dark";
+
+        document.documentElement.style.colorScheme = dark ? "light" : "dark";
+        target.textContent = dark ? "☀" : "☾";
+    };
+
     for(const main of document.getElementsByTagName("main")) {
         const suffix = "_switch";
 
@@ -197,6 +204,11 @@
                     margin: 0 12px;
                     font-size: 24px;
                     font-weight: unset;
+                    word-break: keep-all;
+                }
+
+                > div.space {
+                    width: 100%;
                 }
             }
 
@@ -421,6 +433,8 @@
 <header>
     <button type="button" class="icon" id="menu">☰</button>
     <h1>公開鍵暗号化ツール</h1>
+    <div class="space"></div>
+    <button type="button" class="icon" id="theme">☾</button>
 </header>
 
 <header id="tabs"></header>
