@@ -205,6 +205,7 @@
                 height: var(--header-extend-height);
 
                 > input[type="radio"] {
+                    position: relative;
                     appearance: none;
                     display: flex;
                     justify-content: center;
@@ -220,16 +221,26 @@
                         content: attr(data-label);
                     }
 
-                    &:hover {
-                        background-color: light-dark(#CCCCCC, #8639FF);
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        height: 100%;
+                        width: 100%;
+                        border-radius: inherit;
                     }
 
-                    &:active {
-                        background-color: light-dark(#BBBBBB, #9856F8);
+                    &:hover::after {
+                        background-color: #FFFFFF40;
                     }
 
-                    &:checked {
-                        background-color: light-dark(#AAAAAA, #904EFD);
+                    &:active::after {
+                        background-color: #FFFFFF90;
+                    }
+
+                    &:checked::after {
+                        background-color: #FFFFFF70;
                     }
                 }
             }
@@ -316,23 +327,43 @@
     }
 
     button[type="button"] {
-        font-size: 24px;
-        height: 48px;
-        width: 100%;
-        max-width: 200px;
-        border-radius: 4px;
-        background-color: #3399FF;
+        position: relative;
 
         &:not(:disabled) {
             cursor: pointer;
 
-            &:hover {
-                background-color: #39B3FF;
+            &:hover::after {
+                background-color: #FFFFFF40;
             }
 
-            &:active {
-                background-color: #77CCFF;
+            &:active::after {
+                background-color: #FFFFFF90;
             }
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            border-radius: inherit;
+        }
+
+        &:not(.icon) {
+            font-size: 24px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            background-color: #3399FF;
+        }
+
+        &.icon {
+            font-size: 24px;
+            height: 100%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background-color: transparent;
         }
     }
 
@@ -367,6 +398,7 @@
 <title>公開鍵暗号化ツール</title>
 
 <header>
+    <button type="button" class="icon" id="menu">☰</button>
     <h1>公開鍵暗号化ツール</h1>
 </header>
 
