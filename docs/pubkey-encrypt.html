@@ -306,9 +306,9 @@
 
         > summary {
             cursor: pointer;
-            font-size: 18px;
             padding: 4px 0 4px 12px;
             border-radius: 4px;
+            font-size: 18px;
             background-color: #6611CC;
             -webkit-tap-highlight-color: transparent;
 
@@ -328,6 +328,21 @@
 
     button[type="button"] {
         position: relative;
+
+        &:not(.icon) {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 24px;
+            background-color: #3399FF;
+        }
+
+        &.icon {
+            height: 100%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            font-size: 24px;
+            background-color: transparent;
+        }
 
         &:not(:disabled) {
             cursor: pointer;
@@ -350,25 +365,10 @@
             width: 100%;
             border-radius: inherit;
         }
-
-        &:not(.icon) {
-            font-size: 24px;
-            padding: 4px 12px;
-            border-radius: 4px;
-            background-color: #3399FF;
-        }
-
-        &.icon {
-            font-size: 24px;
-            height: 100%;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            background-color: transparent;
-        }
     }
 
     input[type="file"] {
-        cursor: pointer;
+        position: relative;
         height: 40px;
         width: 400px;
         max-width: 100%;
@@ -377,12 +377,26 @@
         font-size: 16px;
         background-color: light-dark(#AAAAAA, #333333);
 
-        &:hover {
-            background-color: light-dark(#BBBBBB, #444444);
+        &:not(:disabled) {
+            cursor: pointer;
+
+            &:hover::after {
+                background-color: #FFFFFF40;
+            }
+
+            &:active::after {
+                background-color: #FFFFFF90;
+            }
         }
 
-        &:active {
-            background-color: light-dark(#CCCCCC, #555555);
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            border-radius: inherit;
         }
 
         &::file-selector-button {
