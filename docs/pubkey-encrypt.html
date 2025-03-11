@@ -26,7 +26,7 @@
         const dark = getComputedStyle(document.documentElement).colorScheme === "dark";
 
         document.documentElement.style.colorScheme = dark ? "light" : "dark";
-        target.textContent = dark ? "☀" : "☾";
+        target.textContent = dark ? "☀︎" : "⏾";
     };
 
     for(const main of document.getElementsByTagName("main")) {
@@ -173,8 +173,8 @@
 </script>
 
 <style>
-    ::-webkit-scrollbar {
-        display: none;
+    * {
+        scrollbar-width: none;
     }
 
     :root {
@@ -183,7 +183,7 @@
 
     body {
         --header-height: 48px;
-        --header-extend-height: 36px;
+        --header-extend-height: 32px;
 
         user-select: none;
         height: 100dvh;
@@ -444,7 +444,7 @@
     <button type="button" class="icon" id="menu">☰</button>
     <h1>公開鍵暗号化ツール</h1>
     <div class="space"></div>
-    <button type="button" class="icon" id="theme">☾</button>
+    <button type="button" class="icon" id="theme">⏾</button>
 </header>
 
 <header id="tabs"></header>
