@@ -54,26 +54,32 @@
     }
 
     for(const main of document.getElementsByTagName("main")) {
-        const suffix = "_switch";
+        const target = main.getAttribute("data-tab");
+
+        if(!target) {
+            continue;
+        }
 
         const input = document.createElement("input");
-        input.id = `${main.id}${suffix}`;
         input.type = "radio";
-        input.name = "tab_select";
+        input.name = "8f526679-aa34-4472-a83d-3edb283221ac";
         input.checked = !main.hidden;
-
-        input.setAttribute("data-label", main.getAttribute("data-label") ?? "-");
+        input.setAttribute("data-tab", target);
 
         input.onchange = ({target}) => {
             if(!target) {
                 throw new ReferenceError("Target is null.");
             }
 
-            for(const tab of document.getElementsByTagName("main")) {
-                tab.hidden = true;
+            for(const main1 of document.getElementsByTagName("main")) {
+                if(!main1.hasAttribute("data-tab")) {
+                    continue;
+                }
+
+                main1.hidden = true;
             }
 
-            document.getElementById(target.id.replace(suffix, "")).hidden = false;
+            main.hidden = false;
 
             for(const input of document.getElementsByTagName("input")) {
                 if(target.name === input.name) {
@@ -250,7 +256,7 @@
                     font-size: 16px;
 
                     &::before {
-                        content: attr(data-label);
+                        content: attr(data-tab);
                     }
 
                     &::after {
@@ -463,7 +469,7 @@
     <button type="button" class="icon" data-dialog="menu">✖</button>
 </dialog>
 
-<main id="tab_1" data-label="暗号化">
+<main data-tab="暗号化">
     <section>
         <h2>ファイルを暗号化</h2>
 
@@ -479,7 +485,7 @@
     </section>
 </main>
 
-<main hidden id="tab_2" data-label="復号">
+<main hidden data-tab="復号">
     <section>
         <h2>ファイルを復号</h2>
 
@@ -495,7 +501,7 @@
     </section>
 </main>
 
-<main hidden id="tab_3"data-label="署名">
+<main hidden data-tab="署名">
     <section>
         <h2>ファイルに署名</h2>
 
@@ -509,7 +515,7 @@
     </section>
 </main>
 
-<main hidden id="tab_4" data-label="検証">
+<main hidden data-tab="検証">
     <section>
         <h2>ファイルの署名を検証</h2>
 
@@ -525,7 +531,7 @@
     </section>
 </main>
 
-<main hidden id="tab_5" data-label="鍵生成">
+<main hidden data-tab="鍵生成">
     <section>
         <h2>鍵を生成</h2>
 
@@ -538,7 +544,7 @@
     </section>
 </main>
 
-<main hidden id="tab_6" data-label="ヘルプ">
+<main hidden data-tab="ヘルプ">
     <section>
         <h2>使用方法</h2>
 
