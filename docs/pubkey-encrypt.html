@@ -194,6 +194,10 @@
         margin: 0;
         padding: 0;
 
+        &:has(> nav[popover]:popover-open) {
+            pointer-events: none;
+        }
+
         > header {
             display: flex;
             align-items: center;
@@ -255,6 +259,37 @@
                     &[data-open]::after {
                         background-color: #FFFFFF70;
                     }
+                }
+            }
+        }
+
+        > nav[popover] {
+            position: fixed;
+            height: 100dvh;
+            width: 100dvw;
+            max-width: 250px;
+            margin: 0;
+            padding: 0;
+            border: none;
+            transition: all 250ms ease-in-out allow-discrete;
+            transform: translateX(-250px);
+
+            &:popover-open {
+                pointer-events: auto;
+                transform: translateX(0);
+            }
+
+            &::backdrop {
+                backdrop-filter: blur(4px);
+            }
+
+            > header {
+                height: var(--header-height);
+            }
+
+            @starting-style {
+                &:popover-open {
+                    transform: translateX(-250px);
                 }
             }
         }
@@ -445,8 +480,10 @@
 
 <header id="tabs"></header>
 
-<nav id="menu" popover>
-    <button type="button" class="icon" popovertarget="menu">✖</button>
+<nav id="menu" popover="manual">
+    <header>
+        <button type="button" class="icon" popovertarget="menu">✖</button>
+    </header>
 </nav>
 
 <main id="/encrypt" data-page="暗号化">
