@@ -127,7 +127,7 @@
         const [key] = await fsParse(document.getElementById("encrypt_key"));
 
         try {
-            fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(await deflateEncode(await minipackEncode(files)), pub.body, key.body));
+            fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(await deflateEncode(await minipackEncode(domInput.encrypt_files)), pub.body, key.body));
 
             showNotify("暗号化しました", "green");
         } catch(e) {
