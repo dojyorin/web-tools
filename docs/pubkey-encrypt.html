@@ -22,30 +22,6 @@
     * @prop {Uint8Array} key
     */
 
-    for(const button of document.getElementsByTagName("button")) {
-        const target = button.getAttribute("data-dialog");
-
-        if(!target) {
-            continue;
-        }
-
-        button.onclick = () => {
-            const dialog = document.getElementById(target);
-
-            if(!(dialog instanceof HTMLDialogElement)) {
-                throw new ReferenceError("Target is not dialog element.");
-            }
-
-            if(dialog.open) {
-                dialog.close();
-            } else if(dialog.hasAttribute("data-modal")) {
-                dialog.showModal();
-            } else {
-                dialog.show();
-            }
-        };
-    }
-
     for(const main of document.getElementsByTagName("main")) {
         const target = main.getAttribute("data-page");
 
@@ -461,7 +437,7 @@
 <title>公開鍵暗号化ツール</title>
 
 <header>
-    <button type="button" class="icon" data-dialog="menu">☰</button>
+    <button type="button" class="icon" popovertarget="menu">☰</button>
     <h1>公開鍵暗号化ツール</h1>
     <div class="space"></div>
     <button type="button" class="icon" id="theme">☀︎</button>
@@ -469,9 +445,9 @@
 
 <header id="tabs"></header>
 
-<dialog id="menu" data-modal>
-    <button type="button" class="icon" data-dialog="menu">✖</button>
-</dialog>
+<nav id="menu" popover>
+    <button type="button" class="icon" popovertarget="menu">✖</button>
+</nav>
 
 <main id="/encrypt" data-page="暗号化">
     <section>
