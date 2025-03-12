@@ -22,6 +22,53 @@
     * @prop {Uint8Array} key
     */
 
+    const domInput = {
+        /** @type {File[]} */
+        get encrypt_files() {
+            return Array.from(document.getElementById("encrypt_files").files);
+        },
+        /** @type {File[]} */
+        get encrypt_pub() {
+            return Array.from(document.getElementById("encrypt_pub").files);
+        },
+        /** @type {File[]} */
+        get encrypt_key() {
+            return Array.from(document.getElementById("encrypt_key").files);
+        },
+        /** @type {File[]} */
+        get decrypt_enc() {
+            return Array.from(document.getElementById("decrypt_enc").files);
+        },
+        /** @type {File[]} */
+        get decrypt_pub() {
+            return Array.from(document.getElementById("decrypt_pub").files);
+        },
+        /** @type {File[]} */
+        get decrypt_key() {
+            return Array.from(document.getElementById("decrypt_key").files);
+        },
+        /** @type {File[]} */
+        get sign_file() {
+            return Array.from(document.getElementById("sign_file").files);
+        },
+        /** @type {File[]} */
+        get sign_key() {
+            return Array.from(document.getElementById("sign_key").files);
+        },
+        /** @type {File[]} */
+        get verify_file() {
+            return Array.from(document.getElementById("verify_file").files);
+        },
+        /** @type {File[]} */
+        get verify_pub() {
+            return Array.from(document.getElementById("verify_pub").files);
+        },
+        /** @type {File[]} */
+        get verify_sig() {
+            return Array.from(document.getElementById("verify_sig").files);
+        }
+    };
+
     for(const main of document.getElementsByTagName("main")) {
         const target = main.getAttribute("data-page");
 
@@ -44,12 +91,6 @@
     if(!location.hash) {
         location.hash = "#/";
     }
-
-// const domInput = {
-//     get encrypt_files() {
-//         return document.getElementById("encrypt_files");
-//     }
-// };
 
     onhashchange = ({newURL}) => {
         for(const anchor of document.getElementsByTagName("a")) {
