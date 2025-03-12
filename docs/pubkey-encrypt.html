@@ -185,8 +185,10 @@
     }
 
     body {
+        --primary-color: light-dark(#DDDDDD, #6611CC);
         --header-height: 48px;
         --header-extend-height: 32px;
+        --main-height: calc(100dvh - var(--header-height) - var(--header-extend-height));
 
         user-select: none;
         height: 100dvh;
@@ -201,7 +203,7 @@
         > header {
             display: flex;
             align-items: center;
-            background-color: light-dark(#DDDDDD, #6611CC);
+            background-color: var(--primary-color);
 
             &:nth-of-type(1) {
                 justify-content: start;
@@ -308,7 +310,7 @@
 
         > main {
             display: none;
-            height: calc(100dvh - var(--header-height) - var(--header-extend-height));
+            height: var(--main-height);
             overflow: clip scroll;
 
             &:target {
