@@ -22,13 +22,6 @@
     * @prop {Uint8Array} key
     */
 
-    document.getElementById("theme").onclick = ({target}) => {
-        const dark = getComputedStyle(document.documentElement).colorScheme === "dark";
-
-        document.documentElement.style.colorScheme = dark ? "light" : "dark";
-        target.textContent = dark ? "☀︎" : "⏾";
-    };
-
     for(const button of document.getElementsByTagName("button")) {
         const target = button.getAttribute("data-dialog");
 
@@ -54,45 +47,53 @@
     }
 
     for(const main of document.getElementsByTagName("main")) {
-        const target = main.getAttribute("data-tab");
+        const target = main.getAttribute("data-page");
 
         if(!target) {
             continue;
         }
 
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = "8f526679-aa34-4472-a83d-3edb283221ac";
-        input.checked = !main.hidden;
-        input.setAttribute("data-tab", target);
+        const anchor = document.createElement("a");
+        anchor.href = `#${main.id}`;
+        anchor.textContent = target;
+        anchor.setAttribute("data-tab", "");
 
-        input.onchange = ({target}) => {
-            if(!target) {
-                throw new ReferenceError("Target is null.");
-            }
+        if(anchor.hash === location.hash) {
+            anchor.setAttribute("data-open", "");
+        }
 
-            for(const main1 of document.getElementsByTagName("main")) {
-                if(!main1.hasAttribute("data-tab")) {
-                    continue;
-                }
-
-                main1.hidden = true;
-            }
-
-            main.hidden = false;
-
-            for(const input of document.getElementsByTagName("input")) {
-                if(target.name === input.name) {
-                    continue;
-                }
-
-                input.value = "";
-                input.checked = false;
-            }
-        };
-
-        document.getElementById("tabs").appendChild(input);
+        document.getElementById("tabs").appendChild(anchor);
     }
+
+    if(!location.hash) {
+        location.hash = "#/";
+    }
+
+    onhashchange = ({newURL}) => {
+        for(const anchor of document.getElementsByTagName("a")) {
+            if(!anchor.hasAttribute("data-tab")) {
+                continue;
+            }
+
+            if(anchor.hash === URL.parse(newURL)?.hash) {
+                anchor.setAttribute("data-open", "");
+            } else {
+                anchor.removeAttribute("data-open");
+            }
+        }
+
+        for(const input of document.getElementsByTagName("input")) {
+            input.value = "";
+            input.checked = false;
+        }
+    };
+
+    document.getElementById("theme").onclick = ({target}) => {
+        const dark = getComputedStyle(document.documentElement).colorScheme === "dark";
+
+        document.documentElement.style.colorScheme = dark ? "light" : "dark";
+        target.textContent = dark ? "☀︎" : "⏾";
+    };
 
     document.getElementById("exec_encrypt").onclick = async () => {
         /** @type {Binary[]} */
@@ -242,21 +243,19 @@
                 justify-content: center;
                 height: var(--header-extend-height);
 
-                > input[type="radio"] {
+                > a {
                     position: relative;
-                    appearance: none;
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    cursor: pointer;
                     height: 100%;
                     width: 100%;
                     max-width: 200px;
-                    margin: 0;
                     font-size: 16px;
+                    text-decoration: none;
 
-                    &::before {
-                        content: attr(data-tab);
+                    &:link, &:visited, &:hover, &:active {
+                        color: unset;
                     }
 
                     &::after {
@@ -277,7 +276,7 @@
                         background-color: #FFFFFF90;
                     }
 
-                    &:checked::after {
+                    &[data-open]::after {
                         background-color: #FFFFFF70;
                     }
                 }
@@ -285,8 +284,13 @@
         }
 
         > main {
+            display: none;
             height: calc(100dvh - var(--header-height) - var(--header-extend-height));
             overflow: clip scroll;
+
+            &:target {
+                display: unset;
+            }
 
             > section {
                 max-width: 800px;
@@ -469,7 +473,7 @@
     <button type="button" class="icon" data-dialog="menu">✖</button>
 </dialog>
 
-<main data-tab="暗号化">
+<main id="/encrypt" data-page="暗号化">
     <section>
         <h2>ファイルを暗号化</h2>
 
@@ -485,7 +489,7 @@
     </section>
 </main>
 
-<main hidden data-tab="復号">
+<main id="/decrypt" data-page="復号">
     <section>
         <h2>ファイルを復号</h2>
 
@@ -501,7 +505,7 @@
     </section>
 </main>
 
-<main hidden data-tab="署名">
+<main id="/sign" data-page="署名">
     <section>
         <h2>ファイルに署名</h2>
 
@@ -515,7 +519,7 @@
     </section>
 </main>
 
-<main hidden data-tab="検証">
+<main id="/verify" data-page="検証">
     <section>
         <h2>ファイルの署名を検証</h2>
 
@@ -531,7 +535,7 @@
     </section>
 </main>
 
-<main hidden data-tab="鍵生成">
+<main id="/keygen" data-page="鍵生成">
     <section>
         <h2>鍵を生成</h2>
 
@@ -544,7 +548,7 @@
     </section>
 </main>
 
-<main hidden data-tab="ヘルプ">
+<main id="/help" data-page="ヘルプ">
     <section>
         <h2>使用方法</h2>
 
