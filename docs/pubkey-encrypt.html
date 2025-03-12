@@ -277,19 +277,31 @@
             &:popover-open {
                 pointer-events: auto;
                 transform: translateX(0);
+
+                &::backdrop {
+                    backdrop-filter: blur(4px);
+                }
             }
 
             &::backdrop {
-                backdrop-filter: blur(4px);
+                transition: all 250ms ease-in-out allow-discrete;
+                backdrop-filter: none;
             }
 
             > header {
+                display: flex;
+                justify-content: start;
+                align-items: center;
                 height: var(--header-height);
             }
 
             @starting-style {
                 &:popover-open {
                     transform: translateX(-250px);
+
+                    &::backdrop {
+                        backdrop-filter: none;
+                    }
                 }
             }
         }
