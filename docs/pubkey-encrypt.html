@@ -119,15 +119,14 @@
     };
 
     document.getElementById("exec_encrypt").onclick = async () => {
-        /** @type {Binary[]} */
-        const files = await fsParse(document.getElementById("encrypt_files"));
-        /** @type {Binary[]} */
-        const [pub] = await fsParse(document.getElementById("encrypt_pub"));
-        /** @type {Binary[]} */
-        const [key] = await fsParse(document.getElementById("encrypt_key"));
-
         try {
-            fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(await deflateEncode(await minipackEncode(domInput.encrypt_files)), pub.body, key.body));
+            const key = await cryptoDeriveKey({
+                publicKey: await domInput.encrypt_pub[0].bytes(),
+                privateKey: await domInput.encrypt_key[0].bytes()
+            });
+            const tgz = await tarEncode(domInput.encrypt_files, true);
+
+            fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(key, tgz));
 
             showNotify("暗号化しました", "green");
         } catch(e) {
@@ -137,16 +136,15 @@
     };
 
     document.getElementById("exec_decrypt").onclick = async () => {
-        /** @type {Binary[]} */
-        const [enc] = await fsParse(document.getElementById("decrypt_enc"));
-        /** @type {Binary[]} */
-        const [pub] = await fsParse(document.getElementById("decrypt_pub"));
-        /** @type {Binary[]} */
-        const [key] = await fsParse(document.getElementById("decrypt_key"));
-
         try {
-            for(const {name, body} of await minipackDecode(await deflateDecode(await cryptoDecrypt(enc.body, pub.body, key.body)))) {
-                fsWrite(name, body);
+            const key = await cryptoDeriveKey({
+                publicKey: await domInput.decrypt_pub[0].bytes(),
+                privateKey: await domInput.decrypt_key[0].bytes()
+            });
+            const tgz = await cryptoDecrypt(key, domInput.decrypt_enc);
+
+            for(const file of await tarDecode(tgz, true)) {
+                fsWrite(file.name, await file.bytes());
             }
 
             showNotify("復号しました", "green");
