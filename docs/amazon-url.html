@@ -49,7 +49,7 @@
         /** @type {string} */
         const text = document.getElementById("input_url").value.trim();
 
-        if(!URL.canParse(text)) {
+        if (!URL.canParse(text)) {
             showNotify("URLではありません", "red");
             throw new ReferenceError("Not URL.");
         }
@@ -57,7 +57,7 @@
         /** @type {URL} */
         const {hostname, pathname} = URL.parse(text);
 
-        if(!hostname.startsWith("www.amazon.")) {
+        if (!hostname.startsWith("www.amazon.")) {
             showNotify("AmazonのURLではありません", "red");
             throw new ReferenceError("Not Amazon URL.");
         }
@@ -65,7 +65,7 @@
         const [, asin] = pathname.match(/\/dp\/([A-Z0-9]{10})/) ?? [];
         const [, name] = pathname.match(/\/([^/]+)\/dp\/[A-Z0-9]{10}/) ?? [];
 
-        if(!asin) {
+        if (!asin) {
             showNotify("結果が存在しません", "red");
             throw new ReferenceError("Result not exist.");
         }

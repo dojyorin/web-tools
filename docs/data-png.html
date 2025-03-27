@@ -20,7 +20,7 @@
         /** @type {Binary[]} */
         const [file] = await fsParse(document.getElementById("input_bin"));
 
-        if(!file) {
+        if (!file) {
             showNotify("ファイルが選択されていません", "red");
             throw new ReferenceError("File not selected.");
         }
@@ -32,7 +32,7 @@
             image.hidden = false;
 
             showNotify("生成しました", "green");
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             showNotify("生成できませんでした", "green");
         }
@@ -42,7 +42,7 @@
         /** @type {Binary[]} */
         const [file] = await fsParse(document.getElementById("input_png"));
 
-        if(!file) {
+        if (!file) {
             showNotify("ファイルが選択されていません", "red");
             throw new ReferenceError("File not selected.");
         }
@@ -55,7 +55,7 @@
             anchor.hidden = false;
 
             showNotify("抽出しました", "green");
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             showNotify("抽出できませんでした", "green");
         }

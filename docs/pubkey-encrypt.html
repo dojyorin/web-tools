@@ -69,10 +69,10 @@
         }
     };
 
-    for(const main of document.getElementsByTagName("main")) {
+    for (const main of document.getElementsByTagName("main")) {
         const target = main.getAttribute("data-page");
 
-        if(!target) {
+        if (!target) {
             continue;
         }
 
@@ -81,31 +81,31 @@
         anchor.textContent = target;
         anchor.setAttribute("data-tab", "");
 
-        if(anchor.hash === location.hash) {
+        if (anchor.hash === location.hash) {
             anchor.setAttribute("data-open", "");
         }
 
         document.getElementById("tabs").appendChild(anchor);
     }
 
-    if(!location.hash) {
+    if (!location.hash) {
         location.hash = "#/";
     }
 
     onhashchange = ({newURL}) => {
-        for(const anchor of document.getElementsByTagName("a")) {
-            if(!anchor.hasAttribute("data-tab")) {
+        for (const anchor of document.getElementsByTagName("a")) {
+            if (!anchor.hasAttribute("data-tab")) {
                 continue;
             }
 
-            if(anchor.hash === URL.parse(newURL)?.hash) {
+            if (anchor.hash === URL.parse(newURL)?.hash) {
                 anchor.setAttribute("data-open", "");
             } else {
                 anchor.removeAttribute("data-open");
             }
         }
 
-        for(const input of document.getElementsByTagName("input")) {
+        for (const input of document.getElementsByTagName("input")) {
             input.value = "";
             input.checked = false;
         }
@@ -129,7 +129,7 @@
             fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(key, tgz));
 
             showNotify("暗号化しました", "green");
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             showNotify("暗号化できませんでした", "red");
         }
@@ -143,12 +143,12 @@
             });
             const tgz = await cryptoDecrypt(key, domInput.decrypt_enc);
 
-            for(const file of await tarDecode(tgz, true)) {
+            for (const file of await tarDecode(tgz, true)) {
                 fsWrite(file.name, await file.bytes());
             }
 
             showNotify("復号しました", "green");
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             showNotify("復号できませんでした", "red");
         }
@@ -164,7 +164,7 @@
             fsWrite(`${file.name}.sig`, await cryptoSign(file.body, key.body));
 
             showNotify("署名を生成しました", "green");
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             showNotify("署名できませんでした", "red");
         }
@@ -179,13 +179,13 @@
         const [sig] = await fsParse(document.getElementById("verify_sig"));
 
         try {
-            if(await cryptoVerify(file.body, pub.body, sig.body)) {
+            if (await cryptoVerify(file.body, pub.body, sig.body)) {
                 showNotify("正当な署名です", "green");
 
             } else {
                 showNotify("署名が一致しません", "red");
             }
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             showNotify("検証できませんでした", "red");
         }
@@ -201,7 +201,7 @@
             fsWrite(`${uuid}.enc.key`, key);
 
             showNotify("暗号化鍵を生成しました", "green");
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             showNotify("生成できませんでした", "red");
         }
@@ -217,7 +217,7 @@
             fsWrite(`${uuid}.sig.key`, key);
 
             showNotify("署名鍵を生成しました", "green");
-        } catch(e) {
+        } catch (e) {
             console.error(e);
             showNotify("生成できませんでした", "red");
         }

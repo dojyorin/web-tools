@@ -67,7 +67,7 @@
     try {
         const products = JSON.parse(localStorage.getItem(LS_PRODUCTS) ?? "");
 
-        if(products instanceof Array && products.length) {
+        if (products instanceof Array && products.length) {
             outputDisplay(products);
             showNotify("前回の結果を復元しました", "green");
         } else {
@@ -82,7 +82,7 @@
     document.getElementById("exec_extract").onclick = () => {
         const text = fixWidth(document.getElementById("input_cart").value.trim().replaceAll("\r", "").replace(/ +/g, " ").replace(/\t+/g, "\t").replace(/\n+/g, "\n").replace(/^ /mg, "").replace(/ $/mg, ""));
 
-        if(!text) {
+        if (!text) {
             showNotify("商品リストが存在しません", "red");
             throw new ReferenceError("Product not exist.");
         }
@@ -90,7 +90,7 @@
         /** @type {AkizukiProduct[]} */
         const products = [];
 
-        for(const record of text.match(/[1-9][0-9]{5}\t(.|\n)+?\n￥[1-9][0-9,]*\n[1-9][0-9]*/g) ?? []) {
+        for (const record of text.match(/[1-9][0-9]{5}\t(.|\n)+?\n￥[1-9][0-9,]*\n[1-9][0-9]*/g) ?? []) {
             const [, code, , , name, price, quantity] = record.match(/^([1-9][0-9]{5})(\t|(.|\n)+?)(.+?)\n・.+?\n￥([1-9][0-9,]*)\n([1-9][0-9]*)$/) ?? [];
 
             products.push({
@@ -101,7 +101,7 @@
             });
         }
 
-        if(!products.length) {
+        if (!products.length) {
             showNotify("結果が存在しません", "red");
             throw new ReferenceError("Result not exist.");
         }
