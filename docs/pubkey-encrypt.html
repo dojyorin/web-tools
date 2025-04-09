@@ -433,81 +433,100 @@
         }
     }
 
-    button[type="button"] {
-        position: relative;
+    button {
+        &[type="button"] {
+            position: relative;
 
-        &:not(.icon) {
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 24px;
-            background-color: light-dark(#DDDDDD, #3399FF);
-        }
-
-        &.icon {
-            height: 100%;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            font-size: 24px;
-            background-color: transparent;
-        }
-
-        &:not(:disabled) {
-            cursor: pointer;
-
-            &:hover::after {
-                background-color: #FFFFFF40;
+            &:not(.icon) {
+                padding: 4px 12px;
+                border-radius: 4px;
+                font-size: 24px;
+                background-color: light-dark(#DDDDDD, #3399FF);
             }
 
-            &:active::after {
-                background-color: #FFFFFF90;
+            &.icon {
+                height: 100%;
+                aspect-ratio: 1;
+                border-radius: 50%;
+                font-size: 24px;
+                background-color: transparent;
             }
-        }
 
-        &::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            border-radius: inherit;
+            &:not(:disabled) {
+                cursor: pointer;
+
+                &:hover::after {
+                    background-color: #FFFFFF40;
+                }
+
+                &:active::after {
+                    background-color: #FFFFFF90;
+                }
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                border-radius: inherit;
+            }
         }
     }
 
-    input[type="file"] {
-        position: relative;
-        padding: 4px 12px;
-        border-radius: 4px;
-        font-size: 16px;
-        background-color: light-dark(#AAAAAA, #333333);
+    input {
+        &[type="text"], &[type="url"] {
+            cursor: text;
+            height: 40px;
+            width: 400px;
+            max-width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #333333;
 
-        &:not(:disabled) {
-            cursor: pointer;
-
-            &:hover::after {
-                background-color: #FFFFFF40;
-            }
-
-            &:active::after {
-                background-color: #FFFFFF90;
+            &:hover, &:focus {
+                background-color: #444444;
             }
         }
 
-        &::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            border-radius: inherit;
-        }
+        &[type="file"] {
+            position: relative;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: light-dark(#AAAAAA, #333333);
 
-        &::file-selector-button {
-            margin: 0 12px 0 0;
-            padding: 0;
-            border: none;
-            background-color: transparent;
+            &:not(:disabled) {
+                cursor: pointer;
+
+                &:hover::after {
+                    background-color: #FFFFFF40;
+                }
+
+                &:active::after {
+                    background-color: #FFFFFF90;
+                }
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                border-radius: inherit;
+            }
+
+            &::file-selector-button {
+                margin: 0 12px 0 0;
+                padding: 0;
+                border: none;
+                background-color: transparent;
+            }
         }
     }
 </style>
