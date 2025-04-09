@@ -270,20 +270,6 @@
                 backdrop-filter: none;
             }
 
-            > header {
-                display: flex;
-                justify-content: start;
-                align-items: center;
-                height: var(--header-height);
-
-                > h1 {
-                    margin: 0 12px;
-                    font-size: 24px;
-                    font-weight: unset;
-                    word-break: keep-all;
-                }
-            }
-
             @starting-style {
                 &:popover-open {
                     translate: -250px;
@@ -321,39 +307,27 @@
                 height: var(--header-extend-height);
 
                 > a {
-                    position: relative;
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     height: 100%;
                     width: 100%;
                     max-width: 200px;
-                    font-size: 16px;
                     text-decoration: none;
 
                     &:link, &:visited, &:hover, &:active {
                         color: unset;
                     }
 
-                    &::after {
-                        content: "";
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        height: 100%;
-                        width: 100%;
-                        border-radius: inherit;
-                    }
-
-                    &:hover::after {
+                    &:hover {
                         background-color: #FFFFFF40;
                     }
 
-                    &:active::after {
+                    &:active {
                         background-color: #FFFFFF90;
                     }
 
-                    &[data-open]::after {
+                    &[data-open] {
                         background-color: #FFFFFF70;
                     }
                 }
@@ -537,6 +511,13 @@
 
 <title>公開鍵暗号化ツール</title>
 
+<nav id="menu" popover="manual">
+    <header>
+        <button type="button" class="icon" popovertarget="menu">✖</button>
+        <h1>Menu</h1>
+    </header>
+</nav>
+
 <header>
     <button type="button" class="icon" popovertarget="menu">☰</button>
     <h1>公開鍵暗号化ツール</h1>
@@ -545,13 +526,6 @@
 </header>
 
 <header id="tabs"></header>
-
-<nav id="menu" popover="manual">
-    <header>
-        <button type="button" class="icon" popovertarget="menu">✖</button>
-        <h1>Menu</h1>
-    </header>
-</nav>
 
 <main id="/encrypt" data-page="暗号化">
     <section>
