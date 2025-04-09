@@ -527,81 +527,6 @@
 
 <header id="tabs"></header>
 
-<main id="/encrypt" data-page="暗号化">
-    <section>
-        <h2>ファイルを暗号化</h2>
-
-        <dl>
-            <dd>暗号化するファイル</dd>
-            <dd><input multiple type="file" id="encrypt_files"></dd>
-            <dd>公開鍵</dd>
-            <dd><input type="file" accept=".pub" id="encrypt_pub"></dd>
-            <dd>秘密鍵</dd>
-            <dd><input type="file" accept=".key" id="encrypt_key"></dd>
-            <dd><button type="button" id="exec_encrypt">🔒暗号化</button></dd>
-        </dl>
-    </section>
-</main>
-
-<main id="/decrypt" data-page="復号">
-    <section>
-        <h2>ファイルを復号</h2>
-
-        <dl>
-            <dd>暗号化されたファイル</dd>
-            <dd><input type="file" id="decrypt_enc"></dd>
-            <dd>公開鍵</dd>
-            <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
-            <dd>秘密鍵</dd>
-            <dd><input type="file" accept=".key" id="decrypt_key"></dd>
-            <dd><button type="button" id="exec_decrypt">🔓復号</button></dd>
-        </dl>
-    </section>
-</main>
-
-<main id="/sign" data-page="署名">
-    <section>
-        <h2>ファイルに署名</h2>
-
-        <dl>
-            <dd>署名するファイル</dd>
-            <dd><input type="file" id="sign_file"></dd>
-            <dd>秘密鍵</dd>
-            <dd><input type="file" accept=".key" id="sign_key"></dd>
-            <dd><button type="button" id="exec_sign">🔏署名</button></dd>
-        </dl>
-    </section>
-</main>
-
-<main id="/verify" data-page="検証">
-    <section>
-        <h2>ファイルの署名を検証</h2>
-
-        <dl>
-            <dd>署名対象のファイル</dd>
-            <dd><input type="file" id="verify_file"></dd>
-            <dd>公開鍵</dd>
-            <dd><input type="file" accept=".pub" id="verify_pub"></dd>
-            <dd>電子署名</dd>
-            <dd><input type="file" accept=".sig" id="verify_sig"></dd>
-            <dd><button type="button" id="exec_verify">✅検証</button></dd>
-        </dl>
-    </section>
-</main>
-
-<main id="/keygen" data-page="鍵生成">
-    <section>
-        <h2>鍵を生成</h2>
-
-        <dl>
-            <dd>暗号化鍵</dd>
-            <dd><button type="button" id="exec_keygen_encrypt">🔑鍵生成</button></dd>
-            <dd>署名鍵</dd>
-            <dd><button type="button" id="exec_keygen_sign">🔑鍵生成</button></dd>
-        </dl>
-    </section>
-</main>
-
 <main id="/help" data-page="ヘルプ">
     <section>
         <h2>使用方法</h2>
@@ -716,5 +641,80 @@
             <li>MITライセンス準拠のオープンソースソフトウェアとなります。</li>
             <li><a target="_blank" href="https://github.com/dojyorin/web-tools">GitHub</a></li>
         </ul>
+    </section>
+</main>
+
+<main id="/encrypt" data-page="暗号化">
+    <section>
+        <h2>ファイルを暗号化</h2>
+
+        <dl>
+            <dd>暗号化するファイル</dd>
+            <dd><input multiple type="file" id="encrypt_files"></dd>
+            <dd>公開鍵</dd>
+            <dd><input type="file" accept=".pub" id="encrypt_pub"></dd>
+            <dd>秘密鍵</dd>
+            <dd><input type="file" accept=".key" id="encrypt_key"></dd>
+            <dd><button type="button" id="exec_encrypt">🔒暗号化</button></dd>
+        </dl>
+    </section>
+</main>
+
+<main id="/decrypt" data-page="復号">
+    <section>
+        <h2>ファイルを復号</h2>
+
+        <dl>
+            <dd>暗号化されたファイル</dd>
+            <dd><input type="file" id="decrypt_enc"></dd>
+            <dd>公開鍵</dd>
+            <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
+            <dd>秘密鍵</dd>
+            <dd><input type="file" accept=".key" id="decrypt_key"></dd>
+            <dd><button type="button" id="exec_decrypt">🔓復号</button></dd>
+        </dl>
+    </section>
+</main>
+
+<main id="/sign" data-page="署名">
+    <section>
+        <h2>ファイルに署名</h2>
+
+        <dl>
+            <dd>署名するファイル</dd>
+            <dd><input type="file" id="sign_file"></dd>
+            <dd>秘密鍵</dd>
+            <dd><input type="file" accept=".key" id="sign_key"></dd>
+            <dd><button type="button" id="exec_sign">🔏署名</button></dd>
+        </dl>
+    </section>
+</main>
+
+<main id="/verify" data-page="検証">
+    <section>
+        <h2>ファイルの署名を検証</h2>
+
+        <dl>
+            <dd>署名対象のファイル</dd>
+            <dd><input type="file" id="verify_file"></dd>
+            <dd>公開鍵</dd>
+            <dd><input type="file" accept=".pub" id="verify_pub"></dd>
+            <dd>電子署名</dd>
+            <dd><input type="file" accept=".sig" id="verify_sig"></dd>
+            <dd><button type="button" id="exec_verify">✅検証</button></dd>
+        </dl>
+    </section>
+</main>
+
+<main id="/keygen" data-page="鍵生成">
+    <section>
+        <h2>鍵を生成</h2>
+
+        <dl>
+            <dd>暗号化鍵</dd>
+            <dd><button type="button" id="exec_keygen_encrypt">🔑鍵生成</button></dd>
+            <dd>署名鍵</dd>
+            <dd><button type="button" id="exec_keygen_sign">🔑鍵生成</button></dd>
+        </dl>
     </section>
 </main>
