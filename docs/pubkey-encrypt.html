@@ -245,6 +245,56 @@
             pointer-events: none;
         }
 
+        > nav[popover] {
+            position: fixed;
+            height: 100dvh;
+            width: 100dvw;
+            max-width: 250px;
+            margin: 0;
+            padding: 0;
+            border: none;
+            transition: all 0.2s ease-in-out allow-discrete;
+            translate: -250px;
+
+            &:popover-open {
+                pointer-events: auto;
+                translate: 0;
+
+                &::backdrop {
+                    backdrop-filter: blur(4px);
+                }
+            }
+
+            &::backdrop {
+                transition: all 0.2s ease-in-out allow-discrete;
+                backdrop-filter: none;
+            }
+
+            > header {
+                display: flex;
+                justify-content: start;
+                align-items: center;
+                height: var(--header-height);
+
+                > h1 {
+                    margin: 0 12px;
+                    font-size: 24px;
+                    font-weight: unset;
+                    word-break: keep-all;
+                }
+            }
+
+            @starting-style {
+                &:popover-open {
+                    translate: -250px;
+
+                    &::backdrop {
+                        backdrop-filter: none;
+                    }
+                }
+            }
+        }
+
         > header {
             display: flex;
             align-items: center;
@@ -305,56 +355,6 @@
 
                     &[data-open]::after {
                         background-color: #FFFFFF70;
-                    }
-                }
-            }
-        }
-
-        > nav[popover] {
-            position: fixed;
-            height: 100dvh;
-            width: 100dvw;
-            max-width: 250px;
-            margin: 0;
-            padding: 0;
-            border: none;
-            transition: all 0.2s ease-in-out allow-discrete;
-            translate: -250px;
-
-            &:popover-open {
-                pointer-events: auto;
-                translate: 0;
-
-                &::backdrop {
-                    backdrop-filter: blur(4px);
-                }
-            }
-
-            &::backdrop {
-                transition: all 0.2s ease-in-out allow-discrete;
-                backdrop-filter: none;
-            }
-
-            > header {
-                display: flex;
-                justify-content: start;
-                align-items: center;
-                height: var(--header-height);
-
-                > h1 {
-                    margin: 0 12px;
-                    font-size: 24px;
-                    font-weight: unset;
-                    word-break: keep-all;
-                }
-            }
-
-            @starting-style {
-                &:popover-open {
-                    translate: -250px;
-
-                    &::backdrop {
-                        backdrop-filter: none;
                     }
                 }
             }
