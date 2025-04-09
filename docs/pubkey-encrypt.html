@@ -253,6 +253,7 @@
             margin: 0;
             padding: 0;
             border: none;
+            background-color: canvas;
             transition: all 0.2s ease-in-out allow-discrete;
             translate: -250px;
 
@@ -261,6 +262,7 @@
                 translate: 0;
 
                 &::backdrop {
+                    background-color: #00000030;
                     backdrop-filter: blur(4px);
                 }
             }
@@ -320,7 +322,7 @@
                     }
 
                     &:hover {
-                        background-color: #FFFFFF40;
+                        background-color: #FFFFFF50;
                     }
 
                     &:active {
