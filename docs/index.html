@@ -6,87 +6,13 @@
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline:central;text-anchor:middle;font-size:100px;'>🧰</text></svg>">
 
-<style>
-    ::-webkit-scrollbar {
-        display: none;
-    }
-
-    :root {
-        --header-height: 48px;
-
-        color-scheme: dark;
-    }
-
-    body {
-        user-select: none;
-        height: 100dvh;
-        width: 100dvw;
-        margin: 0;
-        padding: 0;
-
-        > header {
-            height: var(--header-height);
-            background-color: #6611CC;
-
-            > h1 {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                height: var(--header-height);
-                margin: 0 12px;
-                font-size: 24px;
-                font-weight: unset;
-            }
-        }
-
-        > main {
-            height: calc(100dvh - var(--header-height));
-            overflow: clip scroll;
-
-            > section {
-                max-width: 800px;
-                margin: 0 auto 56px auto;
-                padding: 0 16px;
-
-                &:first-of-type {
-                    margin-top: 16px;
-                }
-
-                &:last-of-type {
-                    margin-bottom: 16px;
-                }
-
-                > h2 {
-                    text-align: center;
-                    margin: 0 0 16px 0;
-                }
-            }
-        }
-    }
-
-    ul {
-        &.fit {
-            width: fit-content;
-            margin: 0 auto;
-        }
-    }
-</style>
-
 <title>Web Tools</title>
 
-<header>
-    <h1>Web Tools</h1>
-</header>
+<h1>Web Tools</h1>
 
-<main>
-    <section>
-        <h2>Tools</h2>
-
-        <ul class="fit">
-            <li><a target="_blank" href="./akizuki-cart.html">秋月カート抽出</a></li>
-            <li><a target="_blank" href="./amazon-url.html">Amazon URL分解</a></li>
-            <li><a target="_blank" href="./data-png.html">データPNG生成</a></li>
-            <li><a target="_blank" href="./pubkey-encrypt.html">公開鍵暗号化</a></li>
-        </ul>
-    </section>
-</main>
+<ul>
+    <li><a target="_blank" href="./akizuki-cart.html">秋月カート抽出</a></li>
+    <li><a target="_blank" href="./amazon-url.html">Amazon URL分解</a></li>
+    <li><a target="_blank" href="./data-png.html">データPNG生成</a></li>
+    <li><a target="_blank" href="./pubkey-encrypt.html">公開鍵暗号化</a></li>
+</ul>
