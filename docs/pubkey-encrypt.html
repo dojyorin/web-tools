@@ -230,7 +230,6 @@
     }
 
     body {
-        --primary-color: light-dark(#DDDDDD, #6611CC);
         --header-height: 48px;
         --header-extend-height: 32px;
         --main-height: calc(100dvh - var(--header-height) - var(--header-extend-height));
@@ -286,7 +285,7 @@
         > header {
             display: flex;
             align-items: center;
-            background-color: var(--primary-color);
+            background-color: light-dark(#DDDDDD, #6611CC);
 
             &:nth-of-type(1) {
                 justify-content: start;
