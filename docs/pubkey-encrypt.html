@@ -397,16 +397,16 @@
             &:not(:disabled) {
                 cursor: pointer;
 
-                &:hover::after {
+                &:hover::before {
                     background-color: #FFFFFF50;
                 }
 
-                &:active::after {
+                &:active::before {
                     background-color: #FFFFFF90;
                 }
             }
 
-            &::after {
+            &::before {
                 content: "";
                 position: absolute;
                 top: 0;
@@ -436,11 +436,11 @@
             &:not(:disabled) {
                 cursor: text;
 
-                &:hover::after {
+                &:hover::before {
                     background-color: #FFFFFF50;
                 }
 
-                &:focus::after {
+                &:focus::before {
                     background-color: #FFFFFF90;
                 }
             }
@@ -491,16 +491,16 @@
             &:not(:disabled) {
                 cursor: pointer;
 
-                &:hover::after {
+                &:hover::before {
                     background-color: #FFFFFF50;
                 }
 
-                &:active::after {
+                &:active::before {
                     background-color: #FFFFFF90;
                 }
             }
 
-            &::after {
+            &::before {
                 content: "";
                 position: absolute;
                 top: 0;
@@ -554,7 +554,7 @@
             background-color: light-dark(#DDDDDD, #6611CC);
             -webkit-tap-highlight-color: transparent;
 
-            &::after {
+            &::before {
                 content: "";
                 position: absolute;
                 top: 0;
@@ -564,16 +564,16 @@
                 border-radius: inherit;
             }
 
-            &:hover::after {
-                background-color: #FFFFFF40;
+            &:hover::before {
+                background-color: #FFFFFF50;
             }
 
-            &:active::after {
+            &:active::before {
                 background-color: #FFFFFF90;
             }
         }
 
-        &[open] > summary::after {
+        &[open] > summary::before {
             background-color: #FFFFFF70;
         }
     }
