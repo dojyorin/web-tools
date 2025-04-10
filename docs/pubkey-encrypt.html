@@ -385,13 +385,6 @@
         }
     }
 
-    input, textarea, select, button {
-        outline: none;
-        box-sizing: border-box;
-        border: none;
-        -webkit-tap-highlight-color: transparent;
-    }
-
     code {
         padding: 0 4px;
         border-radius: 4px;
@@ -435,6 +428,11 @@
     }
 
     button {
+        box-sizing: border-box;
+        outline: none;
+        border: none;
+        -webkit-tap-highlight-color: transparent;
+
         &[type="button"] {
             position: relative;
 
@@ -479,6 +477,11 @@
     }
 
     input {
+        box-sizing: border-box;
+        outline: none;
+        border: none;
+        -webkit-tap-highlight-color: transparent;
+
         &[type="text"], &[type="url"] {
             cursor: text;
             height: 40px;
