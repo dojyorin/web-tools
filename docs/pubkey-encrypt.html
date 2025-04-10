@@ -322,15 +322,15 @@
                     }
 
                     &:hover {
-                        background-color: #FFFFFF50;
+                        background-color: light-dark(#00000020, #FFFFFF50);
                     }
 
                     &:active {
-                        background-color: #FFFFFF90;
+                        background-color: light-dark(#00000040, #FFFFFF70);
                     }
 
                     &[data-open] {
-                        background-color: #FFFFFF70;
+                        background-color: light-dark(#00000030, #FFFFFF60);
                     }
                 }
             }
@@ -380,7 +380,19 @@
                 padding: 4px 12px;
                 border-radius: 4px;
                 font-size: 20px;
-                background-color: light-dark(#DDDDDD, #3399FF);
+                background-color: light-dark(#AAAAAA, #3399FF);
+
+                &:not(:disabled) {
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: light-dark(#999999, #44AAFF);
+                    }
+
+                    &:active {
+                        background-color: light-dark(#888888, #55BBFF);
+                    }
+                }
             }
 
             &.icon {
@@ -392,28 +404,18 @@
                 border-radius: 50%;
                 font-size: calc(var(--size) / 8 * 5);
                 background-color: transparent;
-            }
 
-            &:not(:disabled) {
-                cursor: pointer;
+                &:not(:disabled) {
+                    cursor: pointer;
 
-                &:hover::before {
-                    background-color: #FFFFFF50;
+                    &:hover {
+                        background-color: light-dark(#00000020 ,#FFFFFF50);
+                    }
+
+                    &:active {
+                        background-color: light-dark(#00000040 ,#FFFFFF70);
+                    }
                 }
-
-                &:active::before {
-                    background-color: #FFFFFF90;
-                }
-            }
-
-            &::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 100%;
-                border-radius: inherit;
             }
         }
     }
@@ -436,12 +438,12 @@
             &:not(:disabled) {
                 cursor: text;
 
-                &:hover::before {
-                    background-color: #FFFFFF50;
+                &:hover {
+                    background-color: light-dark(#999999, #444444);
                 }
 
-                &:focus::before {
-                    background-color: #FFFFFF90;
+                &:focus {
+                    background-color: light-dark(#888888, #555555);
                 }
             }
         }
@@ -491,23 +493,13 @@
             &:not(:disabled) {
                 cursor: pointer;
 
-                &:hover::before {
-                    background-color: #FFFFFF50;
+                &:hover {
+                    background-color: light-dark(#999999, #444444);
                 }
 
-                &:active::before {
-                    background-color: #FFFFFF90;
+                &:active {
+                    background-color: light-dark(#888888, #555555);
                 }
-            }
-
-            &::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 100%;
-                border-radius: inherit;
             }
 
             &::file-selector-button {
@@ -551,30 +543,20 @@
             padding: 4px 0 4px 12px;
             border-radius: 4px;
             font-size: 18px;
-            background-color: light-dark(#DDDDDD, #6611CC);
+            background-color: light-dark(#AAAAAA, #6611CC);
             -webkit-tap-highlight-color: transparent;
 
-            &::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 100%;
-                border-radius: inherit;
+            &:hover {
+                background-color: light-dark(#999999, #7722DD);
             }
 
-            &:hover::before {
-                background-color: #FFFFFF50;
-            }
-
-            &:active::before {
-                background-color: #FFFFFF90;
+            &:active {
+                background-color: light-dark(#888888, #8833EE);
             }
         }
 
-        &[open] > summary::before {
-            background-color: #FFFFFF70;
+        &[open] > summary {
+            background-color: light-dark(#DDDDDD, #8844FF);
         }
     }
 </style>
