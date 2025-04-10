@@ -425,7 +425,6 @@
         -webkit-tap-highlight-color: transparent;
 
         &[type="text"], &[type="url"], &[type="search"], &[type="tel"], &[type="email"], &[type="password"], &[type="number"], &[type="date"], &[type="time"], &[type="month"] {
-            cursor: text;
             height: 40px;
             width: 300px;
             max-width: 100%;
@@ -434,8 +433,16 @@
             font-size: 16px;
             background-color: light-dark(#AAAAAA, #333333);
 
-            &:hover, &:focus {
-                background-color: #444444;
+            &:not(:disabled) {
+                cursor: text;
+
+                &:hover::after {
+                    background-color: #FFFFFF50;
+                }
+
+                &:focus::after {
+                    background-color: #FFFFFF90;
+                }
             }
         }
 
