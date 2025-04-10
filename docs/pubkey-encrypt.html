@@ -368,65 +368,6 @@
         }
     }
 
-    dl {
-        margin: 0;
-
-        > dd {
-            margin: 0;
-            text-align: center;
-
-            &:not(:last-of-type) {
-                margin-bottom: 16px;
-            }
-
-            &:nth-of-type(2n + 1) {
-                margin-bottom: 4px;
-            }
-        }
-    }
-
-    code {
-        padding: 0 4px;
-        border-radius: 4px;
-        background-color: light-dark(#CCCCCC, #333333);
-    }
-
-    details {
-        margin: 0 0 16px 0;
-
-        > summary {
-            position: relative;
-            cursor: pointer;
-            padding: 4px 0 4px 12px;
-            border-radius: 4px;
-            font-size: 18px;
-            background-color: light-dark(#DDDDDD, #6611CC);
-            -webkit-tap-highlight-color: transparent;
-
-            &::after {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100%;
-                width: 100%;
-                border-radius: inherit;
-            }
-
-            &:hover::after {
-                background-color: #FFFFFF40;
-            }
-
-            &:active::after {
-                background-color: #FFFFFF90;
-            }
-        }
-
-        &[open] > summary::after {
-            background-color: #FFFFFF70;
-        }
-    }
-
     button {
         box-sizing: border-box;
         outline: none;
@@ -569,6 +510,65 @@
                 border: none;
                 background-color: transparent;
             }
+        }
+    }
+
+    dl {
+        margin: 0;
+
+        > dd {
+            margin: 0;
+            text-align: center;
+
+            &:not(:last-of-type) {
+                margin-bottom: 16px;
+            }
+
+            &:nth-of-type(2n + 1) {
+                margin-bottom: 4px;
+            }
+        }
+    }
+
+    code {
+        padding: 0 4px;
+        border-radius: 4px;
+        background-color: light-dark(#CCCCCC, #333333);
+    }
+
+    details {
+        margin: 0 0 16px 0;
+
+        > summary {
+            position: relative;
+            cursor: pointer;
+            padding: 4px 0 4px 12px;
+            border-radius: 4px;
+            font-size: 18px;
+            background-color: light-dark(#DDDDDD, #6611CC);
+            -webkit-tap-highlight-color: transparent;
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                border-radius: inherit;
+            }
+
+            &:hover::after {
+                background-color: #FFFFFF40;
+            }
+
+            &:active::after {
+                background-color: #FFFFFF90;
+            }
+        }
+
+        &[open] > summary::after {
+            background-color: #FFFFFF70;
         }
     }
 </style>
