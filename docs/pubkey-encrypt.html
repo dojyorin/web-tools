@@ -444,11 +444,13 @@
             }
 
             &.icon {
-                height: 36px;
+                --size: 36px;
+
+                height: var(--size);
                 aspect-ratio: 1;
                 padding: 0;
                 border-radius: 50%;
-                font-size: 24px;
+                font-size: calc(var(--size) / 8 * 5);
                 background-color: transparent;
             }
 
