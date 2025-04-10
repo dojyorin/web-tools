@@ -499,33 +499,35 @@
             }
         }
 
-        &[type="checkbox"].switch {
-            --size: 24px;
+        &[type="checkbox"] {
+            &.switch {
+                --size: 24px;
 
-            appearance: none;
-            cursor: pointer;
-            margin: 0;
-            height: var(--size);
-            aspect-ratio: 2;
-            border-radius: var(--size);
-            background-color: #444444;
-
-            &::before {
-                content: "";
-                display: block;
+                appearance: none;
+                cursor: pointer;
+                margin: 0;
                 height: var(--size);
-                aspect-ratio: 1;
+                aspect-ratio: 2;
                 border-radius: var(--size);
-                background-color: #FFFFFF;
-                transition: all 0.2s ease-in-out;
-                scale: 0.8;
-            }
-
-            &:checked {
-                background-color: #24B441;
+                background-color: #444444;
 
                 &::before {
-                    translate: var(--size);
+                    content: "";
+                    display: block;
+                    height: var(--size);
+                    aspect-ratio: 1;
+                    border-radius: var(--size);
+                    background-color: #FFFFFF;
+                    transition: all 0.2s ease-in-out;
+                    scale: 0.8;
+                }
+
+                &:checked {
+                    background-color: #24B441;
+
+                    &::before {
+                        translate: var(--size);
+                    }
                 }
             }
         }
