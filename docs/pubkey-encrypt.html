@@ -348,7 +348,9 @@
         -webkit-tap-highlight-color: transparent;
 
         &[type="button"] {
-            position: relative;
+            &:not(:disabled) {
+                cursor: pointer;
+            }
 
             &:not(.icon) {
                 padding: 4px 12px;
@@ -357,8 +359,6 @@
                 background-color: light-dark(#AAAAAA, #3399FF);
 
                 &:not(:disabled) {
-                    cursor: pointer;
-
                     &:hover {
                         background-color: light-dark(#999999, #44AAFF);
                     }
@@ -380,8 +380,6 @@
                 background-color: transparent;
 
                 &:not(:disabled) {
-                    cursor: pointer;
-
                     &:hover {
                         background-color: light-dark(#00000020 ,#FFFFFF50);
                     }
@@ -401,7 +399,7 @@
         -webkit-tap-highlight-color: transparent;
 
         &[type="text"], &[type="url"], &[type="search"], &[type="tel"], &[type="email"], &[type="password"], &[type="number"], &[type="date"], &[type="time"], &[type="month"] {
-            height: 40px;
+            height: 36px;
             width: 300px;
             max-width: 100%;
             padding: 8px;
@@ -427,12 +425,23 @@
                 --size: 24px;
 
                 appearance: none;
-                cursor: pointer;
-                margin: 0;
                 height: var(--size);
                 aspect-ratio: 2;
+                margin: 0;
                 border-radius: var(--size);
                 background-color: light-dark(#AAAAAA, #333333);
+
+                &:not(:disabled) {
+                    cursor: pointer;
+                }
+
+                &:checked {
+                    background-color: #24B441;
+
+                    &::before {
+                        translate: var(--size);
+                    }
+                }
 
                 &::before {
                     content: "";
@@ -444,19 +453,10 @@
                     transition: all 0.2s ease-in-out;
                     scale: 0.8;
                 }
-
-                &:checked {
-                    background-color: #24B441;
-
-                    &::before {
-                        translate: var(--size);
-                    }
-                }
             }
         }
 
         &[type="file"] {
-            position: relative;
             align-content: center;
             height: 36px;
             padding: 4px 12px;
@@ -477,6 +477,7 @@
             }
 
             &::file-selector-button {
+                cursor: pointer;
                 margin: 0 12px 0 0;
                 padding: 0;
                 border: none;
@@ -512,14 +513,16 @@
         margin: 0 0 16px 0;
 
         > summary {
-            position: relative;
-            cursor: pointer;
             width: max-content;
             padding: 4px 12px;
             border-radius: 4px;
             font-size: 20px;
             background-color: light-dark(#AAAAAA, #3399FF);
             -webkit-tap-highlight-color: transparent;
+
+            &:not(:disabled) {
+                cursor: pointer;
+            }
 
             &:hover {
                 background-color: light-dark(#999999, #44AAFF);
@@ -569,9 +572,8 @@
 <title>公開鍵暗号化ツール</title>
 
 <nav popover id="menu">
-    <header>
+    <header style="display: flex; align-items: center; height: 48px; padding: 0 8px;">
         <button type="button" class="icon" popovertarget="menu">✖</button>
-        <h1>Menu</h1>
     </header>
 </nav>
 
