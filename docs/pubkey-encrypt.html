@@ -144,7 +144,7 @@
     };
 
     document.getElementById("theme").onclick = ({target}) => {
-        const dark = getComputedStyle(document.documentElement).colorScheme === "dark";
+        const dark = document.documentElement.style.colorScheme === "dark";
 
         document.documentElement.style.colorScheme = dark ? "light" : "dark";
         target.textContent = dark ? "☀︎" : "⏾";
