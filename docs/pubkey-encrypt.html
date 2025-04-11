@@ -491,7 +491,7 @@
         background-color: light-dark(#CCCCCC, #333333);
     }
 
-    dl {
+    dl.form {
         margin: 0;
 
         > dd {
@@ -508,29 +508,26 @@
         }
     }
 
-    details {
+    details.description {
         margin: 0 0 16px 0;
 
         > summary {
             position: relative;
             cursor: pointer;
-            padding: 4px 0 4px 12px;
+            width: max-content;
+            padding: 4px 12px;
             border-radius: 4px;
-            font-size: 18px;
-            background-color: light-dark(#AAAAAA, #6611CC);
+            font-size: 20px;
+            background-color: light-dark(#AAAAAA, #3399FF);
             -webkit-tap-highlight-color: transparent;
 
             &:hover {
-                background-color: light-dark(#999999, #7722DD);
+                background-color: light-dark(#999999, #44AAFF);
             }
 
             &:active {
-                background-color: light-dark(#888888, #8833EE);
+                background-color: light-dark(#888888, #55BBFF);
             }
-        }
-
-        &[open] > summary {
-            background-color: light-dark(#DDDDDD, #8844FF);
         }
     }
 
@@ -591,7 +588,7 @@
     <section class="content">
         <h2>使用方法</h2>
 
-        <details name="howtouse">
+        <details class="description" name="howtouse">
             <summary>暗号化/復号</summary>
 
             <h3>備考</h3>
@@ -639,7 +636,7 @@
             </ol>
         </details>
 
-        <details name="howtouse">
+        <details class="description" name="howtouse">
             <summary>署名/検証</summary>
 
             <h3>備考</h3>
@@ -708,7 +705,7 @@
     <section class="content">
         <h2>ファイルを暗号化</h2>
 
-        <dl>
+        <dl class="form">
             <dd>暗号化するファイル</dd>
             <dd><input multiple type="file" id="encrypt_files"></dd>
             <dd>公開鍵</dd>
@@ -724,7 +721,7 @@
     <section class="content">
         <h2>ファイルを復号</h2>
 
-        <dl>
+        <dl class="form">
             <dd>暗号化されたファイル</dd>
             <dd><input type="file" id="decrypt_enc"></dd>
             <dd>公開鍵</dd>
@@ -740,7 +737,7 @@
     <section class="content">
         <h2>ファイルに署名</h2>
 
-        <dl>
+        <dl class="form">
             <dd>署名するファイル</dd>
             <dd><input type="file" id="sign_file"></dd>
             <dd>秘密鍵</dd>
@@ -754,7 +751,7 @@
     <section class="content">
         <h2>ファイルの署名を検証</h2>
 
-        <dl>
+        <dl class="form">
             <dd>署名対象のファイル</dd>
             <dd><input type="file" id="verify_file"></dd>
             <dd>公開鍵</dd>
@@ -770,7 +767,7 @@
     <section class="content">
         <h2>鍵を生成</h2>
 
-        <dl>
+        <dl class="form">
             <dd>暗号化鍵</dd>
             <dd><button type="button" id="exec_keygen_encrypt">🔑鍵生成</button></dd>
             <dd>署名鍵</dd>
