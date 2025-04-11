@@ -340,25 +340,6 @@
             &:target {
                 display: block;
             }
-
-            > section {
-                max-width: 800px;
-                margin: 0 auto 56px auto;
-                padding: 0 16px;
-
-                &:first-of-type {
-                    margin-top: 16px;
-                }
-
-                &:last-of-type {
-                    margin-bottom: 16px;
-                }
-
-                > h2 {
-                    text-align: center;
-                    margin: 0 0 16px 0;
-                }
-            }
         }
     }
 
@@ -565,6 +546,25 @@
         font-weight: unset;
         word-break: keep-all;
     }
+
+    section.content {
+        max-width: 800px;
+        margin: 0 auto 56px auto;
+        padding: 0 16px;
+
+        &:first-of-type {
+            margin-top: 16px;
+        }
+
+        &:last-of-type {
+            margin-bottom: 16px;
+        }
+
+        > h2 {
+            text-align: center;
+            margin: 0 0 16px 0;
+        }
+    }
 </style>
 
 <title>公開鍵暗号化ツール</title>
@@ -586,7 +586,7 @@
 <header id="tabs"></header>
 
 <main id="/" data-page="ホーム">
-    <section>
+    <section class="content">
         <h2>使用方法</h2>
 
         <details name="howtouse">
@@ -678,7 +678,7 @@
         </details>
     </section>
 
-    <section>
+    <section class="content">
         <h2>技術仕様</h2>
 
         <ul>
@@ -691,7 +691,7 @@
         </ul>
     </section>
 
-    <section>
+    <section class="content">
         <h2>このアプリについて</h2>
 
         <ul>
@@ -703,7 +703,7 @@
 </main>
 
 <main id="/encrypt" data-page="暗号化">
-    <section>
+    <section class="content">
         <h2>ファイルを暗号化</h2>
 
         <dl>
@@ -719,7 +719,7 @@
 </main>
 
 <main id="/decrypt" data-page="復号">
-    <section>
+    <section class="content">
         <h2>ファイルを復号</h2>
 
         <dl>
@@ -735,7 +735,7 @@
 </main>
 
 <main id="/sign" data-page="署名">
-    <section>
+    <section class="content">
         <h2>ファイルに署名</h2>
 
         <dl>
@@ -749,7 +749,7 @@
 </main>
 
 <main id="/verify" data-page="検証">
-    <section>
+    <section class="content">
         <h2>ファイルの署名を検証</h2>
 
         <dl>
@@ -765,7 +765,7 @@
 </main>
 
 <main id="/keygen" data-page="鍵生成">
-    <section>
+    <section class="content">
         <h2>鍵を生成</h2>
 
         <dl>
