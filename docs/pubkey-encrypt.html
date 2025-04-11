@@ -77,14 +77,46 @@
         }
 
         const anchor = document.createElement("a");
+        const style = document.createElement("style");
+
         anchor.href = `#${main.id}`;
         anchor.textContent = target;
         anchor.setAttribute("data-tab", "");
+        style.textContent = /*css*/`
+            @scope {
+                & {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100%;
+                    width: 100%;
+                    max-width: 200px;
+                    text-decoration: none;
+
+                    &:link, &:visited, &:hover, &:active {
+                        color: unset;
+                    }
+
+                    &:hover {
+                        background-color: light-dark(#00000020, #FFFFFF50);
+                    }
+
+                    &:active {
+                        background-color: light-dark(#00000040, #FFFFFF70);
+                    }
+
+                    &[data-open] {
+                        background-color: light-dark(#00000030, #FFFFFF60);
+                    }
+                }
+            }
+        `;
 
         if (anchor.hash === location.hash) {
             anchor.setAttribute("data-open", "");
         }
 
+        anchor.appendChild(style);
         document.getElementById("tabs").appendChild(anchor);
     }
 
@@ -307,32 +339,6 @@
             &:last-of-type {
                 justify-content: center;
                 height: var(--header-extend-height);
-
-                > a {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100%;
-                    width: 100%;
-                    max-width: 200px;
-                    text-decoration: none;
-
-                    &:link, &:visited, &:hover, &:active {
-                        color: unset;
-                    }
-
-                    &:hover {
-                        background-color: light-dark(#00000020, #FFFFFF50);
-                    }
-
-                    &:active {
-                        background-color: light-dark(#00000040, #FFFFFF70);
-                    }
-
-                    &[data-open] {
-                        background-color: light-dark(#00000030, #FFFFFF60);
-                    }
-                }
             }
         }
 
