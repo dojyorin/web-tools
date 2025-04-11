@@ -323,17 +323,6 @@
                 justify-content: start;
                 height: var(--header-height);
                 padding: 0 8px;
-
-                > h1 {
-                    margin: 0 12px;
-                    font-size: 24px;
-                    font-weight: unset;
-                    word-break: keep-all;
-                }
-
-                > div.space {
-                    width: 100%;
-                }
             }
 
             &:last-of-type {
@@ -565,6 +554,17 @@
             background-color: light-dark(#DDDDDD, #8844FF);
         }
     }
+
+    div.space {
+        width: 100%;
+    }
+
+    h1.title {
+        margin: 0 12px;
+        font-size: 24px;
+        font-weight: unset;
+        word-break: keep-all;
+    }
 </style>
 
 <title>公開鍵暗号化ツール</title>
@@ -578,7 +578,7 @@
 
 <header>
     <button type="button" class="icon" popovertarget="menu">☰</button>
-    <h1>公開鍵暗号化ツール</h1>
+    <h1 class="title">公開鍵暗号化ツール</h1>
     <div class="space"></div>
     <button type="button" class="icon" id="theme">☀︎</button>
 </header>
