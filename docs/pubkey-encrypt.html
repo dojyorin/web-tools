@@ -25,6 +25,14 @@
     }
 
     /**
+    * @summary esnext-polyfill
+    * @return {Promise<Uint8Array>}
+    */
+    Blob.prototype.bytes ??= async function() {
+        return new Uint8Array(await this.arrayBuffer());
+    }
+
+    /**
     * @param {string} color
     * @param {string} message
     * @return {void}
@@ -219,6 +227,106 @@
     */
     async function cryptoVerify(pub, signature, data) {
         return await crypto.subtle.verify("Ed25519", await crypto.subtle.importKey("spki", pub, "Ed25519", false, ["verify"]), signature, data);
+    }
+
+    /**
+    * @param {File[]} files
+    * @param {boolean=} gzip
+    * @return {Promise<Uint8Array>}
+    */
+    async function tarEncode(files, gzip) {
+        const TAR_BLOCK_SIZE = 512;
+
+        const tar = new Uint8Array(files.reduce((n, {size}) => n + size + size % TAR_BLOCK_SIZE + TAR_BLOCK_SIZE, 0) + TAR_BLOCK_SIZE * 2);
+        const encoder = new TextEncoder();
+
+        for (let i = 0, j = 0; j < files.length; j++) {
+            tar.set(encoder.encode(files[j].name).subarray(0, 100), i);
+            i += 100;
+            tar.set(encoder.encode("0000644"), i);
+            i += 8;
+            tar.set(encoder.encode("0000000"), i);
+            i += 8;
+            tar.set(encoder.encode("0000000"), i);
+            i += 8;
+            tar.set(encoder.encode(files[j].size.toString(8).slice(0, 11).padStart(11, "0")), i);
+            i += 12;
+            tar.set(encoder.encode(Math.floor(files[j].lastModified / 1000).toString(8).slice(0, 11).padStart(11, "0")), i);
+            i += 12;
+            tar.set(encoder.encode("        "), i);
+            i += 8;
+            tar.set(encoder.encode("0"), i);
+            i += 1;
+            i += 100;
+            tar.set(encoder.encode("ustar  "), i);
+            i += 8;
+            i += 247;
+
+            tar.set(encoder.encode(`${tar.subarray(i - TAR_BLOCK_SIZE, i).reduce((n, v) => n + v, 0).toString(8).slice(0, 6).padStart(6, "0")}\0 `), i - 364);
+
+            tar.set(await files[j].bytes(), i);
+            i += files[j].size + files[j].size % TAR_BLOCK_SIZE;
+        }
+
+        return gzip ? await new Response(new Response(tar).body?.pipeThrough(new CompressionStream("gzip"))).bytes() : tar;
+    }
+
+    /**
+    * @param {Uint8Array} tar
+    * @param {boolean=} gzip
+    * @return {Promise<File[]>}
+    */
+    async function tarDecode(tar, gzip) {
+        const TAR_BLOCK_SIZE = 512;
+
+        /** @type {File[]} */
+        const files = [];
+        const tarX = gzip ? await new Response(new Response(tar).body?.pipeThrough(new DecompressionStream("gzip"))).bytes() : tar;
+        const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
+
+        for (let i = 0; i < tarX.byteLength;) {
+            if (i + TAR_BLOCK_SIZE * 2 === tarX.byteLength && tarX.subarray(i).every((v) => v === 0x00)) {
+                break;
+            }
+
+            const name = decoder.decode(tarX.subarray(i, i += 100)).replaceAll("\0", "");
+            i += 8;
+            i += 8;
+            i += 8;
+            const size = Number(`0o${decoder.decode(tarX.subarray(i, i += 12)).slice(0, 11)}`);
+            const time = Number(`0o${decoder.decode(tarX.subarray(i, i += 12)).slice(0, 11)}`);
+            const checksum = decoder.decode(tarX.subarray(i, i += 8)).slice(0, 6);
+            const type = decoder.decode(tarX.subarray(i, i += 1));
+            i += 100;
+            const magic = decoder.decode(tarX.subarray(i, i += 8)).slice(0, 7);
+            i += 247;
+
+            if (!magic.startsWith("ustar")) {
+                throw new ReferenceError("Invalid tar magic.");
+            }
+
+            const header = tarX.slice(i - TAR_BLOCK_SIZE, i);
+            header.set(encoder.encode("        "), TAR_BLOCK_SIZE - 364);
+
+            if (checksum !== header.reduce((n, v) => n + v, 0).toString(8).slice(0, 6).padStart(6, "0")) {
+                throw new ReferenceError("Invalid tar checksum.");
+            }
+
+            if (type !== "0" && type !== "\0") {
+                i += size + size % TAR_BLOCK_SIZE;
+                continue;
+            }
+
+            const body = tarX.subarray(i, i += size);
+            i += size % TAR_BLOCK_SIZE;
+
+            files.push(new File([body], name, {
+                lastModified: time
+            }));
+        }
+
+        return files;
     }
 
     const {toggleLoading} = factoryLoading("orange");
