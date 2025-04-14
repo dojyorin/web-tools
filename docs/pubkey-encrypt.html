@@ -347,47 +347,47 @@
     const domInput = {
         /** @type {File[]} */
         get encrypt_files() {
-            return Array.from(document.getElementById("encrypt_files").files);
+            return Array.from(document.getElementById("encrypt_files").files ?? []);
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get encrypt_pub() {
-            return Array.from(document.getElementById("encrypt_pub").files);
+            return document.getElementById("encrypt_pub").files?.[0];
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get encrypt_key() {
-            return Array.from(document.getElementById("encrypt_key").files);
+            return document.getElementById("encrypt_key").files?.[0];
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get decrypt_enc() {
-            return Array.from(document.getElementById("decrypt_enc").files);
+            return document.getElementById("decrypt_enc").files?.[0];
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get decrypt_pub() {
-            return Array.from(document.getElementById("decrypt_pub").files);
+            return document.getElementById("decrypt_pub").files?.[0];
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get decrypt_key() {
-            return Array.from(document.getElementById("decrypt_key").files);
+            return document.getElementById("decrypt_key").files?.[0];
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get sign_file() {
-            return Array.from(document.getElementById("sign_file").files);
+            return document.getElementById("sign_file").files?.[0];
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get sign_key() {
-            return Array.from(document.getElementById("sign_key").files);
+            return document.getElementById("sign_key").files?.[0];
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get verify_file() {
-            return Array.from(document.getElementById("verify_file").files);
+            return document.getElementById("verify_file").files?.[0];
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get verify_pub() {
-            return Array.from(document.getElementById("verify_pub").files);
+            return document.getElementById("verify_pub").files?.[0];
         },
-        /** @type {File[]} */
+        /** @type {File=} */
         get verify_sig() {
-            return Array.from(document.getElementById("verify_sig").files);
+            return document.getElementById("verify_sig").files?.[0];
         }
     };
 
@@ -474,106 +474,119 @@
 
     document.getElementById("exec_encrypt").onclick = async () => {
         try {
-            const key = await cryptoDeriveKey({
-                publicKey: await domInput.encrypt_pub[0].bytes(),
-                privateKey: await domInput.encrypt_key[0].bytes()
-            });
+            toggleLoading(true);
+
             const tgz = await tarEncode(domInput.encrypt_files, true);
 
-            fsWrite(`${crypto.randomUUID()}.bin`, await cryptoEncrypt(key, tgz));
+            fsWrite(`${crypto.randomUUID()}.tgz.enc`, await cryptoEncrypt(await domInput.encrypt_pub.bytes(), await domInput.encrypt_key.bytes(), tgz));
 
-            showNotify("暗号化しました", "green");
+            pushToast("暗号化しました", "green");
         } catch (e) {
             console.error(e);
-            showNotify("暗号化できませんでした", "red");
+            pushToast("暗号化できませんでした", "red");
+
+            throw e;
+        } finally {
+            toggleLoading(false);
         }
     };
 
     document.getElementById("exec_decrypt").onclick = async () => {
         try {
-            const key = await cryptoDeriveKey({
-                publicKey: await domInput.decrypt_pub[0].bytes(),
-                privateKey: await domInput.decrypt_key[0].bytes()
-            });
-            const tgz = await cryptoDecrypt(key, domInput.decrypt_enc);
+            toggleLoading(true);
+
+            const tgz = await cryptoDecrypt(await domInput.decrypt_pub.bytes(), await domInput.decrypt_key.bytes(), await domInput.decrypt_enc.bytes());
 
             for (const file of await tarDecode(tgz, true)) {
-                fsWrite(file.name, await file.bytes());
+                fsWrite(file.name, file);
             }
 
-            showNotify("復号しました", "green");
+            pushToast("復号しました", "green");
         } catch (e) {
+            pushToast("復号できませんでした", "red");
             console.error(e);
-            showNotify("復号できませんでした", "red");
+
+            throw e;
+        } finally {
+            toggleLoading(false);
         }
     };
 
     document.getElementById("exec_sign").onclick = async () => {
-        /** @type {Binary[]} */
-        const [file] = await fsParse(document.getElementById("sign_file"));
-        /** @type {Binary[]} */
-        const [key] = await fsParse(document.getElementById("sign_key"));
-
         try {
-            fsWrite(`${file.name}.sig`, await cryptoSign(file.body, key.body));
+            toggleLoading(true);
 
-            showNotify("署名を生成しました", "green");
+            fsWrite(`${domInput.sign_file.name}.sig`, await cryptoSign(await domInput.sign_key.bytes(), await domInput.sign_file.bytes()));
+
+            pushToast("署名を生成しました", "green");
         } catch (e) {
+            pushToast("署名できませんでした", "red");
             console.error(e);
-            showNotify("署名できませんでした", "red");
+
+            throw e;
+        } finally {
+            toggleLoading(false);
         }
     };
 
     document.getElementById("exec_verify").onclick = async () => {
-        /** @type {Binary[]} */
-        const [file] = await fsParse(document.getElementById("verify_file"));
-        /** @type {Binary[]} */
-        const [pub] = await fsParse(document.getElementById("verify_pub"));
-        /** @type {Binary[]} */
-        const [sig] = await fsParse(document.getElementById("verify_sig"));
-
         try {
-            if (await cryptoVerify(file.body, pub.body, sig.body)) {
-                showNotify("正当な署名です", "green");
+            toggleLoading(true);
 
+            if (await cryptoVerify(await domInput.verify_pub.bytes(), await domInput.verify_sig.bytes(), await domInput.verify_file.bytes())) {
+                pushToast("正当な署名です", "green");
             } else {
-                showNotify("署名が一致しません", "red");
+                pushToast("無効な署名です", "red");
             }
         } catch (e) {
+            pushToast("検証できませんでした", "red");
             console.error(e);
-            showNotify("検証できませんでした", "red");
+
+            throw e;
+        } finally {
+            toggleLoading(false);
         }
     };
 
     document.getElementById("exec_keygen_encrypt").onclick = async () => {
         try {
-            /** @type {PubKey} */
-            const {pub, key} = await cryptoGenerateEncryptKey();
+            toggleLoading(true);
+
+            const {publicKey, privateKey} = await cryptoGenerateKey();
             const uuid = crypto.randomUUID();
 
-            fsWrite(`${uuid}.enc.pub`, pub);
-            fsWrite(`${uuid}.enc.key`, key);
+            fsWrite(`${uuid}.enc.pub`, publicKey);
+            fsWrite(`${uuid}.enc.key`, privateKey);
 
-            showNotify("暗号化鍵を生成しました", "green");
+            pushToast("暗号化鍵を生成しました", "green");
         } catch (e) {
+            pushToast("生成できませんでした", "red");
             console.error(e);
-            showNotify("生成できませんでした", "red");
+
+            throw e;
+        } finally {
+            toggleLoading(false);
         }
     };
 
     document.getElementById("exec_keygen_sign").onclick = async () => {
         try {
-            /** @type {PubKey} */
-            const {pub, key} = await cryptoGenerateSignKey();
+            toggleLoading(true);
+
+            const {publicKey, privateKey} = await cryptoGenerateKey(true);
             const uuid = crypto.randomUUID();
 
-            fsWrite(`${uuid}.sig.pub`, pub);
-            fsWrite(`${uuid}.sig.key`, key);
+            fsWrite(`${uuid}.sig.pub`, publicKey);
+            fsWrite(`${uuid}.sig.key`, privateKey);
 
-            showNotify("署名鍵を生成しました", "green");
+            pushToast("署名鍵を生成しました", "green");
         } catch (e) {
+            pushToast("生成できませんでした", "red");
             console.error(e);
-            showNotify("生成できませんでした", "red");
+
+            throw e;
+        } finally {
+            toggleLoading(false);
         }
     };
 </script>
