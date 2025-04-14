@@ -7,6 +7,94 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' style='dominant-baseline: central; text-anchor: middle; font-size: 100px;'>🔐</text></svg>">
 
 <script async type="module">
+    /**
+    * @param {string} color
+    * @param {string} message
+    * @return {void}
+    */
+    function pushToast(color, message) {
+        const dialog = document.createElement("dialog");
+        const style = document.createElement("style");
+
+        dialog.textContent = message;
+        style.textContent = /*css*/`
+            @scope {
+                & {
+                    position: fixed;
+                    z-index: 255;
+                    top: 20px;
+                    max-width: calc(100dvw - 20px);
+                    padding: 8px 16px;
+                    outline: none;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    background-color: ${color};
+                    box-shadow: 0 2px 4px 0 #000000;
+                    overflow-wrap: break-word;
+                }
+            }
+        `;
+
+        dialog.appendChild(style);
+        document.body.appendChild(dialog);
+
+        setTimeout(() => dialog.remove(), 5000);
+
+        dialog.show();
+    }
+
+    /**
+    * @param {string} color
+    * @return {{toggleLoading(enable: boolean): void;}}
+    */
+    function factoryLoading(color) {
+        const dialog = document.createElement("dialog");
+        const style = document.createElement("style");
+
+        style.textContent = /*css*/`
+            @scope {
+                @keyframes loading {
+                    to {
+                        transform: rotate(1turn);
+                    }
+                }
+
+                & {
+                    height: 80px;
+                    aspect-ratio: 1;
+                    padding: 8px;
+                    outline: none;
+                    border: none;
+                    border-radius: 50%;
+                    background-color: ${color};
+                    mask: conic-gradient(transparent 30%, #000000), linear-gradient(#000000 0 0) content-box;
+                    mask-composite: subtract;
+                    animation: loading 1s infinite linear;
+
+                    &::backdrop {
+                        background-color: #000000A0;
+                    }
+                }
+            }
+        `;
+
+        dialog.appendChild(style);
+        document.body.appendChild(dialog);
+
+        return {
+            toggleLoading(enable) {
+                if (enable) {
+                    dialog.showModal();
+                } else {
+                    dialog.close();
+                }
+            }
+        };
+    }
+
+    const {toggleLoading} = factoryLoading("orange");
+
     const domInput = {
         /** @type {File[]} */
         get encrypt_files() {
