@@ -120,6 +120,19 @@
 
     /**
     * @param {string} name
+    * @param {BlobPart} body
+    * @return {void}
+    */
+    function fsWrite(name, body) {
+        const anchor = document.createElement("a");
+        anchor.download = name;
+        anchor.href = URL.createObjectURL(new Blob([body]));
+
+        anchor.click();
+    }
+
+    /**
+    * @param {string} name
     * @param {Uint8Array} data
     * @return {string}
     */
