@@ -480,10 +480,10 @@
 
             fsWrite(`${crypto.randomUUID()}.tgz.enc`, await cryptoEncrypt(await domInput.encrypt_pub.bytes(), await domInput.encrypt_key.bytes(), tgz));
 
-            pushToast("暗号化しました", "green");
+            pushToast("green", "暗号化しました");
         } catch (e) {
+            pushToast("red", "暗号化できませんでした");
             console.error(e);
-            pushToast("暗号化できませんでした", "red");
 
             throw e;
         } finally {
@@ -501,9 +501,9 @@
                 fsWrite(file.name, file);
             }
 
-            pushToast("復号しました", "green");
+            pushToast("green", "復号しました");
         } catch (e) {
-            pushToast("復号できませんでした", "red");
+            pushToast("red", "復号できませんでした");
             console.error(e);
 
             throw e;
@@ -518,9 +518,9 @@
 
             fsWrite(`${domInput.sign_file.name}.sig`, await cryptoSign(await domInput.sign_key.bytes(), await domInput.sign_file.bytes()));
 
-            pushToast("署名を生成しました", "green");
+            pushToast("green", "署名を生成しました");
         } catch (e) {
-            pushToast("署名できませんでした", "red");
+            pushToast("red", "署名できませんでした");
             console.error(e);
 
             throw e;
@@ -534,12 +534,12 @@
             toggleLoading(true);
 
             if (await cryptoVerify(await domInput.verify_pub.bytes(), await domInput.verify_sig.bytes(), await domInput.verify_file.bytes())) {
-                pushToast("正当な署名です", "green");
+                pushToast("green", "正当な署名です");
             } else {
-                pushToast("無効な署名です", "red");
+                pushToast("red", "無効な署名です");
             }
         } catch (e) {
-            pushToast("検証できませんでした", "red");
+            pushToast("red", "検証できませんでした");
             console.error(e);
 
             throw e;
@@ -558,9 +558,9 @@
             fsWrite(`${uuid}.enc.pub`, publicKey);
             fsWrite(`${uuid}.enc.key`, privateKey);
 
-            pushToast("暗号化鍵を生成しました", "green");
+            pushToast("green", "暗号化鍵を生成しました");
         } catch (e) {
-            pushToast("生成できませんでした", "red");
+            pushToast("red", "生成できませんでした");
             console.error(e);
 
             throw e;
@@ -579,9 +579,9 @@
             fsWrite(`${uuid}.sig.pub`, publicKey);
             fsWrite(`${uuid}.sig.key`, privateKey);
 
-            pushToast("署名鍵を生成しました", "green");
+            pushToast("green", "署名鍵を生成しました");
         } catch (e) {
-            pushToast("生成できませんでした", "red");
+            pushToast("red", "生成できませんでした");
             console.error(e);
 
             throw e;
