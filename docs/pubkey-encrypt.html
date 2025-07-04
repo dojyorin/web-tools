@@ -34,14 +34,15 @@
 
     /**
     * @param {string} color
-    * @param {string} message
+    * @param {string} text
     * @return {void}
     */
-    function pushToast(color, message) {
+    function pushToast(color, text) {
         const dialog = document.createElement("dialog");
         const style = document.createElement("style");
+        const div = document.createElement("div");
 
-        dialog.textContent = message;
+        div.textContent = text;
         style.textContent = /*css*/`
             @scope {
                 & {
@@ -61,6 +62,7 @@
             }
         `;
 
+        dialog.appendChild(div);
         dialog.appendChild(style);
         document.body.appendChild(dialog);
 
