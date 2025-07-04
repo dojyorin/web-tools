@@ -393,7 +393,7 @@
         }
     };
 
-    for (const main of document.getElementsByTagName("main")) {
+    for (const main of document.body.getElementsByTagName("main")) {
         const target = main.getAttribute("data-page");
 
         if (!target) {
