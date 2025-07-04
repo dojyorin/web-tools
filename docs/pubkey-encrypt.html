@@ -402,9 +402,10 @@
 
         const anchor = document.createElement("a");
         const style = document.createElement("style");
+        const div = document.createElement("div");
 
         anchor.href = `#${main.id}`;
-        anchor.textContent = target;
+        div.textContent = target;
         style.textContent = /*css*/`
             @scope {
                 & {
@@ -439,6 +440,7 @@
             anchor.setAttribute("data-open", "");
         }
 
+        anchor.appendChild(div);
         anchor.appendChild(style);
         document.getElementById("tabs").appendChild(anchor);
     }
