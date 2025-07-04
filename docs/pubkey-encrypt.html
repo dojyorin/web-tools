@@ -646,6 +646,15 @@
                     }
                 }
             }
+
+            > header {
+                display: flex;
+                align-items: center;
+
+                &:nth-of-type(1) {
+                    height: var(--header-height);
+                }
+            }
         }
 
         > header {
@@ -655,7 +664,6 @@
 
             &:nth-of-type(1) {
                 height: var(--header-height);
-                padding: 0 8px;
             }
 
             &:nth-of-type(2) {
@@ -872,15 +880,8 @@
         width: 100%;
     }
 
-    header.menu {
-        display: flex;
-        align-items: center;
-        height: 48px;
-        padding: 0 8px;
-    }
-
     h1.title {
-        margin: 0 12px;
+        margin: 0;
         font-size: 24px;
         font-weight: unset;
         word-break: keep-all;
@@ -913,7 +914,7 @@
 <title>公開鍵暗号化ツール</title>
 
 <nav popover id="menu">
-    <header class="menu">
+    <header>
         <button type="button" class="icon" popovertarget="menu">✖</button>
     </header>
 </nav>
