@@ -405,7 +405,6 @@
 
         anchor.href = `#${main.id}`;
         anchor.textContent = target;
-        anchor.setAttribute("data-tab", "");
         style.textContent = /*css*/`
             @scope {
                 & {
@@ -449,11 +448,7 @@
     }
 
     onhashchange = ({newURL}) => {
-        for (const anchor of document.getElementsByTagName("a")) {
-            if (!anchor.hasAttribute("data-tab")) {
-                continue;
-            }
-
+        for (const anchor of document.getElementById("tabs").getElementsByTagName("a")) {
             if (anchor.hash === URL.parse(newURL)?.hash) {
                 anchor.setAttribute("data-open", "");
             } else {
