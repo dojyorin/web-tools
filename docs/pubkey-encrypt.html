@@ -454,7 +454,7 @@
         target.textContent = dark ? "☀︎" : "⏾";
     };
 
-    document.getElementById("exec_encrypt").onclick = async () => {
+    buttonExecuteEncrypt.onclick = async () => {
         try {
             toggleLoading(true);
 
@@ -473,7 +473,7 @@
         }
     };
 
-    document.getElementById("exec_decrypt").onclick = async () => {
+    buttonExecuteDecrypt.onclick = async () => {
         try {
             toggleLoading(true);
 
@@ -494,7 +494,7 @@
         }
     };
 
-    document.getElementById("exec_sign").onclick = async () => {
+    buttonExecuteSign.onclick = async () => {
         try {
             toggleLoading(true);
 
@@ -511,7 +511,7 @@
         }
     };
 
-    document.getElementById("exec_verify").onclick = async () => {
+    buttonExecuteVerify.onclick = async () => {
         try {
             toggleLoading(true);
 
@@ -530,7 +530,7 @@
         }
     };
 
-    document.getElementById("exec_keygen_encrypt").onclick = async () => {
+    buttonExecuteKeyGenerateEncrypt.onclick = async () => {
         try {
             toggleLoading(true);
 
@@ -551,7 +551,7 @@
         }
     };
 
-    document.getElementById("exec_keygen_sign").onclick = async () => {
+    buttonExecuteKeyGenerateSign.onclick = async () => {
         try {
             toggleLoading(true);
 
@@ -580,8 +580,7 @@
 
     body {
         --header-height: 48px;
-        --header-extend-height: 32px;
-        --main-height: calc(100dvh - var(--header-height) - var(--header-extend-height));
+        --main-height: calc(100dvh - var(--header-height));
 
         user-select: none;
         height: 100dvh;
@@ -601,7 +600,6 @@
             margin: 0;
             padding: 0;
             border: none;
-            background-color: canvas;
             transition: all 0.2s ease-in-out allow-discrete;
             translate: -250px;
 
@@ -633,51 +631,39 @@
             > header {
                 display: flex;
                 align-items: center;
-
-                &:nth-of-type(1) {
-                    height: var(--header-height);
-                }
+                height: var(--header-height);
             }
         }
 
         > header {
             display: flex;
             align-items: center;
-            background-color: light-dark(#DDDDDD, #6611CC);
-
-            &:nth-of-type(1) {
-                height: var(--header-height);
-            }
-
-            &:nth-of-type(2) {
-                height: var(--header-extend-height);
-            }
+            height: var(--header-height);
         }
 
         > main {
             display: none;
             height: var(--main-height);
             overflow: clip scroll;
-            background-color: canvas;
 
             &:target {
-                display: block;
+                display: unset;
             }
         }
     }
 
     button {
-        box-sizing: border-box;
-        outline: none;
-        border: none;
-        -webkit-tap-highlight-color: transparent;
-
         &[type="button"] {
+            box-sizing: border-box;
+            outline: none;
+            border: none;
+            -webkit-tap-highlight-color: transparent;
+
             &:not(:disabled) {
                 cursor: pointer;
             }
 
-            &:not(.icon) {
+            &.text {
                 padding: 4px 12px;
                 border-radius: 4px;
                 font-size: 20px;
@@ -889,8 +875,8 @@
         }
     }
 
-    #tabs {
-        justify-content: center;
+    .primary {
+        background-color: light-dark(#DDDDDD, #6611CC);
     }
 </style>
 
@@ -900,16 +886,23 @@
     <header>
         <button type="button" class="icon" popovertarget="menu">✖</button>
     </header>
+
+    <ul>
+        <li><button type="button" popovertarget="menu" onclick="location.assign('#/')">ホーム</button></li>
+        <li><button type="button" popovertarget="menu" onclick="location.assign('#/encrypt')">暗号化</button></li>
+        <li><button type="button" popovertarget="menu" onclick="location.assign('#/decrypt')">復号</button></li>
+        <li><button type="button" popovertarget="menu" onclick="location.assign('#/sign')">署名</button></li>
+        <li><button type="button" popovertarget="menu" onclick="location.assign('#/verify')">検証</button></li>
+        <li><button type="button" popovertarget="menu" onclick="location.assign('#/keygen')">鍵生成</button></li>
+    </ul>
 </nav>
 
-<header>
+<header class="primary">
     <button type="button" class="icon" popovertarget="menu">☰</button>
     <h1 class="title">公開鍵暗号化ツール</h1>
     <div class="space"></div>
     <button type="button" class="icon" id="theme">☀︎</button>
 </header>
-
-<header id="tabs"></header>
 
 <main id="/" data-page="ホーム">
     <section class="content">
@@ -1039,7 +1032,7 @@
             <dd><input type="file" accept=".pub" id="encrypt_pub"></dd>
             <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="encrypt_key"></dd>
-            <dd><button type="button" id="exec_encrypt">🔒暗号化</button></dd>
+            <dd><button type="button" class="text" id="exec_encrypt">🔒暗号化</button></dd>
         </dl>
     </section>
 </main>
@@ -1055,7 +1048,7 @@
             <dd><input type="file" accept=".pub" id="decrypt_pub"></dd>
             <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="decrypt_key"></dd>
-            <dd><button type="button" id="exec_decrypt">🔓復号</button></dd>
+            <dd><button type="button" class="text" id="exec_decrypt">🔓復号</button></dd>
         </dl>
     </section>
 </main>
@@ -1069,7 +1062,7 @@
             <dd><input type="file" id="sign_file"></dd>
             <dd>秘密鍵</dd>
             <dd><input type="file" accept=".key" id="sign_key"></dd>
-            <dd><button type="button" id="exec_sign">🔏署名</button></dd>
+            <dd><button type="button" class="text" id="exec_sign">🔏署名</button></dd>
         </dl>
     </section>
 </main>
@@ -1085,7 +1078,7 @@
             <dd><input type="file" accept=".pub" id="verify_pub"></dd>
             <dd>電子署名</dd>
             <dd><input type="file" accept=".sig" id="verify_sig"></dd>
-            <dd><button type="button" id="exec_verify">✅検証</button></dd>
+            <dd><button type="button" class="text" id="exec_verify">✅検証</button></dd>
         </dl>
     </section>
 </main>
@@ -1096,9 +1089,9 @@
 
         <dl class="form">
             <dd>暗号化鍵</dd>
-            <dd><button type="button" id="exec_keygen_encrypt">🔑鍵生成</button></dd>
+            <dd><button type="button" class="text" id="exec_keygen_encrypt">🔑鍵生成</button></dd>
             <dd>署名鍵</dd>
-            <dd><button type="button" id="exec_keygen_sign">🔑鍵生成</button></dd>
+            <dd><button type="button" class="text" id="exec_keygen_sign">🔑鍵生成</button></dd>
         </dl>
     </section>
 </main>
