@@ -9,23 +9,6 @@
 <script async type="module">
     /**
     * @summary esnext-polyfill
-    * @return {string}
-    */
-    Uint8Array.prototype.toBase64 ??= function() {
-        return btoa(Array.from(this, (v) => String.fromCharCode(v)).join(""));
-    }
-
-    /**
-    * @summary esnext-polyfill
-    * @param {string} data
-    * @return {Uint8Array}
-    */
-    Uint8Array.fromBase64 ??= function(data) {
-        return Uint8Array.from(atob(data), (v) => v.charCodeAt(0));
-    }
-
-    /**
-    * @summary esnext-polyfill
     * @return {Promise<Uint8Array>}
     */
     Blob.prototype.bytes ??= async function() {
