@@ -368,13 +368,6 @@
         location.replace("#/");
     }
 
-    document.getElementById("theme").onclick = ({target}) => {
-        const dark = document.documentElement.style.colorScheme === "dark";
-
-        document.documentElement.style.colorScheme = dark ? "light" : "dark";
-        target.textContent = dark ? "☀︎" : "⏾";
-    };
-
     buttonExecuteEncrypt.onclick = async () => {
         try {
             toggleLoading(true);
@@ -822,7 +815,7 @@
     <button type="button" class="icon" popovertarget="menu">☰</button>
     <h1 class="title">公開鍵暗号化ツール</h1>
     <div class="space"></div>
-    <button type="button" class="icon" id="theme">☀︎</button>
+    <button type="button" class="icon" onclick="((v) => {document.documentElement.style.colorScheme = v ? 'light' : 'dark'; arguments[0].target.textContent = v ? '☀︎' : '⏾';})(document.documentElement.style.colorScheme === 'dark')">☀︎</button>
 </header>
 
 <main id="/" data-page="ホーム">
