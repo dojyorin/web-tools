@@ -329,123 +329,44 @@
 
     const {toggleLoading} = factoryLoading("orange");
 
-    const domInput = {
-        /** @type {File[]} */
-        get encrypt_files() {
-            return Array.from(document.getElementById("encrypt_files").files ?? []);
-        },
-        /** @type {File=} */
-        get encrypt_pub() {
-            return document.getElementById("encrypt_pub").files?.[0];
-        },
-        /** @type {File=} */
-        get encrypt_key() {
-            return document.getElementById("encrypt_key").files?.[0];
-        },
-        /** @type {File=} */
-        get decrypt_enc() {
-            return document.getElementById("decrypt_enc").files?.[0];
-        },
-        /** @type {File=} */
-        get decrypt_pub() {
-            return document.getElementById("decrypt_pub").files?.[0];
-        },
-        /** @type {File=} */
-        get decrypt_key() {
-            return document.getElementById("decrypt_key").files?.[0];
-        },
-        /** @type {File=} */
-        get sign_file() {
-            return document.getElementById("sign_file").files?.[0];
-        },
-        /** @type {File=} */
-        get sign_key() {
-            return document.getElementById("sign_key").files?.[0];
-        },
-        /** @type {File=} */
-        get verify_file() {
-            return document.getElementById("verify_file").files?.[0];
-        },
-        /** @type {File=} */
-        get verify_pub() {
-            return document.getElementById("verify_pub").files?.[0];
-        },
-        /** @type {File=} */
-        get verify_sig() {
-            return document.getElementById("verify_sig").files?.[0];
-        }
-    };
-
-    for (const main of document.body.getElementsByTagName("main")) {
-        const target = main.getAttribute("data-page");
-
-        if (!target) {
-            continue;
-        }
-
-        const anchor = document.createElement("a");
-        const style = document.createElement("style");
-        const div = document.createElement("div");
-
-        anchor.href = `#${main.id}`;
-        div.textContent = target;
-        style.textContent = /*css*/`
-            @scope {
-                & {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100%;
-                    width: 100%;
-                    max-width: 200px;
-                    text-decoration: none;
-
-                    &:link, &:visited, &:hover, &:active {
-                        color: unset;
-                    }
-
-                    &:hover {
-                        background-color: light-dark(#00000020, #FFFFFF50);
-                    }
-
-                    &:active {
-                        background-color: light-dark(#00000040, #FFFFFF70);
-                    }
-
-                    &[data-open] {
-                        background-color: light-dark(#00000030, #FFFFFF60);
-                    }
-                }
-            }
-        `;
-
-        if (anchor.hash === location.hash) {
-            anchor.setAttribute("data-open", "");
-        }
-
-        anchor.appendChild(div);
-        anchor.appendChild(style);
-        document.getElementById("tabs").appendChild(anchor);
-    }
+    /** @type {HTMLInputElement} */
+    const inputEncryptFile = document.getElementById("encrypt_files");
+    /** @type {HTMLInputElement} */
+    const inputEncryptPublicKey = document.getElementById("encrypt_pub");
+    /** @type {HTMLInputElement} */
+    const inputEncryptPrivateKey = document.getElementById("encrypt_key");
+    /** @type {HTMLInputElement} */
+    const inputDecryptCipher = document.getElementById("decrypt_enc");
+    /** @type {HTMLInputElement} */
+    const inputDecryptPublicKey = document.getElementById("decrypt_pub");
+    /** @type {HTMLInputElement} */
+    const inputDecryptPrivateKey = document.getElementById("decrypt_key");
+    /** @type {HTMLInputElement} */
+    const inputSignFile = document.getElementById("sign_file");
+    /** @type {HTMLInputElement} */
+    const inputSignPrivateKey = document.getElementById("sign_key");
+    /** @type {HTMLInputElement} */
+    const inputVerifyFile = document.getElementById("verify_file");
+    /** @type {HTMLInputElement} */
+    const inputVerifyPublicKey = document.getElementById("verify_pub");
+    /** @type {HTMLInputElement} */
+    const inputVerifySignature = document.getElementById("verify_sig");
+    /** @type {HTMLButtonElement} */
+    const buttonExecuteEncrypt = document.getElementById("exec_encrypt");
+    /** @type {HTMLButtonElement} */
+    const buttonExecuteDecrypt = document.getElementById("exec_decrypt");
+    /** @type {HTMLButtonElement} */
+    const buttonExecuteSign = document.getElementById("exec_sign");
+    /** @type {HTMLButtonElement} */
+    const buttonExecuteVerify = document.getElementById("exec_verify");
+    /** @type {HTMLButtonElement} */
+    const buttonExecuteKeyGenerateEncrypt = document.getElementById("exec_keygen_encrypt");
+    /** @type {HTMLButtonElement} */
+    const buttonExecuteKeyGenerateSign = document.getElementById("exec_keygen_sign");
 
     if (!location.hash) {
-        location.hash = "#/";
+        location.replace("#/");
     }
-
-    onhashchange = ({newURL}) => {
-        for (const anchor of document.getElementById("tabs").getElementsByTagName("a")) {
-            if (anchor.hash === URL.parse(newURL)?.hash) {
-                anchor.setAttribute("data-open", "");
-            } else {
-                anchor.removeAttribute("data-open");
-            }
-        }
-
-        for (const input of document.getElementsByTagName("input")) {
-            input.value = "";
-            input.checked = false;
-        }
-    };
 
     document.getElementById("theme").onclick = ({target}) => {
         const dark = document.documentElement.style.colorScheme === "dark";
