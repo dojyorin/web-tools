@@ -506,10 +506,6 @@
         }
 
         > nav[popover] {
-            --transition: all 0.2s ease-in-out allow-discrete;
-            --transform-close: translate(-300px);
-            --transform-open: translate(0);
-
             display: none;
             position: fixed;
             height: 100dvh;
@@ -519,13 +515,13 @@
             margin: 0;
             padding: 0;
             border: none;
-            transition: var(--transition);
-            transform: var(--transform-close);
+            transition: all 0.2s ease-in-out allow-discrete;
+            translate: -300px;
 
             &:popover-open {
                 display: unset;
                 pointer-events: auto;
-                transform: var(--transform-open);
+                translate: 0;
 
                 &::backdrop {
                     background-color: #00000030;
@@ -534,13 +530,13 @@
             }
 
             &::backdrop {
-                transition: var(--transition);
+                transition: inherit;
                 backdrop-filter: unset;
             }
 
             @starting-style {
                 &:popover-open {
-                    transform: var(--transform-close);
+                    translate: -300px;
 
                     &::backdrop {
                         backdrop-filter: unset;
@@ -822,7 +818,6 @@
     <button type="button" class="icon" popovertarget="menu">☰</button>
     <h1 class="title">公開鍵暗号化ツール</h1>
     <div class="space"></div>
-    <input type="checkbox" class="switch">
     <button type="button" class="icon" onclick="((v) => {document.documentElement.style.colorScheme = v ? 'light' : 'dark'; arguments[0].target.textContent = v ? '☀︎' : '⏾';})(document.documentElement.style.colorScheme === 'dark')">☀︎</button>
 </header>
 
