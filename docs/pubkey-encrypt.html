@@ -507,6 +507,7 @@
         }
 
         > nav[popover] {
+            display: none;
             position: fixed;
             height: 100dvh;
             width: 100dvw;
@@ -518,6 +519,7 @@
             translate: -250px;
 
             &:popover-open {
+                display: unset;
                 pointer-events: auto;
                 translate: 0;
 
@@ -529,7 +531,7 @@
 
             &::backdrop {
                 transition: all 0.2s ease-in-out allow-discrete;
-                backdrop-filter: none;
+                backdrop-filter: unset;
             }
 
             @starting-style {
@@ -537,7 +539,7 @@
                     translate: -250px;
 
                     &::backdrop {
-                        backdrop-filter: none;
+                        backdrop-filter: unset;
                     }
                 }
             }
