@@ -507,21 +507,26 @@
         }
 
         > nav[popover] {
+            --transition: all 0.2s ease-in-out allow-discrete;
+            --transform-close: translate(-300px);
+            --transform-open: translate(0);
+
             display: none;
             position: fixed;
             height: 100dvh;
             width: 100dvw;
+            max-height: unset;
             max-width: 300px;
             margin: 0;
             padding: 0;
             border: none;
-            transition: all 0.2s ease-in-out allow-discrete;
-            translate: -250px;
+            transition: var(--transition);
+            transform: var(--transform-close);
 
             &:popover-open {
                 display: unset;
                 pointer-events: auto;
-                translate: 0;
+                transform: var(--transform-open);
 
                 &::backdrop {
                     background-color: #00000030;
@@ -530,13 +535,13 @@
             }
 
             &::backdrop {
-                transition: all 0.2s ease-in-out allow-discrete;
+                transition: var(--transition);
                 backdrop-filter: unset;
             }
 
             @starting-style {
                 &:popover-open {
-                    translate: -250px;
+                    transform: var(--transform-close);
 
                     &::backdrop {
                         backdrop-filter: unset;
