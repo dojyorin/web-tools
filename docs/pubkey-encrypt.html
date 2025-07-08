@@ -661,6 +661,7 @@
                 margin: 0;
                 border-radius: var(--size);
                 background-color: light-dark(#AAAAAA, #333333);
+                transition: all 0.2s ease-in-out allow-discrete;
 
                 &:not(:disabled) {
                     cursor: pointer;
@@ -681,7 +682,7 @@
                     aspect-ratio: 1;
                     border-radius: var(--size);
                     background-color: #FFFFFF;
-                    transition: all 0.2s ease-in-out;
+                    transition: inherit;
                     scale: 0.8;
                 }
             }
@@ -821,6 +822,7 @@
     <button type="button" class="icon" popovertarget="menu">☰</button>
     <h1 class="title">公開鍵暗号化ツール</h1>
     <div class="space"></div>
+    <input type="checkbox" class="switch">
     <button type="button" class="icon" onclick="((v) => {document.documentElement.style.colorScheme = v ? 'light' : 'dark'; arguments[0].target.textContent = v ? '☀︎' : '⏾';})(document.documentElement.style.colorScheme === 'dark')">☀︎</button>
 </header>
 
