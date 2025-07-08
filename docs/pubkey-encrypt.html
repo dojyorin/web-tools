@@ -494,7 +494,6 @@
 
     body {
         --height-header: 48px;
-        --height-main: calc(100dvh - var(--height-header));
 
         user-select: none;
         height: 100dvh;
@@ -564,7 +563,7 @@
 
         > main {
             display: none;
-            height: var(--height-main);
+            height: calc(100dvh - var(--height-header));
             overflow: clip scroll;
 
             &:target {
