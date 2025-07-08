@@ -493,8 +493,8 @@
     }
 
     body {
-        --header-height: 48px;
-        --main-height: calc(100dvh - var(--header-height));
+        --height-header: 48px;
+        --height-main: calc(100dvh - var(--height-header));
 
         user-select: none;
         height: 100dvh;
@@ -552,19 +552,19 @@
             > header {
                 display: flex;
                 align-items: center;
-                height: var(--header-height);
+                height: var(--height-header);
             }
         }
 
         > header {
             display: flex;
             align-items: center;
-            height: var(--header-height);
+            height: var(--height-header);
         }
 
         > main {
             display: none;
-            height: var(--main-height);
+            height: var(--height-main);
             overflow: clip scroll;
 
             &:target {
