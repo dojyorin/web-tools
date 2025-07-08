@@ -726,7 +726,32 @@
         background-color: light-dark(#00000020, #FFFFFF50);
     }
 
-    dl.form {
+    .space {
+        width: 100%;
+    }
+
+    .margin-side {
+        > :first-child {
+            margin-left: 8px;
+        }
+
+        > :last-child {
+            margin-right: 8px;
+        }
+    }
+
+    .color-primary {
+        background-color: light-dark(#DDDDDD, #6611CC);
+    }
+
+    .title {
+        margin: 0 0 0 12px;
+        font-size: 24px;
+        font-weight: unset;
+        word-break: keep-all;
+    }
+
+    .form {
         margin: 0;
 
         > dd {
@@ -743,7 +768,7 @@
         }
     }
 
-    details.description {
+    .description {
         margin: 0 0 16px 0;
 
         > summary {
@@ -768,18 +793,7 @@
         }
     }
 
-    div.space {
-        width: 100%;
-    }
-
-    h1.title {
-        margin: 0;
-        font-size: 24px;
-        font-weight: unset;
-        word-break: keep-all;
-    }
-
-    section.content {
+    .content {
         max-width: 800px;
         margin: 0 auto 56px auto;
         padding: 0 16px;
@@ -797,16 +811,12 @@
             margin: 0 0 16px 0;
         }
     }
-
-    .primary {
-        background-color: light-dark(#DDDDDD, #6611CC);
-    }
 </style>
 
 <title>公開鍵暗号化ツール</title>
 
 <nav popover id="menu">
-    <header>
+    <header class="margin-side">
         <button type="button" class="icon" popovertarget="menu">✖</button>
     </header>
 
@@ -820,7 +830,7 @@
     </ul>
 </nav>
 
-<header class="primary">
+<header class="margin-side color-primary">
     <button type="button" class="icon" popovertarget="menu">☰</button>
     <h1 class="title">公開鍵暗号化ツール</h1>
     <div class="space"></div>
