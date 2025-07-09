@@ -11,7 +11,7 @@
     * @summary esnext-polyfill
     * @return {Promise<Uint8Array>}
     */
-    Blob.prototype.bytes ??= async function() {
+    Blob.prototype.bytes ??= async function () {
         return new Uint8Array(await this.arrayBuffer());
     }
 
