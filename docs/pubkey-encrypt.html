@@ -745,6 +745,7 @@
     }
 
     h1.title {
+        cursor: pointer;
         margin: 0 0 0 12px;
         font-size: 24px;
         font-weight: normal;
@@ -859,7 +860,7 @@
 
 <header class="margin-side color-primary">
     <button type="button" class="icon" popovertarget="menu">☰</button>
-    <h1 class="title">公開鍵暗号化ツール</h1>
+    <h1 class="title" onclick="location.assign('#/')">公開鍵暗号化ツール</h1>
     <div class="space"></div>
     <button type="button" class="icon" onclick="document.documentElement.style.colorScheme = getComputedStyle(document.documentElement).colorScheme === 'dark' ? 'light' : 'dark'">☾☼</button>
 </header>
