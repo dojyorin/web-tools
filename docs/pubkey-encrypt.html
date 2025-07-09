@@ -516,7 +516,7 @@
             position: fixed;
             height: 100dvh;
             width: 100dvw;
-            max-height: unset;
+            max-height: revert;
             max-width: 300px;
             margin: 0;
             padding: 0;
@@ -525,7 +525,7 @@
             translate: -300px;
 
             &:popover-open {
-                display: unset;
+                display: revert;
                 pointer-events: auto;
                 translate: 0;
 
@@ -537,7 +537,7 @@
 
             &::backdrop {
                 transition: inherit;
-                backdrop-filter: unset;
+                backdrop-filter: revert;
             }
 
             @starting-style {
@@ -545,7 +545,7 @@
                     translate: -300px;
 
                     &::backdrop {
-                        backdrop-filter: unset;
+                        backdrop-filter: revert;
                     }
                 }
             }
@@ -569,7 +569,7 @@
             overflow: clip scroll;
 
             &:target {
-                display: unset;
+                display: revert;
             }
         }
     }
@@ -747,7 +747,7 @@
     .title {
         margin: 0 0 0 12px;
         font-size: 24px;
-        font-weight: unset;
+        font-weight: normal;
         word-break: keep-all;
     }
 
