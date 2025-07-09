@@ -744,14 +744,41 @@
         background-color: light-dark(#DDDDDD, #6611CC);
     }
 
-    .title {
+    h1.title {
         margin: 0 0 0 12px;
         font-size: 24px;
         font-weight: normal;
         word-break: keep-all;
     }
 
-    .form {
+    dl.link {
+        margin: 0;
+
+        > dd {
+            margin: 0;
+
+            > button {
+                width: 100%;
+                padding: 8px 0;
+                text-align: start;
+                text-indent: 1rem;
+                font-size: 16px;
+                background-color: transparent;
+                transition: all 0.2s ease-in-out allow-discrete;
+
+                &:hover {
+                    background-color: light-dark(#00000020, #FFFFFF50);
+                    text-indent: 2rem;
+                }
+
+                &:active {
+                    background-color: light-dark(#00000040, #FFFFFF70);
+                }
+            }
+        }
+    }
+
+    dl.form {
         margin: 0;
 
         > dd {
@@ -768,7 +795,7 @@
         }
     }
 
-    .description {
+    details.description {
         margin: 0 0 16px 0;
 
         > summary {
@@ -793,7 +820,7 @@
         }
     }
 
-    .content {
+    section.content {
         max-width: 800px;
         margin: 0 auto 56px auto;
         padding: 0 16px;
@@ -820,7 +847,7 @@
         <button type="button" class="icon" popovertarget="menu">✖</button>
     </header>
 
-    <dl>
+    <dl class="link">
         <dd><button type="button" popovertarget="menu" onclick="location.assign('#/')">ホーム</button></dd>
         <dd><button type="button" popovertarget="menu" onclick="location.assign('#/encrypt')">暗号化</button></dd>
         <dd><button type="button" popovertarget="menu" onclick="location.assign('#/decrypt')">復号</button></dd>
