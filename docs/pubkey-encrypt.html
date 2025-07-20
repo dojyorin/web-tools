@@ -494,6 +494,12 @@
         }
     }
 
+    @media (prefers-color-scheme: light) {
+        :root {
+            color-scheme: light;
+        }
+    }
+
     * {
         scrollbar-width: none;
     }
@@ -524,6 +530,11 @@
             transition: all 0.2s ease-in-out allow-discrete;
             translate: -300px;
 
+            &::backdrop {
+                transition: inherit;
+                backdrop-filter: revert;
+            }
+
             &:popover-open {
                 display: revert;
                 pointer-events: auto;
@@ -533,11 +544,6 @@
                     background-color: #00000030;
                     backdrop-filter: blur(4px);
                 }
-            }
-
-            &::backdrop {
-                transition: inherit;
-                backdrop-filter: revert;
             }
 
             @starting-style {
@@ -862,7 +868,7 @@
     <button type="button" class="icon" popovertarget="menu">☰</button>
     <h1 class="title" onclick="location.assign('#/');">公開鍵暗号化ツール</h1>
     <div class="space"></div>
-    <button type="button" class="icon" onclick="document.documentElement.style.colorScheme = getComputedStyle(document.documentElement).colorScheme === 'dark' ? 'light' : 'dark';">☾☼</button>
+    <button type="button" class="icon" onclick="document.documentElement.style.colorScheme = {light: 'dark', dark: 'light'}[getComputedStyle(document.documentElement).colorScheme] ?? 'light';">☾☼</button>
 </header>
 
 <main id="/" data-page="ホーム">
