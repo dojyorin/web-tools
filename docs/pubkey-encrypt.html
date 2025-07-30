@@ -827,6 +827,25 @@
         }
     }
 
+    .content {
+        max-width: 800px;
+        margin: 0 auto 56px auto;
+        padding: 0 16px;
+
+        &:first-of-type {
+            margin-top: 16px;
+        }
+
+        &:last-of-type {
+            margin-bottom: 16px;
+        }
+
+        > h2 {
+            text-align: center;
+            margin: 0 0 16px 0;
+        }
+    }
+
     dl.form {
         margin: 0;
 
@@ -866,25 +885,6 @@
             &:active {
                 background-color: light-dark(#888888, #55BBFF);
             }
-        }
-    }
-
-    .content {
-        max-width: 800px;
-        margin: 0 auto 56px auto;
-        padding: 0 16px;
-
-        &:first-of-type {
-            margin-top: 16px;
-        }
-
-        &:last-of-type {
-            margin-bottom: 16px;
-        }
-
-        > h2 {
-            text-align: center;
-            margin: 0 0 16px 0;
         }
     }
 </style>
