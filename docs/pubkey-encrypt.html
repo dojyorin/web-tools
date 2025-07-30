@@ -722,6 +722,33 @@
         }
     }
 
+    select {
+        box-sizing: border-box;
+        outline: none;
+        border: none;
+        -webkit-tap-highlight-color: transparent;
+
+        height: 36px;
+        width: 300px;
+        max-width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 16px;
+        background-color: light-dark(#AAAAAA, #333333);
+
+        &:not(:disabled) {
+            cursor: pointer;
+
+            &:hover {
+                background-color: light-dark(#999999, #444444);
+            }
+
+            &:focus {
+                background-color: light-dark(#888888, #555555);
+            }
+        }
+    }
+
     code {
         padding: 0 4px;
         border-radius: 4px;
