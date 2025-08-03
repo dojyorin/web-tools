@@ -8,18 +8,18 @@
 
 <script async type="module">
     /**
-    * @summary esnext-polyfill
-    * @return {Promise<Uint8Array>}
-    */
+     * @summary esnext-polyfill
+     * @return {Promise<Uint8Array>}
+     */
     Blob.prototype.bytes ??= async function () {
         return new Uint8Array(await this.arrayBuffer());
     }
 
     /**
-    * @param {string} color
-    * @param {string} text
-    * @return {void}
-    */
+     * @param {string} color
+     * @param {string} text
+     * @return {void}
+     */
     function pushToast(color, text) {
         const dialog = document.createElement("dialog");
         const style = document.createElement("style");
@@ -55,9 +55,9 @@
     }
 
     /**
-    * @param {string} color
-    * @return {{toggleLoading(enable: boolean): void;}}
-    */
+     * @param {string} color
+     * @return {{toggleLoading(enable: boolean): void;}}
+     */
     function factoryLoading(color) {
         const dialog = document.createElement("dialog");
         const style = document.createElement("style");
@@ -104,10 +104,10 @@
     }
 
     /**
-    * @param {string} name
-    * @param {BlobPart} body
-    * @return {void}
-    */
+     * @param {string} name
+     * @param {BlobPart} body
+     * @return {void}
+     */
     function fsWrite(name, body) {
         const anchor = document.createElement("a");
         anchor.download = name;
@@ -117,34 +117,34 @@
     }
 
     /**
-    * @param {string} name
-    * @param {Uint8Array} data
-    * @return {string}
-    */
+     * @param {string} name
+     * @param {Uint8Array} data
+     * @return {string}
+     */
     function pemEncode(name, data) {
         return `-----BEGIN ${name.toUpperCase()}-----\n${data.toBase64()}\n-----END ${name.toUpperCase()}-----`;
     }
 
     /**
-    * @param {string} data
-    * @return {Uint8Array}
-    */
+     * @param {string} data
+     * @return {Uint8Array}
+     */
     function pemDecode(data) {
         return Uint8Array.fromBase64(data.trim().replaceAll("\r", "").replaceAll("\n", "").replace(/^-----BEGIN [A-Z0-9 ]+-----/, "").replace(/-----END [A-Z0-9 ]+-----$/, ""));
     }
 
     /**
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    */
+     * @param {Uint8Array} data
+     * @return {Promise<Uint8Array>}
+     */
     async function cryptoHash(data) {
         return new Uint8Array(await crypto.subtle.digest("SHA-256", data));
     }
 
     /**
-    * @param {boolean=} sign
-    * @return {Promise<Record<keyof CryptoKeyPair, Uint8Array>>}
-    */
+     * @param {boolean=} sign
+     * @return {Promise<Record<keyof CryptoKeyPair, Uint8Array>>}
+     */
     async function cryptoGenerateKey(sign) {
         /** @type {CryptoKeyPair} */
         const {publicKey, privateKey} = await crypto.subtle.generateKey(sign ? "Ed25519" : "X25519", true, sign ? ["sign"] : ["deriveKey"]);
@@ -156,11 +156,11 @@
     }
 
     /**
-    * @param {Uint8Array} pub
-    * @param {Uint8Array} key
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    */
+     * @param {Uint8Array} pub
+     * @param {Uint8Array} key
+     * @param {Uint8Array} data
+     * @return {Promise<Uint8Array>}
+     */
     async function cryptoEncrypt(pub, key, data) {
         const sec = await crypto.subtle.deriveKey({
             name: "X25519",
@@ -184,12 +184,12 @@
     }
 
     /**
-    * @param {Uint8Array} pub
-    * @param {Uint8Array} key
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    * ```
-    */
+     * @param {Uint8Array} pub
+     * @param {Uint8Array} key
+     * @param {Uint8Array} data
+     * @return {Promise<Uint8Array>}
+     * ```
+     */
     async function cryptoDecrypt(pub, key, data) {
         const sec = await crypto.subtle.deriveKey({
             name: "X25519",
@@ -209,29 +209,29 @@
     }
 
     /**
-    * @param {Uint8Array} key
-    * @param {Uint8Array} data
-    * @return {Promise<Uint8Array>}
-    */
+     * @param {Uint8Array} key
+     * @param {Uint8Array} data
+     * @return {Promise<Uint8Array>}
+     */
     async function cryptoSign(key, data) {
         return new Uint8Array(await crypto.subtle.sign("Ed25519", await crypto.subtle.importKey("pkcs8", key, "Ed25519", false, ["sign"]), data));
     }
 
     /**
-    * @param {Uint8Array} pub
-    * @param {Uint8Array} signature
-    * @param {Uint8Array} data
-    * @return {Promise<boolean>}
-    */
+     * @param {Uint8Array} pub
+     * @param {Uint8Array} signature
+     * @param {Uint8Array} data
+     * @return {Promise<boolean>}
+     */
     async function cryptoVerify(pub, signature, data) {
         return await crypto.subtle.verify("Ed25519", await crypto.subtle.importKey("spki", pub, "Ed25519", false, ["verify"]), signature, data);
     }
 
     /**
-    * @param {File[]} files
-    * @param {boolean=} gzip
-    * @return {Promise<Uint8Array>}
-    */
+     * @param {File[]} files
+     * @param {boolean=} gzip
+     * @return {Promise<Uint8Array>}
+     */
     async function tarEncode(files, gzip) {
         const TAR_BLOCK_SIZE = 512;
 
@@ -270,10 +270,10 @@
     }
 
     /**
-    * @param {Uint8Array} tar
-    * @param {boolean=} gzip
-    * @return {Promise<File[]>}
-    */
+     * @param {Uint8Array} tar
+     * @param {boolean=} gzip
+     * @return {Promise<File[]>}
+     */
     async function tarDecode(tar, gzip) {
         const TAR_BLOCK_SIZE = 512;
 
