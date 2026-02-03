@@ -301,14 +301,14 @@
             i += 247;
 
             if (!magic.startsWith("ustar")) {
-                throw new ReferenceError("Invalid tar magic.");
+                throw new Error("Invalid tar magic.");
             }
 
             const header = tarX.slice(i - TAR_BLOCK_SIZE, i);
             header.set(encoder.encode("        "), TAR_BLOCK_SIZE - 364);
 
             if (checksum !== header.reduce((n, v) => n + v, 0).toString(8).slice(0, 6).padStart(6, "0")) {
-                throw new ReferenceError("Invalid tar checksum.");
+                throw new Error("Invalid tar checksum.");
             }
 
             if (type !== "0" && type !== "\0") {

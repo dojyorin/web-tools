@@ -22,7 +22,7 @@
 
         if (!file) {
             showNotify("ファイルが選択されていません", "red");
-            throw new ReferenceError("File not selected.");
+            throw new Error("File not selected.");
         }
 
         try {
@@ -44,7 +44,7 @@
 
         if (!file) {
             showNotify("ファイルが選択されていません", "red");
-            throw new ReferenceError("File not selected.");
+            throw new Error("File not selected.");
         }
 
         try {
